@@ -14,3 +14,10 @@ test_that("scenario class is initialised correctly", {
   expect_type(pandemic_influenza$data, "list")
   expect_type(pandemic_influenza$data_prepared, "logical")
 })
+
+test_that("Correct printing of scenario class", {
+  # save a snapshot
+  expect_snapshot(
+    scenario(r0 = 1.5, replicates = 10L)
+  )
+})
