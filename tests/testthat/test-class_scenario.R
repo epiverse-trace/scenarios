@@ -1,8 +1,8 @@
 test_that("scenario class is initialised correctly", {
-  
+
   # simple scenario
   pandemic_influenza <- scenario(r0 = 1.5, replicates = 10L)
-  
+
   expect_s3_class(pandemic_influenza, class = "scenario")
   expect_length(pandemic_influenza, 4)
   expect_named(

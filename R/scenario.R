@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' scenarios:::new_scenario(
-#'  r0 = 1.5, replicates = 10
+#'   r0 = 1.5, replicates = 10
 #' )
 new_scenario <- function(r0 = numeric(1), replicates = integer(1)) {
   # check input
@@ -70,7 +70,6 @@ scenario <- function(r0, replicates = 1L) {
 #' @return None. Errors when an invalid `scenario` object is provided.
 #' @export
 validate_scenario <- function(scenario) {
-
   if (!inherits(scenario, "scenario")) {
     stop("Object should be of class scenario")
   }
@@ -78,27 +77,16 @@ validate_scenario <- function(scenario) {
   # check for class invariants
   stopifnot(
     "scenario object does not contain the correct attributes" =
-      c("r0", "replicates", "data") %in%
-      attributes(scenario)$names
-  )
-  # check that R0 is a single positive number
-  stopifnot(
+      (c("r0", "replicates", "data") %in%
+        attributes(scenario)$names),
     "Scenario R0 must be a single number > 0.0" =
-      (is.numeric(scenario$r0) && length(scenario$r0) == 1 && scenario$r0 > 0)
-  )
-  # check that the data list has the same length as replicates
-  stopifnot(
+      (is.numeric(scenario$r0) && length(scenario$r0) == 1 && scenario$r0 > 0),
     "Scenario data list must be the same length as the number of replicates" =
-      (length(scenario$data) == scenario$replicates)
-  )
-  # check that the data list is empty
-  stopifnot(
+      (length(scenario$data) == scenario$replicates),
     "Scenario data list should not be initialised" =
       (all(vapply(scenario$data, is.null, FUN.VALUE = TRUE)))
   )
-
   invisible(scenario)
-
 }
 
 #' @export
