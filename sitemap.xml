@@ -19,6 +19,12 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/read_stuff.html</loc>
+    <loc>/reference/new_scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/validate_scenario.html</loc>
   </url>
 </urlset>
