@@ -12,36 +12,36 @@ knitr::opts_chunk$set(
 )
 ```
 
-# {{ packagename }} Compare epidemic scenarios
+# {{ packagename }}: Compare epidemic scenarios
 <!-- <img src="man/figures/logo.png" align="right" width="130"/> -->
 
-{{ packagename }} is intended to provide functions to compare the outcomes of epidemic modelling simulations. This package is still a work in progress.
+_{{ packagename }}_ is intended to provide functions to compare the outcomes of epidemic modelling simulations. This package is still a work in progress.
 
 <!-- badges: start -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![R-CMD-check](https://github.com/{{ gh_repo }}/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/{{ gh_repo }}/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/{{ gh_repo }}/branch/main/graph/badge.svg)](https://app.codecov.io/gh/{{ gh_repo }}?branch=main)
-[![CRAN status](https://www.r-pkg.org/badges/version/{{ gh_repo }})](https://CRAN.R-project.org/package={{ gh_repo }})
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![CRAN status](https://www.r-pkg.org/badges/version/{{ packagename }})](https://CRAN.R-project.org/package={{ packagename }})
 <!-- badges: end -->
 
 ## Installation
 
-You can install the development version of {{ packagename }} from
-[GitHub](https://github.com/) with:
+You can install the development version of _{{ packagename }}_ from [GitHub](https://github.com/) with:
 
-``` r
+```r
 # install.packages("remotes")
 remotes::install_github("{{ gh_repo }}")
 ```
 
 ## Help 
 
-To report a bug please open an [issue](https://github.com/epiverse-trace/{{ gh_repo }}/issues/new/choose).
+To report a bug please open an [issue](https://github.com/{{ gh_repo }}/issues/new/choose).
 
 ## Contribute
 
-Contributions to _{{ gh_repo }}_ are welcomed. Please follow the [package contributing guide](https://github.com/epiverse-trace/{{ gh_repo }}/blob/main/.github/CONTRIBUTING.md).
+Contributions to _{{ packagename }}_ are welcomed. Please follow the [package contributing guide](https://github.com/{{ gh_repo }}/blob/main/.github/CONTRIBUTING.md).
 
 ## Code of conduct
 
-Please note that the _{{ gh_repo }}_ project is released with a [Contributor Code of Conduct](https://github.com/epiverse-trace/.github/blob/main/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
+Please note that the _{{ packagename }}_ project is released with a [Contributor Code of Conduct](https://github.com/epiverse-trace/.github/blob/main/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
