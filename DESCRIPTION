@@ -1,16 +1,26 @@
-Package: readepi
-Title: Import Epidemiological Data into R
-Version: 0.0.1
+Package: scenarios
+Title: Compare Epidemic Scenarios
+Version: 0.1.0
 Authors@R: 
-    c(person("Thibaut", "Jombart", , "thibaut@data.org", role = c("aut", "cre")),
-      person("Avinash", "Laddha", , "avinash@data.org", role = c("aut")))
-Description: This package implements functions to read epidemiological data from health information systems.
+    c(
+        person(
+            given = "Pratik",
+            family = "Gupte",
+            role = c("aut", "cre", "cph"),
+            email = "pratik.gupte@lshtm.ac.uk",
+            comment = c(ORCID = "https://orcid.org/0000-0001-5294-7819")
+        )
+    )
+Description: Compare epidemic scenarios such as those from the 'finalsize' package.
 License: MIT + file LICENSE
+URL: https://github.com/epiverse-trace/scenarios, https://epiverse-trace.github.io/scenarios/
+BugReports: https://github.com/epiverse-trace/scenarios/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Imports:
-    checkmate
+    checkmate,
+    cli
 Suggests: 
     covr,
     testthat (>= 3.0.0)
