@@ -90,9 +90,12 @@ scenario <- function(model_function,
 #' Validator for the `scenario` class
 #'
 #' @param scenario A `scenario` object
+#' @param data_ok A boolean of whether the scenario can have data. This is
+#' useful when creating scenarios manually from existing objects, or when
+#' reading in a `scenario` with data from a file.
 #'
 #' @return None. Errors when an invalid `scenario` object is provided.
-validate_scenario <- function(scenario) {
+validate_scenario <- function(scenario, data_ok = FALSE) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class scenario" =
@@ -111,7 +114,10 @@ validate_scenario <- function(scenario) {
     "Scenario data must be the same length as the number of replicates" =
       (nrow(scenario$data) == scenario$replicates),
     "Scenario data list should not be initialised" =
-      (all(vapply(scenario$data$output, is.null, FUN.VALUE = TRUE)))
+      (data_ok || all(
+        vapply(scenario$data$output, is.null, FUN.VALUE = TRUE)
+      )
+      )
   )
   invisible(scenario)
 }
