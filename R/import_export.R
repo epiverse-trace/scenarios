@@ -18,7 +18,7 @@
 sce_to_json <- function(x, file) {
   # input checking
   checkmate::assert_class(x, "scenario")
-  validate_scenario(x)
+  validate_scenario(x, data_ok = TRUE)
   checkmate::assert_named(x)
   checkmate::assert_named(x$parameters)
 
