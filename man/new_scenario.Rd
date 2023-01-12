@@ -4,22 +4,22 @@
 \alias{new_scenario}
 \title{Constructor for the \code{scenario} class}
 \usage{
-new_scenario(r0 = numeric(1), replicates = integer(1))
+new_scenario(model_function, parameters = list(), replicates = integer(1))
 }
 \arguments{
-\item{r0}{The basic reproductive number \eqn{R_0} of the infection.}
+\item{model_function}{Function that is expected to run an epidemic scenario
+model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a string e.g.
+"finalsize::final_size". Explicit namespacing is preferred.}
 
-\item{replicates}{The number of scenario replicates.}
+\item{parameters}{Parameters to the \code{model_function}.}
+
+\item{replicates}{The number of scenario replicates. This is the number of
+times the \code{model_function} is run.}
 }
 \value{
 scenario object
 }
 \description{
 Create a scenario object check inputs.
-}
-\examples{
-scenarios:::new_scenario(
- r0 = 1.5, replicates = 10
-)
 }
 \keyword{internal}
