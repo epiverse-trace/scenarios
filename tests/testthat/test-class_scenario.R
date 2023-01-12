@@ -50,4 +50,22 @@ test_that("Running scenario works", {
     scenario_pandemic_flu$data$output[[1]],
     "data.frame"
   ) # expect data.frame
+
+  # expect that running with no namespacing works
+  # defining a dummy scenario that runs a linear model
+  expect_warning(
+    scenario_lm <- scenario(
+      model_function = "lm",
+      parameters = list(
+        formula = as.formula("y ~ x"),
+        data = data.frame(
+          x = seq(10), y = seq(10)
+        )
+      ),
+      replicates = 1
+    )
+  )
+  expect_silent(
+    run_scenario(scenario_lm)
+  )
 })
