@@ -1,10 +1,10 @@
 # Correct printing of scenario class
 
     Code
-      scenario(r0 = 1.5, replicates = 10L)
+      scenario_pandemic_flu
     Output
       Epidemic scenario object
-       R_0: 1.5
-       Scenario replicates: 10
+       Model function: finalsize::final_size
+       Scenario replicates: 3
        Scenario outcomes are not prepared
 

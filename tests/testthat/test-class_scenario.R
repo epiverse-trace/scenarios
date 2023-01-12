@@ -1,23 +1,53 @@
+
+# Prepare a finalsize scenario
+scenario_pandemic_flu <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(),
+  replicates = 3 # note extra replicates
+)
+
 test_that("scenario class is initialised correctly", {
-
-  # simple scenario
-  pandemic_influenza <- scenario(r0 = 1.5, replicates = 10L)
-
-  expect_s3_class(pandemic_influenza, class = "scenario")
-  expect_length(pandemic_influenza, 4)
+  expect_s3_class(scenario_pandemic_flu, class = "scenario")
+  expect_length(scenario_pandemic_flu, 4)
   expect_named(
-    pandemic_influenza,
-    c("r0", "replicates", "data", "data_prepared")
+    scenario_pandemic_flu,
+    c("model_function", "parameters", "replicates", "data")
   )
-  expect_type(pandemic_influenza$r0, "double")
-  expect_type(pandemic_influenza$replicates, "integer")
-  expect_type(pandemic_influenza$data, "list")
-  expect_type(pandemic_influenza$data_prepared, "logical")
+  expect_type(scenario_pandemic_flu$model_function, "character")
+  expect_type(scenario_pandemic_flu$parameters, "list")
+  expect_type(scenario_pandemic_flu$data, "list")
 })
 
 test_that("Correct printing of scenario class", {
   # save a snapshot
   expect_snapshot(
-    scenario(r0 = 1.5, replicates = 10L)
+    scenario_pandemic_flu
   )
+})
+
+test_that("Model function namespacing warning", {
+  expect_warning(
+    scenario(
+      model_function = "final_size",
+      parameters = make_parameters_finalsize_UK(),
+      replicates = 3 # note extra replicates
+    ),
+    regexp = "`model_function` may not be explicitly namespaced."
+  )
+})
+
+test_that("Running scenario works", {
+  expect_false(
+    sce_has_data(scenario_pandemic_flu)
+  )
+  expect_silent(
+    run_scenario(scenario_pandemic_flu)
+  )
+  expect_true(
+    sce_has_data(scenario_pandemic_flu)
+  )
+  expect_s3_class(
+    scenario_pandemic_flu$data$output[[1]],
+    "data.frame"
+  ) # expect data.frame
 })
