@@ -1,6 +1,6 @@
 
 # Prepare a finalsize scenario
-n_replicates <- 3
+n_replicates <- 3L
 scenario_pandemic_flu <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(),
@@ -12,20 +12,20 @@ test_that("Getting parameters from scenario", {
   # general case
   parameters <- sce_get_parameters(scenario_pandemic_flu)
   expect_vector(parameters, ptype = list())
-  expect_identical(
-    names(parameters),
+  expect_named(
+    parameters,
     names(scenario_pandemic_flu$parameters)
   )
 
   # subset parameters
   which_params <- "r0"
   parameters <- sce_get_parameters(scenario_pandemic_flu, which = which_params)
-  expect_identical(
-    length(parameters),
+  expect_length(
+    parameters,
     length(which_params)
   )
-  expect_identical(
-    names(parameters), "r0"
+  expect_named(
+    parameters, "r0"
   )
 })
 
@@ -49,7 +49,7 @@ test_that("Getting scenario outcome data", {
     data, "data.table"
   )
   # exepct equal rather than identical to prevent int-double comparison issues
-  expect_equal(
+  expect_identical(
     max(data$replicate),
     n_replicates
   )
