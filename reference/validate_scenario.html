@@ -53,13 +53,19 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validate_scenario</span><span class="op">(</span><span class="va">scenario</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validate_scenario</span><span class="op">(</span><span class="va">scenario</span>, data_ok <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>scenario</dt>
 <dd><p>A <code>scenario</code> object</p></dd>
+
+
+<dt>data_ok</dt>
+<dd><p>A boolean of whether the scenario can have data. This is
+useful when creating scenarios manually from existing objects, or when
+reading in a <code>scenario</code> with data from a file.</p></dd>
 
 </dl></div>
     <div class="section level2">

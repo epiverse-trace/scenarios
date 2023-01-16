@@ -53,17 +53,24 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">new_scenario</span><span class="op">(</span>r0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, replicates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">new_scenario</span><span class="op">(</span><span class="va">model_function</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, replicates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>r0</dt>
-<dd><p>The basic reproductive number \(R_0\) of the infection.</p></dd>
+    <dl><dt>model_function</dt>
+<dd><p>Function that is expected to run an epidemic scenario
+model, such as <code><a href="https://epiverse-trace.github.io/finalsize/reference/final_size.html" class="external-link">finalsize::final_size()</a></code>, as a string e.g.
+"finalsize::final_size". Explicit namespacing is preferred.</p></dd>
+
+
+<dt>parameters</dt>
+<dd><p>Parameters to the <code>model_function</code>.</p></dd>
 
 
 <dt>replicates</dt>
-<dd><p>The number of scenario replicates.</p></dd>
+<dd><p>The number of scenario replicates. This is the number of
+times the <code>model_function</code> is run.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -73,17 +80,6 @@
 <p>scenario object</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">scenarios</span><span class="fu">:::</span><span class="fu">new_scenario</span><span class="op">(</span></span></span>
-<span class="r-in"><span> r0 <span class="op">=</span> <span class="fl">1.5</span>, replicates <span class="op">=</span> <span class="fl">10</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Epidemic scenario object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  R₀: 1.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario replicates: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario outcomes are not prepared</span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
