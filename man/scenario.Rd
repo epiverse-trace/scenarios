@@ -4,12 +4,17 @@
 \alias{scenario}
 \title{Create a \code{scenario} object}
 \usage{
-scenario(r0, replicates = 1L)
+scenario(model_function, parameters = list(), replicates = integer(1))
 }
 \arguments{
-\item{r0}{The basic reproductive number \eqn{R_0} of the infection.}
+\item{model_function}{Function that is expected to run an epidemic scenario
+model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a string e.g.
+"finalsize::final_size". Explicit namespacing is preferred.}
 
-\item{replicates}{The number of scenario replicates.}
+\item{parameters}{Parameters to the \code{model_function}.}
+
+\item{replicates}{The number of scenario replicates. This is the number of
+times the \code{model_function} is run.}
 }
 \value{
 A \code{scenario} object
@@ -21,7 +26,12 @@ initially targeted for compatibility with outputs from
 \code{\link[finalsize:final_size]{finalsize::final_size()}}.
 }
 \examples{
-pandemic_influenza <- scenario(
-  r0 = 1.5, replicates = 10
+# prepare arguments to `finalsize::final_size()`
+pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
+
+scenarios::scenario(
+  model_function = "finalsize::final_size",
+  parameters = pandemic_flu_args,
+  replicates = 1L
 )
 }

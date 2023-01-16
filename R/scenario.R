@@ -2,27 +2,27 @@
 #'
 #' @description Create a scenario object check inputs.
 #'
-#' @param r0 The basic reproductive number \eqn{R_0} of the infection.
-#' @param replicates The number of scenario replicates.
+#' @param model_function Function that is expected to run an epidemic scenario
+#' model, such as [finalsize::final_size()], as a string e.g.
+#' "finalsize::final_size". Explicit namespacing is preferred.
+#' @param parameters Parameters to the `model_function`.
+#' @param replicates The number of scenario replicates. This is the number of
+#' times the `model_function` is run.
+#'
 #' @return scenario object
 #' @keywords internal
-#'
-#' @examples
-#' scenarios:::new_scenario(
-#'   r0 = 1.5, replicates = 10
-#' )
-new_scenario <- function(r0 = numeric(1), replicates = integer(1)) {
-  # check input
-  checkmate::assert_number(r0, lower = 0.0, finite = TRUE, null.ok = FALSE)
-  checkmate::assert_int(replicates, lower = 1, null.ok = FALSE)
+new_scenario <- function(model_function,
+                         parameters = list(),
+                         replicates = integer(1)) {
+  # Input checking in `scenario()`
 
   # create and return epidist class
   structure(
     list(
-      r0 = r0,
+      model_function = model_function,
+      parameters = parameters,
       replicates = replicates,
-      data = vector(mode = "list", length = replicates),
-      data_prepared = FALSE # whether the data list is populated with results
+      data = vector("list", length = replicates)
     ),
     class = "scenario"
   )
@@ -35,24 +35,45 @@ new_scenario <- function(r0 = numeric(1), replicates = integer(1)) {
 #' initially targeted for compatibility with outputs from
 #' [finalsize::final_size()].
 #'
-#' @param r0 The basic reproductive number \eqn{R_0} of the infection.
-#' @param replicates The number of scenario replicates.
+#' @param model_function Function that is expected to run an epidemic scenario
+#' model, such as [finalsize::final_size()], as a string e.g.
+#' "finalsize::final_size". Explicit namespacing is preferred.
+#' @param parameters Parameters to the `model_function`.
+#' @param replicates The number of scenario replicates. This is the number of
+#' times the `model_function` is run.
 #'
 #' @return A `scenario` object
 #' @export
 #'
 #' @examples
-#' pandemic_influenza <- scenario(
-#'   r0 = 1.5, replicates = 10
+#' # prepare arguments to `finalsize::final_size()`
+#' pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
+#'
+#' scenarios::scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = pandemic_flu_args,
+#'   replicates = 1L
 #' )
-scenario <- function(r0, replicates = 1L) {
+scenario <- function(model_function,
+                     parameters = list(),
+                     replicates = integer(1)) {
   # check input
-  checkmate::assert_number(r0, lower = 0.0, finite = TRUE, null.ok = FALSE)
-  checkmate::assert_int(replicates, lower = 1, null.ok = FALSE)
+  checkmate::assert_string(model_function)
+  checkmate::assert_list(parameters, any.missing = FALSE, names = "unique")
+  checkmate::assert_integerish(replicates, lower = 1, null.ok = FALSE)
+
+  if (!grepl(pattern = "::", x = model_function, fixed = TRUE)) {
+    warning(
+      "`model_function` may not be explicitly namespaced. ",
+      "Explicit namespacing is preferred to avoid confusion. ",
+      "E.g. 'finalsize::final_size' rather than 'final_size'."
+    )
+  }
 
   # call scenario constructor
   scenario <- new_scenario(
-    r0 = r0,
+    model_function = model_function,
+    parameters = parameters,
     replicates = replicates
   )
 
@@ -66,25 +87,34 @@ scenario <- function(r0, replicates = 1L) {
 #' Validator for the `scenario` class
 #'
 #' @param scenario A `scenario` object
+#' @param data_ok A boolean of whether the scenario can have data. This is
+#' useful when creating scenarios manually from existing objects, or when
+#' reading in a `scenario` with data from a file.
 #'
 #' @return None. Errors when an invalid `scenario` object is provided.
-#' @export
-validate_scenario <- function(scenario) {
-  if (!inherits(scenario, "scenario")) {
-    stop("Object should be of class scenario")
-  }
-
-  # check for class invariants
+validate_scenario <- function(scenario, data_ok = FALSE) {
+  # check for class and class invariants
   stopifnot(
+    "Object should be of class scenario" =
+      (inherits(scenario, "scenario")),
     "scenario object does not contain the correct attributes" =
-      (c("r0", "replicates", "data") %in%
-        attributes(scenario)$names),
-    "Scenario R0 must be a single number > 0.0" =
-      (is.numeric(scenario$r0) && length(scenario$r0) == 1 && scenario$r0 > 0),
-    "Scenario data list must be the same length as the number of replicates" =
-      (length(scenario$data) == scenario$replicates),
+      (c(
+        "model_function", "parameters", "replicates", "data"
+      ) %in% attributes(scenario)$names),
+    "Model function must be a single function name" =
+      (is.character(scenario$model_function)),
+    "Model parameter list must be a list" =
+      (is.list(scenario$parameters)),
+    "Model replicates must be at least 1" =
+      (checkmate::check_integerish(scenario$replicates) &&
+        scenario$replicates >= 1),
+    "Scenario data must be the same length as the number of replicates" =
+      (nrow(scenario$data) == scenario$replicates),
     "Scenario data list should not be initialised" =
-      (all(vapply(scenario$data, is.null, FUN.VALUE = TRUE)))
+      (data_ok || all(
+        vapply(scenario$data, is.null, FUN.VALUE = TRUE)
+      )
+      )
   )
   invisible(scenario)
 }
@@ -94,17 +124,74 @@ print.scenario <- function(x, ...) {
   writeLines(
     c(
       sprintf("Epidemic scenario object"),
-      ifelse(
-        cli::is_utf8_output(),
-        sprintf(" R\u2080: %s", x$r0),
-        sprintf(" R_0: %s", x$r0)
-      ),
+      sprintf(" Model function: %s", x$model_function),
       sprintf(" Scenario replicates: %s", x$replicates),
       sprintf(" Scenario outcomes are %s", ifelse(
-        x$data_prepared, "prepared", "not prepared"
+        sce_has_data(x), "prepared", "not prepared"
       ))
     )
   )
 
   invisible(x)
+}
+
+#' Run a scenario
+#'
+#' @description Run an epidemic model scenario using the function stored in
+#' `model_function` with the arguments in `parameters`. Runs as many replicates
+#' of the function as specified in `replicates`. The simulation output data are
+#' stored under `data`, and the `data_available` tag is updated to `TRUE`.
+#'
+#' @param x A `scenario` object.
+#'
+#' @return The original `scenario` object with the `data` field populated with
+#' simulation output. This object must be assigned.
+#' @export
+#'
+#' @examples
+#' # prepare a scenario
+#' scenario_pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(), # using helper function
+#'   replicates = 1L
+#' )
+#'
+#' # print to check that data are not prepared
+#' scenario_pandemic_flu
+#'
+#' # generate scenario data
+#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
+#'
+#' # print to check that data are prepared
+#' scenario_pandemic_flu
+run_scenario <- function(x) {
+
+  # input checking
+  checkmate::assert_class(x, "scenario")
+
+  # get model function whether explicitly namespaced or not
+  if (grepl(pattern = "::", x = x$model_function, fixed = TRUE)) {
+    pkg_name <- sub("::.*", "", x$model_function)
+    fn_name <- sub(".*::", "", x$model_function)
+    fn <- get(fn_name, asNamespace(pkg_name))
+  } else {
+    fn <- x$model_function
+  }
+
+  # populate the data list
+  output <- lapply(
+    seq_len(x$replicates),
+    function(i) {
+      data <- do.call(
+        what = fn,
+        args = x$parameters
+      )
+      data$replicate <- i
+      data
+    }
+  )
+  # assign output to data
+  x$data <- output
+
+  x
 }

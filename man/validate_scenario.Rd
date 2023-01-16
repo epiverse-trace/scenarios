@@ -4,10 +4,14 @@
 \alias{validate_scenario}
 \title{Validator for the \code{scenario} class}
 \usage{
-validate_scenario(scenario)
+validate_scenario(scenario, data_ok = FALSE)
 }
 \arguments{
 \item{scenario}{A \code{scenario} object}
+
+\item{data_ok}{A boolean of whether the scenario can have data. This is
+useful when creating scenarios manually from existing objects, or when
+reading in a \code{scenario} with data from a file.}
 }
 \value{
 None. Errors when an invalid \code{scenario} object is provided.
