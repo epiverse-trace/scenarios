@@ -30,7 +30,7 @@ _{{ packagename }}_ is intended to provide functions to compare the outcomes of 
 You can install the development version of _{{ packagename }}_ from [GitHub](https://github.com/) with:
 
 ```{r}
-# install.packages("remotes")
+if (!require("remotes")) install.packages("remotes")
 remotes::install_github("{{ gh_repo }}")
 ```
 
