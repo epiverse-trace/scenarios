@@ -76,11 +76,10 @@ sce_from_json <- function(file) {
 
   # get scenario data
   data <- input[["data"]]
-  if ("output" %in% colnames(data) &&
-    all(vapply(data$output, is.null, FUN.VALUE = TRUE))) {
-    data$output <- vector("list", length = replicates)
+  # works for empty scenario objects
+  if (all(vapply(data, is.null, FUN.VALUE = TRUE))) {
+    data <- vector("list", length = replicates)
   }
-  data <- data.table::as.data.table(data)
 
   # create scenario object
   scenario_ <- structure(

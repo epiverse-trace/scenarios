@@ -22,10 +22,7 @@ new_scenario <- function(model_function,
       model_function = model_function,
       parameters = parameters,
       replicates = replicates,
-      data = data.table::data.table(
-        replicate = seq_len(replicates),
-        output = vector("list", length = replicates)
-      )
+      data = vector("list", length = replicates)
     ),
     class = "scenario"
   )
@@ -115,7 +112,7 @@ validate_scenario <- function(scenario, data_ok = FALSE) {
       (nrow(scenario$data) == scenario$replicates),
     "Scenario data list should not be initialised" =
       (data_ok || all(
-        vapply(scenario$data$output, is.null, FUN.VALUE = TRUE)
+        vapply(scenario$data, is.null, FUN.VALUE = TRUE)
       )
       )
   )
@@ -153,7 +150,7 @@ print.scenario <- function(x, ...) {
 #'
 #' @examples
 #' # prepare a scenario
-#' scenario_pandemic_flu <- scenarios::scenario(
+#' scenario_pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(), # using helper function
 #'   replicates = 1L
@@ -163,8 +160,7 @@ print.scenario <- function(x, ...) {
 #' scenario_pandemic_flu
 #'
 #' # generate scenario data
-#' # NOTE that no assignment is required
-#' run_scenario(scenario_pandemic_flu)
+#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 #'
 #' # print to check that data are prepared
 #' scenario_pandemic_flu
@@ -182,14 +178,20 @@ run_scenario <- function(x) {
     fn <- x$model_function
   }
 
-  # populate the data list and mark data as prepared
-  x$data[, "output" := lapply(
+  # populate the data list
+  output <- lapply(
     seq_len(x$replicates),
     function(i) {
-      do.call(
+      data <- do.call(
         what = fn,
         args = x$parameters
       )
+      data$replicate <- i
+      data
     }
-  )]
+  )
+  # assign output to data
+  x$data <- output
+
+  x
 }

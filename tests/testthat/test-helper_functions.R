@@ -38,7 +38,7 @@ test_that("Checking for scenario data", {
 
 #### Tests for sce_get_outcomes ####
 # run the scenario
-run_scenario(scenario_pandemic_flu)
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 test_that("Getting scenario outcome data", {
   expect_true(
     sce_has_data(scenario_pandemic_flu) # extra test
@@ -46,7 +46,7 @@ test_that("Getting scenario outcome data", {
 
   data <- sce_get_outcomes(scenario_pandemic_flu)
   expect_s3_class(
-    data, "data.table"
+    data, "data.frame"
   )
   # exepct equal rather than identical to prevent int-double comparison issues
   expect_identical(
@@ -56,10 +56,10 @@ test_that("Getting scenario outcome data", {
 
   # set scenario outcomes to non-dataframe class
   # and expect warning
-  scenario_pandemic_flu$data$output <- as.list(rep(
-    matrix(1, 1), length(scenario_pandemic_flu$data$output)
+  scenario_pandemic_flu$data <- as.list(rep(
+    matrix(1, 1), length(scenario_pandemic_flu$data)
   ))
-  expect_warning(
+  expect_error(
     sce_get_outcomes(scenario_pandemic_flu),
     regexp = "Scenario model outputs are not `data.frames`."
   )

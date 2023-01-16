@@ -22,7 +22,7 @@ test_that("Import and export from JSON works", {
 })
 
 # run the scenario
-run_scenario(scenario_pandemic_flu)
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 test_that("Import and export from JSON works with data", {
   expect_silent(
     sce_to_json(scenario_pandemic_flu, file = tmpfile)

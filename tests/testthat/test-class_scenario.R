@@ -41,13 +41,13 @@ test_that("Running scenario works", {
     sce_has_data(scenario_pandemic_flu)
   )
   expect_silent(
-    run_scenario(scenario_pandemic_flu)
+    scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
   )
   expect_true(
     sce_has_data(scenario_pandemic_flu)
   )
   expect_s3_class(
-    scenario_pandemic_flu$data$output[[1]],
+    scenario_pandemic_flu$data[[1]],
     "data.frame"
   ) # expect data.frame
 

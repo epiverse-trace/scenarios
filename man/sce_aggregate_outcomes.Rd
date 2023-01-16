@@ -40,7 +40,7 @@ scenario_pandemic_flu <- scenario(
 )
 
 # run scenario
-run_scenario(scenario_pandemic_flu)
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 
 # peek at outcome to see column names
 sce_peek_outcomes(scenario_pandemic_flu)

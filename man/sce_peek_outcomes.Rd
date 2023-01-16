@@ -29,7 +29,7 @@ scenario_pandemic_flu <- scenario(
   parameters = make_parameters_finalsize_UK(),
   replicates = 1
 )
-run_scenario(scenario_pandemic_flu)
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 
 # for column names and types
 sce_peek_outcomes(scenario_pandemic_flu)

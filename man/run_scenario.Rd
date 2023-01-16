@@ -21,7 +21,7 @@ stored under \code{data}, and the \code{data_available} tag is updated to \code{
 }
 \examples{
 # prepare a scenario
-scenario_pandemic_flu <- scenarios::scenario(
+scenario_pandemic_flu <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(), # using helper function
   replicates = 1L
@@ -31,8 +31,7 @@ scenario_pandemic_flu <- scenarios::scenario(
 scenario_pandemic_flu
 
 # generate scenario data
-# NOTE that no assignment is required
-run_scenario(scenario_pandemic_flu)
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 
 # print to check that data are prepared
 scenario_pandemic_flu

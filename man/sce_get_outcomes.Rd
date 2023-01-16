@@ -27,7 +27,7 @@ scenario_pandemic_flu <- scenario(
 )
 
 # run scenario
-run_scenario(scenario_pandemic_flu)
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 
 # get outcomes
 sce_get_outcomes(scenario_pandemic_flu)

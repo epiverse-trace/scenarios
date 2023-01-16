@@ -50,7 +50,7 @@ sce_has_data <- function(x) {
   # check input
   checkmate::assert_class(x, "scenario")
 
-  !all(vapply(x$data$output, is.null, FUN.VALUE = TRUE))
+  !all(vapply(x$data, is.null, FUN.VALUE = TRUE))
 }
 
 #' Get scenario outcomes
@@ -72,7 +72,7 @@ sce_has_data <- function(x) {
 #' )
 #'
 #' # run scenario
-#' run_scenario(scenario_pandemic_flu)
+#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 #'
 #' # get outcomes
 #' sce_get_outcomes(scenario_pandemic_flu)
@@ -84,14 +84,13 @@ sce_get_outcomes <- function(x) {
     "Scenario data are not prepared, run `run_scenario()` to prepare data." =
       sce_has_data(x)
   )
-  if (!is.data.frame(data.table::first(x$data$output))) {
-    warning(
+  if (!is.data.frame(data.table::first(x$data))) {
+    stop(
       "Scenario model outputs are not `data.frames`."
     )
   }
 
-  output <- "output"
-  x$data[, unlist(output, recursive = FALSE), by = "replicate"]
+  data.table::rbindlist(x$data)
 }
 
 #' Get scenario outcome names
@@ -116,7 +115,7 @@ sce_get_outcomes <- function(x) {
 #'   parameters = make_parameters_finalsize_UK(),
 #'   replicates = 1
 #' )
-#' run_scenario(scenario_pandemic_flu)
+#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 #'
 #' # for column names and types
 #' sce_peek_outcomes(scenario_pandemic_flu)
@@ -129,12 +128,12 @@ sce_peek_outcomes <- function(x, view_rows = FALSE) {
     "Scenario data are not prepared, run `run_scenario()` to prepare data." =
       sce_has_data(x)
   )
-  checkmate::assert_data_frame(data.table::first(x$data$output))
+  checkmate::assert_data_frame(data.table::first(x$data))
 
   if (view_rows) {
-    utils::head(data.table::first(x$data$output))
+    utils::head(data.table::first(x$data))
   } else {
-    vapply(data.table::first(x$data$output), class, FUN.VALUE = "numeric")
+    vapply(data.table::first(x$data), class, FUN.VALUE = "numeric")
   }
 }
 
@@ -162,7 +161,7 @@ sce_peek_outcomes <- function(x, view_rows = FALSE) {
 #' )
 #'
 #' # run scenario
-#' run_scenario(scenario_pandemic_flu)
+#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 #'
 #' # peek at outcome to see column names
 #' sce_peek_outcomes(scenario_pandemic_flu)
