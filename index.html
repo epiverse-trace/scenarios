@@ -74,8 +74,34 @@
 </h2>
 <p>You can install the development version of <em>scenarios</em> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"epiverse-trace/scenarios"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: remotes</span></span>
+<span><span class="co">#&gt; Warning in library(package, lib.loc = lib.loc, character.only = TRUE,</span></span>
+<span><span class="co">#&gt; logical.return = TRUE, : there is no package called 'remotes'</span></span>
+<span><span class="co">#&gt; Installing package into '/Users/runner/work/_temp/Library'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The downloaded binary packages are in</span></span>
+<span><span class="co">#&gt;  /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3a2Tlx/downloaded_packages</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"epiverse-trace/scenarios"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span></span>
+<span><span class="co">#&gt; Downloading GitHub repo epiverse-trace/scenarios@HEAD</span></span>
+<span><span class="co">#&gt; RcppEigen (NA -&gt; 0.3.3.9.3) [CRAN]</span></span>
+<span><span class="co">#&gt; Installing 1 packages: RcppEigen</span></span>
+<span><span class="co">#&gt; Installing package into '/Users/runner/work/_temp/Library'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The downloaded binary packages are in</span></span>
+<span><span class="co">#&gt;  /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3a2Tlx/downloaded_packages</span></span>
+<span><span class="co">#&gt; ── R CMD build ─────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; * checking for file ‘/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp3a2Tlx/remotes15827a62685b/epiverse-trace-scenarios-362e6e8/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * preparing ‘scenarios’:</span></span>
+<span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
+<span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
+<span><span class="co">#&gt; * checking for empty or unneeded directories</span></span>
+<span><span class="co">#&gt; * building ‘scenarios_0.1.0.tar.gz’</span></span>
+<span><span class="co">#&gt; Installing package into '/Users/runner/work/_temp/Library'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
@@ -98,21 +124,35 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p>View a summary of the <code>scenario</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scenario_pandemic_flu</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scenario_pandemic_flu</span></span>
+<span><span class="co">#&gt; Epidemic scenario object</span></span>
+<span><span class="co">#&gt;  Model function: finalsize::final_size</span></span>
+<span><span class="co">#&gt;  Scenario replicates: 3</span></span>
+<span><span class="co">#&gt;  Scenario outcomes are not prepared</span></span></code></pre></div>
 <p>The <code>scenario</code> object is created but the model function is not initially run. This can be checked using a helper function. Tip: Many helper functions have the prefix <code>sce_</code> to help them be found quickly when using autocomplete in various text editors and IDEs.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># check whether the scenario data have been generated</span></span>
-<span><span class="fu"><a href="reference/sce_has_data.html">sce_has_data</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/sce_has_data.html">sce_has_data</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>Model outcome data can be generated by running the model function with the parameters specified in the <code>scenario</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/run_scenario.html">run_scenario</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span> <span class="co"># NOTE no assignment needed</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scenario_pandemic_flu</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_scenario.html">run_scenario</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span></span></code></pre></div>
 <p>Take a peek at the column names in the model outcome replicates.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/sce_peek_outcomes.html">sce_peek_outcomes</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/sce_peek_outcomes.html">sce_peek_outcomes</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       demo_grp       susc_grp susceptibility     p_infected      replicate </span></span>
+<span><span class="co">#&gt;    "character"    "character"      "numeric"      "numeric"      "integer"</span></span></code></pre></div>
 <p>Get the outcomes from all replicates as a single dataset, or aggregate an outcome variable of interest across replicates by some grouping variable.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get all output</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="reference/sce_get_outcomes.html">sce_get_outcomes</a></span><span class="op">(</span><span class="va">scenario_pandemic_flu</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    demo_grp   susc_grp susceptibility p_infected replicate</span></span>
+<span><span class="co">#&gt; 1:   [0,20) susc_grp_1              1  0.6544866         1</span></span>
+<span><span class="co">#&gt; 2:  [20,40) susc_grp_1              1  0.5750030         1</span></span>
+<span><span class="co">#&gt; 3:      40+ susc_grp_1              1  0.4588871         1</span></span>
+<span><span class="co">#&gt; 4:   [0,20) susc_grp_1              1  0.6544866         2</span></span>
+<span><span class="co">#&gt; 5:  [20,40) susc_grp_1              1  0.5750030         2</span></span>
+<span><span class="co">#&gt; 6:      40+ susc_grp_1              1  0.4588871         2</span></span>
 <span></span>
 <span><span class="co"># aggregate proportion infected by demographic group</span></span>
 <span><span class="co"># NOTE that all replicates have the same outcome in this deterministic model</span></span>
@@ -121,7 +161,11 @@
 <span>  grouping_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"demo_grp"</span><span class="op">)</span>,</span>
 <span>  measure_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p_infected"</span><span class="op">)</span>,</span>
 <span>  summary_functions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;    demo_grp p_infected_mean p_infected_min p_infected_max</span></span>
+<span><span class="co">#&gt; 1:      40+       0.4588871      0.4588871      0.4588871</span></span>
+<span><span class="co">#&gt; 2:   [0,20)       0.6544866      0.6544866      0.6544866</span></span>
+<span><span class="co">#&gt; 3:  [20,40)       0.5750030      0.5750030      0.5750030</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="an-example-with-epidemics">An example with <em>epidemics</em>
@@ -138,12 +182,21 @@
 <span></span>
 <span><span class="co"># view the initial conditions and infection parameters</span></span>
 <span><span class="fu"><a href="reference/sce_get_parameters.html">sce_get_parameters</a></span><span class="op">(</span><span class="va">scenario_sir</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"init"</span>, <span class="st">"parms"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $init</span></span>
+<span><span class="co">#&gt;    S    I    R </span></span>
+<span><span class="co">#&gt; 0.99 0.01 0.00 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $parms</span></span>
+<span><span class="co">#&gt;  beta gamma </span></span>
+<span><span class="co">#&gt;   1.0   0.1</span></span>
 <span></span>
 <span><span class="co"># generate scenario outcomes by running the model</span></span>
-<span><span class="fu"><a href="reference/run_scenario.html">run_scenario</a></span><span class="op">(</span><span class="va">scenario_sir</span><span class="op">)</span> <span class="co"># NOTE no assignment</span></span>
+<span><span class="va">scenario_sir</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_scenario.html">run_scenario</a></span><span class="op">(</span><span class="va">scenario_sir</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># peek at the outcomes</span></span>
 <span><span class="fu"><a href="reference/sce_peek_outcomes.html">sce_peek_outcomes</a></span><span class="op">(</span><span class="va">scenario_sir</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       time      state proportion  replicate </span></span>
+<span><span class="co">#&gt;  "numeric"   "factor"  "numeric"  "integer"</span></span>
 <span></span>
 <span><span class="co"># view the aggregated outcomes</span></span>
 <span><span class="co"># this is the per-timestep, per-class (S, I, R) mean proportion</span></span>
@@ -155,7 +208,14 @@
 <span>    measure_variables <span class="op">=</span> <span class="st">"proportion"</span>,</span>
 <span>    summary_functions <span class="op">=</span> <span class="st">"mean"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;    time state proportion_mean</span></span>
+<span><span class="co">#&gt; 1:   99     S    4.501519e-05</span></span>
+<span><span class="co">#&gt; 2:   99     I    8.643038e-05</span></span>
+<span><span class="co">#&gt; 3:   99     R    9.998686e-01</span></span>
+<span><span class="co">#&gt; 4:  100     S    4.501149e-05</span></span>
+<span><span class="co">#&gt; 5:  100     I    7.820928e-05</span></span>
+<span><span class="co">#&gt; 6:  100     R    9.998768e-01</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
