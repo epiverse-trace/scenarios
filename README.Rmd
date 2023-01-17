@@ -38,7 +38,7 @@ remotes::install_github("{{ gh_repo }}")
 
 ### An example with _finalsize_
 
-Define an epidemic model scenario by creating a new `scenario` object. The standard workflow needs a model function, such as [finalsize::final_size()], and appropriate arguments to the function.
+Define an epidemic model scenario by creating a new `scenario` object. The standard workflow needs a model function, such as `finalsize::final_size()`, and appropriate arguments to the function.
 
 ```{r}
 # load scenarios
