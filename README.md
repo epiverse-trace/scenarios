@@ -1,7 +1,7 @@
 
-# scenarios: Compare epidemic scenarios
+# *scenarios*: Compare epidemic scenarios
 
-<!-- <img src="man/figures/logo.png" align="right" width="130"/> -->
+<img src="man/figures/logo.png" align="right" width="130"/>
 
 *scenarios* is intended to provide functions to compare the outcomes of
 epidemic modelling simulations. This package is still a work in
@@ -28,33 +28,7 @@ You can install the development version of *scenarios* from
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
-#> Loading required package: remotes
-#> Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
-#> logical.return = TRUE, : there is no package called 'remotes'
-#> Installing package into '/Users/runner/work/_temp/Library'
-#> (as 'lib' is unspecified)
-#> 
-#> The downloaded binary packages are in
-#>  /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3a2Tlx/downloaded_packages
 remotes::install_github("epiverse-trace/scenarios")
-#> Using github PAT from envvar GITHUB_PAT
-#> Downloading GitHub repo epiverse-trace/scenarios@HEAD
-#> RcppEigen (NA -> 0.3.3.9.3) [CRAN]
-#> Installing 1 packages: RcppEigen
-#> Installing package into '/Users/runner/work/_temp/Library'
-#> (as 'lib' is unspecified)
-#> 
-#> The downloaded binary packages are in
-#>  /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp3a2Tlx/downloaded_packages
-#> ── R CMD build ─────────────────────────────────────────────────────────────────
-#> * checking for file ‘/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp3a2Tlx/remotes15827a62685b/epiverse-trace-scenarios-362e6e8/DESCRIPTION’ ... OK
-#> * preparing ‘scenarios’:
-#> * checking DESCRIPTION meta-information ... OK
-#> * checking for LF line-endings in source and make files and shell scripts
-#> * checking for empty or unneeded directories
-#> * building ‘scenarios_0.1.0.tar.gz’
-#> Installing package into '/Users/runner/work/_temp/Library'
-#> (as 'lib' is unspecified)
 ```
 
 ## Quick start
@@ -63,7 +37,7 @@ remotes::install_github("epiverse-trace/scenarios")
 
 Define an epidemic model scenario by creating a new `scenario` object.
 The standard workflow needs a model function, such as
-\[finalsize::final_size()\], and appropriate arguments to the function.
+`finalsize::final_size()`, and appropriate arguments to the function.
 
 ``` r
 # load scenarios
