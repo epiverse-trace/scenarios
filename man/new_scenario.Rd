@@ -17,9 +17,9 @@ model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a
 times the \code{model_function} is run.}
 }
 \value{
-scenario object
+A \code{scenario} object
 }
 \description{
-Create a scenario object check inputs.
+Create a scenario object with input checks.
 }
 \keyword{internal}

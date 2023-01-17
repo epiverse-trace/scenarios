@@ -27,9 +27,10 @@ initially targeted for compatibility with outputs from
 }
 \examples{
 # prepare arguments to `finalsize::final_size()`
+# using the included convenience function
 pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
 
-scenarios::scenario(
+scenario(
   model_function = "finalsize::final_size",
   parameters = pandemic_flu_args,
   replicates = 1L
