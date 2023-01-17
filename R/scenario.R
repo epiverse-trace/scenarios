@@ -1,6 +1,6 @@
 #' Constructor for the `scenario` class
 #'
-#' @description Create a scenario object check inputs.
+#' @description Create a scenario object with input checks.
 #'
 #' @param model_function Function that is expected to run an epidemic scenario
 #' model, such as [finalsize::final_size()], as a string e.g.
@@ -9,14 +9,14 @@
 #' @param replicates The number of scenario replicates. This is the number of
 #' times the `model_function` is run.
 #'
-#' @return scenario object
+#' @return A `scenario` object
 #' @keywords internal
 new_scenario <- function(model_function,
                          parameters = list(),
                          replicates = integer(1)) {
   # Input checking in `scenario()`
 
-  # create and return epidist class
+  # create and return scenario class
   structure(
     list(
       model_function = model_function,
@@ -47,9 +47,10 @@ new_scenario <- function(model_function,
 #'
 #' @examples
 #' # prepare arguments to `finalsize::final_size()`
+#' # using the included convenience function
 #' pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
 #'
-#' scenarios::scenario(
+#' scenario(
 #'   model_function = "finalsize::final_size",
 #'   parameters = pandemic_flu_args,
 #'   replicates = 1L
@@ -80,7 +81,7 @@ scenario <- function(model_function,
   # call scenario validator
   validate_scenario(scenario = scenario)
 
-  # return epidist object
+  # return scenario object
   scenario
 }
 
@@ -133,65 +134,4 @@ print.scenario <- function(x, ...) {
   )
 
   invisible(x)
-}
-
-#' Run a scenario
-#'
-#' @description Run an epidemic model scenario using the function stored in
-#' `model_function` with the arguments in `parameters`. Runs as many replicates
-#' of the function as specified in `replicates`. The simulation output data are
-#' stored under `data`, and the `data_available` tag is updated to `TRUE`.
-#'
-#' @param x A `scenario` object.
-#'
-#' @return The original `scenario` object with the `data` field populated with
-#' simulation output. This object must be assigned.
-#' @export
-#'
-#' @examples
-#' # prepare a scenario
-#' scenario_pandemic_flu <- scenario(
-#'   model_function = "finalsize::final_size",
-#'   parameters = make_parameters_finalsize_UK(), # using helper function
-#'   replicates = 1L
-#' )
-#'
-#' # print to check that data are not prepared
-#' scenario_pandemic_flu
-#'
-#' # generate scenario data
-#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-#'
-#' # print to check that data are prepared
-#' scenario_pandemic_flu
-run_scenario <- function(x) {
-
-  # input checking
-  checkmate::assert_class(x, "scenario")
-
-  # get model function whether explicitly namespaced or not
-  if (grepl(pattern = "::", x = x$model_function, fixed = TRUE)) {
-    pkg_name <- sub("::.*", "", x$model_function)
-    fn_name <- sub(".*::", "", x$model_function)
-    fn <- get(fn_name, asNamespace(pkg_name))
-  } else {
-    fn <- x$model_function
-  }
-
-  # populate the data list
-  output <- lapply(
-    seq_len(x$replicates),
-    function(i) {
-      data <- do.call(
-        what = fn,
-        args = x$parameters
-      )
-      data$replicate <- i
-      data
-    }
-  )
-  # assign output to data
-  x$data <- output
-
-  x
 }
