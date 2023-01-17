@@ -33,64 +33,61 @@ sce_get_parameters <- function(x, which = NULL) {
 
 #' Check for scenario data
 #'
-#' @param x A `scenario` object.
-#'
-#' @return A boolean, whether the simulation object has data.
+#' @param x A `scenario` or `comparison` object.
+#' @return Whether the `scenario` has data, or whether all `scenario` objects in
+#' a `comparison` object have data generated.
 #' @export
 #' @examples
 #' # create a scenario
-#' scenario_pandemic_flu <- scenario(
+#' pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(),
 #'   replicates = 1
 #' )
+#' covid19 <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 3.0),
+#'   replicates = 1
+#' )
 #'
-#' sce_has_data(scenario_pandemic_flu)
+#' # for a `scenario` object
+#' sce_has_data(pandemic_flu)
+#'
+#' # for a `comparison` object
+#' comparison_flu_covid <- comparison(
+#'   pandemic_flu, covid
+#' )
+#' sce_has_data(comparison_flu_covid)
 sce_has_data <- function(x) {
+  UseMethod("sce_has_data", x)
+}
+
+#' Check for scenario data
+#'
+#' @param x A `scenario` object.
+#'
+#' @return A boolean, whether the simulation object has data.
+#' @method sce_has_data scenario
+#' @export
+sce_has_data.scenario <- function(x) {
   # check input
   checkmate::assert_class(x, "scenario")
 
   !all(vapply(x$data, is.null, FUN.VALUE = TRUE))
 }
 
-#' Get scenario outcomes
+#' Check for scenario data
 #'
-#' @param x A scenario object with data prepared. Check for whether data has
-#' been prepared using [sce_has_data()].
+#' @param x A `comparison` object.
 #'
-#' @return A single data.table holding the output of all replicates of the
-#' scenario. Contains the `replicate` column to help differentiate data from
-#' each replicate.
+#' @method sce_has_data comparison
 #' @export
-#'
-#' @examples
-#' # create a scenario
-#' scenario_pandemic_flu <- scenario(
-#'   model_function = "finalsize::final_size",
-#'   parameters = make_parameters_finalsize_UK(),
-#'   replicates = 3 # note extra replicates
-#' )
-#'
-#' # run scenario
-#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-#'
-#' # get outcomes
-#' sce_get_outcomes(scenario_pandemic_flu)
-sce_get_outcomes <- function(x) {
+#' @return A boolean, whether the simulation object has data.
+sce_has_data.comparison <- function(x) {
   # check input
-  checkmate::assert_class(x, "scenario")
+  checkmate::assert_class(x, "comparison")
 
-  stopifnot(
-    "Scenario data are not prepared, run `run_scenario()` to prepare data." =
-      sce_has_data(x)
-  )
-  if (!is.data.frame(data.table::first(x$data))) {
-    stop(
-      "Scenario model outputs are not `data.frames`."
-    )
-  }
-
-  data.table::rbindlist(x$data)
+  all(vapply(x$data, sce_has_data.scenario, FUN.VALUE = TRUE))
 }
 
 #' Get scenario outcome names
