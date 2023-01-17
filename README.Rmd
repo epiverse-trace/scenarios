@@ -12,8 +12,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-# {{ packagename }}: Compare epidemic scenarios
-<!-- <img src="man/figures/logo.png" align="right" width="130"/> -->
+# _{{ packagename }}_: Compare epidemic scenarios
+<img src="man/figures/logo.png" align="right" width="130"/>
 
 _{{ packagename }}_ is intended to provide functions to compare the outcomes of epidemic modelling simulations. This package is still a work in progress.
 
@@ -29,7 +29,7 @@ _{{ packagename }}_ is intended to provide functions to compare the outcomes of 
 
 You can install the development version of _{{ packagename }}_ from [GitHub](https://github.com/) with:
 
-```{r}
+```r
 if (!require("remotes")) install.packages("remotes")
 remotes::install_github("{{ gh_repo }}")
 ```
