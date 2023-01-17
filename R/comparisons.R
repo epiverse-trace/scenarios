@@ -6,6 +6,10 @@
 #' @param baseline A string or integer for the element of the list of `scenario`
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
+#' @param matching_vars The variables in the `scenario` outputs on which to
+#' match the scenarios and check whether they are comparable.
+#' @param comparison_vars The variables in the `scenario` outputs to compare
+#' against the 'baseline' scenario.
 #'
 #' @return A `comparison` object
 #' @keywords internal
@@ -38,6 +42,10 @@ new_comparison <- function(data,
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared. Taken to be the first element from
 #' among the `scenario` objects provided.
+#' @param matching_vars The variables in the `scenario` outputs on which to
+#' match the scenarios and check whether they are comparable.
+#' @param comparison_vars The variables in the `scenario` outputs to compare
+#' against the 'baseline' scenario.
 #'
 #' @return A `comparison` object
 #' @export
