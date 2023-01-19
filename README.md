@@ -3,10 +3,6 @@
 
 <img src="man/figures/logo.png" align="right" width="130"/>
 
-*scenarios* is intended to provide functions to compare the outcomes of
-epidemic modelling simulations. This package is still a work in
-progress.
-
 <!-- badges: start -->
 
 [![License:
@@ -20,6 +16,10 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 [![CRAN
 status](https://www.r-pkg.org/badges/version/scenarios)](https://CRAN.R-project.org/package=scenarios)
 <!-- badges: end -->
+
+*scenarios* is intended to provide functions to compare the outcomes of
+epidemic modelling simulations. This package is still a work in
+progress.
 
 ## Installation
 
