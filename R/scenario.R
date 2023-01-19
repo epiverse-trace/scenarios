@@ -124,8 +124,8 @@ validate_scenario <- function(scenario, data_ok = FALSE) {
 print.scenario <- function(x, ...) {
   writeLines(
     c(
-      sprintf("Epidemic scenario object"),
-      sprintf(" Model function: %s", x$model_function),
+      cli::style_bold("Epidemic scenario object"),
+      glue::glue(" Model function: {cli::col_green(x$model_function)}"),
       sprintf(" Scenario replicates: %s", x$replicates),
       sprintf(" Scenario outcomes are %s", ifelse(
         sce_has_data(x), "prepared", "not prepared"
@@ -135,3 +135,23 @@ print.scenario <- function(x, ...) {
 
   invisible(x)
 }
+
+#' Check whether an object is a 'scenario'
+#'
+#' @param x An R object.
+#'
+#' @return A logical indicating whether the object inherits from the class
+#' 'scenario'.
+#'
+#' @export
+#'
+#' @examples
+#' # prepare two scenarios of the final size of an epidemic
+#' pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
+#'   replicates = 1L
+#' )
+#'
+#' is.scenario(pandemic_flu)
+is.scenario <- function(x) inherits(x, "scenario")
