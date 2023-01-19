@@ -1,22 +1,22 @@
-#' Constructor for the `comparisons` class
+#' Constructor for the 'comparison' class
 #'
-#' @description Create a comparisons object after input checks.
+#' @description Create a 'comparison' object after input checks.
 #'
-#' @param data A list of `scenario` objects.
-#' @param baseline A string or integer for the element of the list of `scenario`
+#' @param data A list of 'scenario' objects.
+#' @param baseline A string or integer for the element of the list of 'scenario'
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
-#' @param matching_vars The variables in the `scenario` outputs on which to
+#' @param match_variables The variables in the 'scenario' outputs on which to
 #' match the scenarios and check whether they are comparable.
-#' @param comparison_vars The variables in the `scenario` outputs to compare
-#' against the 'baseline' scenario.
+#' @param comparison_variables The variables in the 'scenario' outputs to
+#' compare against the 'baseline' scenario.
 #'
-#' @return A `comparison` object
+#' @return A 'comparison' object
 #' @keywords internal
 new_comparison <- function(data,
                            baseline = 1,
-                           matching_vars,
-                           comparison_vars) {
+                           match_variables,
+                           comparison_variables) {
   # Input checking in `comparison()`
 
   # create and return comparison class
@@ -24,30 +24,30 @@ new_comparison <- function(data,
     list(
       "data" = data,
       "baseline" = baseline,
-      "matching_vars" = matching_vars,
-      "comparison_vars" = comparison_vars
+      "match_variables" = match_variables,
+      "comparison_variables" = comparison_variables
     ),
     class = "comparison"
   )
 }
 
-#' Create a `comparison` object
+#' Create a 'comparison' object
 #'
-#' @description The `comparison` class is intended to store `scenario`s and to
-#' compare among them. One `scenario` must be set as the 'baseline' for such
+#' @description The 'comparison' class is intended to store 'scenario's and to
+#' compare among them. One 'scenario' must be set as the 'baseline' for such
 #' comparisons.
 #'
-#' @param ... Multiple `scenario`s or a list of `scenario` objects.
-#' @param baseline A string or integer for the element of the list of `scenario`
+#' @param ... Multiple 'scenario's or a list of 'scenario' objects.
+#' @param baseline A string or integer for the element of the list of 'scenario'
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared. Taken to be the first element from
-#' among the `scenario` objects provided.
-#' @param matching_vars The variables in the `scenario` outputs on which to
+#' among the 'scenario' objects provided.
+#' @param match_variables The variables in the 'scenario' outputs on which to
 #' match the scenarios and check whether they are comparable.
-#' @param comparison_vars The variables in the `scenario` outputs to compare
-#' against the 'baseline' scenario.
+#' @param comparison_variables The variables in the 'scenario' outputs to
+#' compare against the 'baseline' scenario.
 #'
-#' @return A `comparison` object
+#' @return A 'comparison' object
 #' @export
 #'
 #' @examples
@@ -71,102 +71,171 @@ new_comparison <- function(data,
 #' )
 comparison <- function(...,
                        baseline = 1L,
-                       matching_vars,
-                       comparison_vars) {
+                       match_variables,
+                       comparison_variables) {
   # check input
   data <- list(...)
   if ((length(data) == 1L) && (is.list(data[[1]]))) {
     data <- data[[1]]
   }
+  if (missing(match_variables)) {
+    match_variables <- NA_character_
+  }
+  if (missing(comparison_variables)) {
+    comparison_variables <- NA_character_
+  }
 
   stopifnot(
-    "All objects must be of the `scenario` class" =
+    "All objects must be of the 'scenario' class" =
       all(
         vapply(
           data, function(x) inherits(x, "scenario"),
           FUN.VALUE = TRUE
         )
       ),
-    "Baseline must be among scenario names, or a number >= 1" =
-      ((is.character(baseline) && baseline %in% names(data)) ||
-        (checkmate::check_integerish(baseline))),
-    "Baseline specified by list position must be within list elements" =
-      (checkmate::check_integerish(baseline) && baseline <= length(data))
+    "Baseline must be among scenario names, or a numeric list index" =
+      (
+        # first check for named scenarios and baseline
+        (is.character(baseline) &&
+          baseline %in% names(data)) ||
+          # check for baseline passed as integer-like number
+          (checkmate::check_integerish(baseline) &&
+            (baseline <= length(data)))
+      ),
+    "Matching variables must be a string" =
+      (is.character(match_variables)),
+    "Comparison variables must be a string" =
+      (is.character(comparison_variables))
   )
 
   # call comparison constructor
   object <- new_comparison(
-    data, baseline, matching_vars, comparison_vars
+    data, baseline, match_variables, comparison_variables
   )
 
   # call comparison validator
-  validate_comparison(comparison = object)
+  validate_comparison(object)
 
   # return comparison object
   object
 }
 
-#' Validator for the `comparison` class
+#' Validator for the 'comparison' class
 #'
-#' @param comparison A `comparison` object.
+#' @param object A 'comparison' object.
 #'
-#' @return None. Errors when an invalid `comparison` object is provided.
-validate_comparison <- function(comparison) {
+#' @return None. Errors when an invalid 'comparison' object is provided.
+validate_comparison <- function(object) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class comparison" =
-      (inherits(comparison, "comparison")),
-    "comparison object does not contain the correct attributes" =
+      (inherits(object, "comparison")),
+    "'comparison' object does not contain the correct attributes" =
       (all(
         c(
           "data", "baseline"
-        ) %in% attributes(comparison)$names
+        ) %in% attributes(object)$names
       )
       ),
-    "Comparison must be a list of `scenario` objects" =
-      (is.list(comparison$data) && (
+    "Comparison must be a list of 'scenario' objects" =
+      (is.list(object$data) && (
         all(
           vapply(
-            comparison$data, function(x) inherits(x, "scenario"),
+            object$data, function(x) inherits(x, "scenario"),
             FUN.VALUE = TRUE
           )
         )
       )),
-    "Baseline must be among scenario names, or a number >= 1" =
-      ((is.character(comparison$baseline) &&
-        comparison$baseline %in% names(comparison$data)) ||
-        (checkmate::check_integerish(comparison$baseline))),
-    "Baseline specified by list position must be within list elements" =
-      (checkmate::check_integerish(comparison$baseline) &&
-        (comparison$baseline <= length(comparison$data)))
+    "Baseline must be among scenario names, or a numeric list index" =
+      (
+        # first check for named scenarios and baseline
+        (is.character(object$baseline) &&
+          object$baseline %in% names(object$data)) ||
+          # check for baseline passed as integer-like number
+          (checkmate::check_integerish(object$baseline) &&
+            (object$baseline <= length(object$data)))
+      )
   )
-  invisible(comparison)
+  invisible(object)
 }
 
 #' @export
 print.comparison <- function(x, ...) {
+  # prepare information
+  header <- cli::style_bold(sprintf("Scenario comparison object"))
+  scenario_count <- sprintf(" # Scenarios: %i", length(x$data))
+  data_status <- ifelse(
+    !all(
+      vapply(x$data, sce_has_data, FUN.VALUE = TRUE)
+    ),
+    cli::col_magenta(
+      " Some scenarios have no data, use `run_scenario()` to prepare data"
+    ),
+    " All scenario data are prepared, use `sce_get_outcomes()` to get data"
+  )
+  # the scenario matching variables
+  matching_variables <- c(
+    " Scenario matching variables:",
+    ifelse(is.na(x$match_variables),
+      cli::col_magenta("  No matching variables specified!"),
+      cli::col_green(sprintf("  %s", x$match_variables))
+    )
+  )
+  # the output comparison variables
+  comparison_variables <- c(
+    " Scenario comparison variables:",
+    ifelse(is.na(x$comparison_variables),
+      cli::col_magenta("  No comparison variables specified!"),
+      cli::col_green(sprintf("  %s", x$comparison_variables))
+    )
+  )
+  # the model function(s)
+  model_fun <- c(
+    " Model functions found:",
+    cli::col_cyan(
+      sprintf("  %s", unique(unlist(lapply(x$data, `[`, "model_function"))))
+    )
+  )
+  # output all
   writeLines(
     c(
-      cli::style_bold(sprintf("Scenario comparison object")),
-      sprintf(" # Scenarios: %i", length(x$data)),
-      ifelse(
-        !all(
-          vapply(x$data, sce_has_data, FUN.VALUE = TRUE)
-        ),
-        cli::col_magenta(
-          " Some scenarios have no data, use `run_scenario()` to prepare data"
-        ),
-        "All scenario data are prepared, use `sce_get_outcomes()` to get data"
-      ),
-      " Scenario matching variables:",
-      cli::col_green(sprintf("  %s", x$matching_vars)),
-      " Scenario comparison variables:",
-      cli::col_blue(sprintf("  %s", x$comparison_vars)),
-      " Model functions found:",
-      cli::col_cyan(
-        sprintf("  %s", unique(unlist(lapply(x$data, `[`, "model_function"))))
-      )
+      header, scenario_count, data_status,
+      matching_variables, comparison_variables, model_fun
     )
   )
   invisible(x)
+}
+
+#' Check whether an object is a 'comparison'
+#'
+#' @param x An R object.
+#'
+#' @return A logical indicating whether the object inherits from the class
+#' 'comparison'.
+#'
+#' @export
+#'
+#' @examples
+#' # prepare two scenarios of the final size of an epidemic
+#' pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
+#'   replicates = 1L
+#' )
+#'
+#' covid19 <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
+#'   replicates = 1L
+#' )
+#'
+#' # create a comparison object
+#' x <- comparison(
+#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   baseline = "pandemic_flu"
+#' )
+#'
+#' is.comparison(x)
+is.comparison <- function(x) {
+  inherits(x, "comparison")
 }
