@@ -1,6 +1,6 @@
-#' Print scenario parameters
+#' Get scenario parameters
 #'
-#' @param x A [scenarios::scenario()] object.
+#' @param x A 'scenario' object.
 #' @param which Which parameters to print.
 #'
 #' @return Nothing. Prints a list of parameters to screen.
@@ -33,9 +33,9 @@ sce_get_parameters <- function(x, which = NULL) {
 
 #' Check for scenario data
 #'
-#' @param x A `scenario` or `comparison` object.
-#' @return Whether the `scenario` has data, or whether all `scenario` objects in
-#' a `comparison` object have data generated.
+#' @param x A 'scenario' or 'comparison' object.
+#' @return Whether the 'scenario' has data, or whether all 'scenario' objects in
+#' a 'comparison' object have data generated.
 #' @export
 #' @examples
 #' # create a scenario
@@ -50,12 +50,12 @@ sce_get_parameters <- function(x, which = NULL) {
 #'   replicates = 1
 #' )
 #'
-#' # for a `scenario` object
+#' # for a 'scenario' object
 #' sce_has_data(pandemic_flu)
 #'
-#' # for a `comparison` object
+#' # for a 'comparison' object
 #' comparison_flu_covid <- comparison(
-#'   pandemic_flu, covid
+#'   pandemic_flu, covid19
 #' )
 #' sce_has_data(comparison_flu_covid)
 sce_has_data <- function(x) {
@@ -64,7 +64,7 @@ sce_has_data <- function(x) {
 
 #' Check for scenario data
 #'
-#' @param x A `scenario` object.
+#' @param x A 'scenario' object.
 #'
 #' @return A boolean, whether the simulation object has data.
 #' @method sce_has_data scenario
@@ -78,7 +78,7 @@ sce_has_data.scenario <- function(x) {
 
 #' Check for scenario data
 #'
-#' @param x A `comparison` object.
+#' @param x A 'comparison' object.
 #'
 #' @method sce_has_data comparison
 #' @export
@@ -92,7 +92,7 @@ sce_has_data.comparison <- function(x) {
 
 #' Get scenario outcome names
 #'
-#' Function to quickly view the names and types of columns in the `scenario`
+#' Function to quickly view the names and types of columns in the 'scenario'
 #' outcome data. Operates on the first replicate of each scenario run, and
 #' assumes that the outcome data are data.frames.
 #'
