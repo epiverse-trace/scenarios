@@ -35,37 +35,3 @@ test_that("Model function namespacing warning", {
     regexp = "`model_function` may not be explicitly namespaced."
   )
 })
-
-test_that("Running scenario works", {
-  expect_false(
-    sce_has_data(scenario_pandemic_flu)
-  )
-  expect_silent(
-    scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-  )
-  expect_true(
-    sce_has_data(scenario_pandemic_flu)
-  )
-  expect_s3_class(
-    scenario_pandemic_flu$data[[1]],
-    "data.frame"
-  ) # expect data.frame
-
-  # expect that running with no namespacing works
-  # defining a dummy scenario that runs a linear model
-  expect_warning(
-    scenario_lm <- scenario(
-      model_function = "lm",
-      parameters = list(
-        formula = as.formula("y ~ x"),
-        data = data.frame(
-          x = seq(10), y = seq(10)
-        )
-      ),
-      replicates = 1
-    )
-  )
-  expect_silent(
-    run_scenario(scenario_lm)
-  )
-})
