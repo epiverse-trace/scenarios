@@ -16,6 +16,46 @@
 #' @export
 #'
 #' @examples
+#' # For a 'scenario' object
+#' # prepare a scenario
+#' scenario_pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(), # using helper function
+#'   replicates = 1L
+#' )
+#'
+#' # print to check that data are not prepared
+#' scenario_pandemic_flu
+#'
+#' # generate scenario data
+#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
+#'
+#' # print to check that data are prepared
+#' scenario_pandemic_flu
+#'
+#' # For a 'comparison' object
+#' # prepare two scenarios of the final size of an epidemic
+#' pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
+#'   replicates = 1L
+#' )
+#'
+#' covid19 <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
+#'   replicates = 1L
+#' )
+#'
+#' # create a comparison object
+#' x <- comparison(
+#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   baseline = "pandemic_flu"
+#' )
+#'
+#' x <- run_scenario(x)
+#'
+#' x
 run_scenario <- function(x) {
   UseMethod("run_scenario", x)
 }
@@ -32,23 +72,6 @@ run_scenario <- function(x) {
 #' @return The original `scenario` object with the `data` field populated with
 #' simulation output. This object must be assigned.
 #' @export
-#'
-#' @examples
-#' # prepare a scenario
-#' scenario_pandemic_flu <- scenario(
-#'   model_function = "finalsize::final_size",
-#'   parameters = make_parameters_finalsize_UK(), # using helper function
-#'   replicates = 1L
-#' )
-#'
-#' # print to check that data are not prepared
-#' scenario_pandemic_flu
-#'
-#' # generate scenario data
-#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-#'
-#' # print to check that data are prepared
-#' scenario_pandemic_flu
 run_scenario.scenario <- function(x) {
 
   # input checking
@@ -83,7 +106,7 @@ run_scenario.scenario <- function(x) {
 
 #' Run scenarios contained in a comparison
 #'
-#' @description Run the epidemic model scenarios specified as `scenario` obejcts
+#' @description Run the epidemic model scenarios specified as `scenario` objects
 #' in a `comparison` object. Calls [run_scenario.scenario()] on each object in
 #' the `data` list of the comparison object.
 #'
@@ -93,8 +116,6 @@ run_scenario.scenario <- function(x) {
 #' the function, but with the `data` list containing `scenario` objects with
 #' replicate outcomes.
 #' @export
-#'
-#' @examples
 run_scenario.comparison <- function(x) {
 
   # input checking
