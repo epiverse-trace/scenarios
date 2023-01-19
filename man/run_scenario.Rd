@@ -23,3 +23,45 @@ Run an epidemic model scenario using the function stored in
 of the function as specified in \code{replicates}. The simulation output data are
 stored under \code{data}.
 }
+\examples{
+# For a 'scenario' object
+# prepare a scenario
+scenario_pandemic_flu <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(), # using helper function
+  replicates = 1L
+)
+
+# print to check that data are not prepared
+scenario_pandemic_flu
+
+# generate scenario data
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
+
+# print to check that data are prepared
+scenario_pandemic_flu
+
+# For a 'comparison' object
+# prepare two scenarios of the final size of an epidemic
+pandemic_flu <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 1.5),
+  replicates = 1L
+)
+
+covid19 <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 5.0),
+  replicates = 1L
+)
+
+# create a comparison object
+x <- comparison(
+  pandemic_flu = pandemic_flu, covid19 = covid19,
+  baseline = "pandemic_flu"
+)
+
+x <- run_scenario(x)
+
+x
+}

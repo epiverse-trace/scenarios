@@ -15,7 +15,7 @@ the function, but with the \code{data} list containing \code{scenario} objects w
 replicate outcomes.
 }
 \description{
-Run the epidemic model scenarios specified as \code{scenario} obejcts
+Run the epidemic model scenarios specified as \code{scenario} objects
 in a \code{comparison} object. Calls \code{\link[=run_scenario.scenario]{run_scenario.scenario()}} on each object in
 the \code{data} list of the comparison object.
 }

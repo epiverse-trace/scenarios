@@ -18,17 +18,3 @@ each replicate.
 \description{
 Get scenario outcomes from a scenario object
 }
-\examples{
-# create a scenario
-scenario_pandemic_flu <- scenario(
-  model_function = "finalsize::final_size",
-  parameters = make_parameters_finalsize_UK(),
-  replicates = 3 # note extra replicates
-)
-
-# run scenario
-scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-
-# get outcomes
-sce_get_outcomes(scenario_pandemic_flu)
-}

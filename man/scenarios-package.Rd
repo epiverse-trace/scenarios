@@ -6,6 +6,8 @@
 \alias{scenarios-package}
 \title{scenarios: Compare Epidemic Scenarios}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Compare epidemic scenarios such as those from the 'finalsize' package.
 }
 \seealso{

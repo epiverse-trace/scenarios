@@ -2,12 +2,12 @@
 % Please edit documentation in R/helper_functions.R
 \name{sce_get_parameters}
 \alias{sce_get_parameters}
-\title{Print scenario parameters}
+\title{Get scenario parameters}
 \usage{
 sce_get_parameters(x, which = NULL)
 }
 \arguments{
-\item{x}{A \code{\link[=scenario]{scenario()}} object.}
+\item{x}{A 'scenario' object.}
 
 \item{which}{Which parameters to print.}
 }
@@ -15,7 +15,7 @@ sce_get_parameters(x, which = NULL)
 Nothing. Prints a list of parameters to screen.
 }
 \description{
-Print scenario parameters
+Get scenario parameters
 }
 \examples{
 # create a scenario

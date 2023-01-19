@@ -20,3 +20,43 @@ synthetic identifier such as 'scenario_01'.
 \description{
 Get scenario outcomes
 }
+\examples{
+# For the 'scenario' class
+# create a scenario specification
+scenario_pandemic_flu <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(),
+  replicates = 3 # note extra replicates
+)
+
+# run scenario
+scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
+
+# get outcomes
+sce_get_outcomes(scenario_pandemic_flu)
+
+# For the 'comparison' class
+# prepare two scenarios of the final size of an epidemic
+pandemic_flu <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 1.5),
+  replicates = 1L
+)
+
+covid19 <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 5.0),
+  replicates = 1L
+)
+
+# create a comparison object
+a <- comparison(
+  pandemic_flu = pandemic_flu, covid19 = covid19,
+  baseline = "pandemic_flu"
+)
+
+a <- run_scenario(a)
+
+sce_get_outcomes(a)
+
+}
