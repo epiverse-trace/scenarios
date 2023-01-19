@@ -23,6 +23,7 @@ Imports:
     cli,
     data.table,
     finalsize,
+    glue,
     jsonlite
 Suggests: 
     covr,
