@@ -1,0 +1,203 @@
+---
+title: "Defining epidemic scenarios and comparison"
+output:
+  bookdown::html_vignette2:
+    fig_caption: yes
+    code_folding: show
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{Defining epidemic scenarios and comparison}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+Opening paragraph goes here.
+
+::: {.alert .alert-warning}
+**New to epidemic modelling in R?** It may help to read [The Epidemiologist R Handbook](https://epirhandbook.com/en/epidemic-modeling.html) ... add resources here.
+:::
+
+::: {.alert .alert-primary}
+## Use case {-}
+
+Use case text with bold font for main goal here.
+:::
+
+::: {.alert .alert-secondary}
+### What we have {-}
+
+  Numbered list of data available goes here.
+
+### What we assume {-}
+
+  Numbered list of assumptions.
+:::
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(scenarios)
+```
+
+## Components of an epidemic scenario model
+
+The _scenarios_ package is intended to help with the comparison of epidemic model scenarios.
+The _scenarios_ package defines the `scenario` class, which is an epidemic model definition with or without its associated data.
+Each `scenario` is expected to have a model function, the model parameters in the form of named function arguments, and the number of replicates to run.
+
+::: {.alert .alert-secondary}
+### Example of epidemic scenario model
+
+:::
+
+## Defining scenarios for the final size of an epidemic
+
+Text about finalsize calculations here, with a box - link to finalsize website.
+Set the scene for when this sort of comparison is likely to be necessary --- new epidemic outbreak, quick comparison of potential outcomes wanted.
+
+```{r}
+# install packages for final size calculations
+if (!require("finalsize")) install.packages("finalsize")
+```
+
+This example considers the definition of scenario specifications for the outbreak of an epidemic in the U.K. population, and uses demography and social contact data from the POLYMOD survey [@mossong2008].
+These are conveniently provided in the _finalsize_ package, and can be obtained for other coutries (and other surveys) from the _[socialmixr](https://epiforecasts.io/socialmixr/)_ package.
+
+```{r}
+# define a low R0 scenario comparable to pandemic influenza
+parameters_finalsize_low_r0 <- make_parameters_finalsize_UK(r0 = 1.5)
+low_r0 <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 1.5),
+  extra_info = list(
+    age_groups = rownames(parameters_finalsize_low_r0$contact_matrix)
+  ),
+  replicates = 1L
+)
+
+# define a higher R0 scenario comparable to Covid-19
+high_r0 <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 5.0),
+  replicates = 1L
+)
+```
+
+```{r}
+# print scenarios to examine information
+low_r0
+high_r0
+```
+
+## Getting scenario parameters
+
+```{r}
+# get information on the model parameter r0
+sce_get_information(low_r0, which = "r0")
+
+# get information on the demography groups
+sce_get_information(low_r0, which = "age_groups")
+
+sce_get_information(low_r0, which = "contact_matrix")
+```
+
+## Prepare scenario data
+
+Text that the scenario now has data. Memory concerns.
+
+```{r}
+low_r0_data <- run_scenario(low_r0)
+high_r0_data <- run_scenario(high_r0)
+```
+
+```{r}
+# print scenario to check information
+low_r0_data
+```
+
+### Alert: Note on object size {-}
+
+```{r}
+object.size(low_r0)
+object.size(low_r0_data)
+```
+
+## Getting scenario data
+
+```{r}
+# peeking at data
+sce_peek_outcomes(low_r0_data, view_rows = FALSE)
+
+# get full outcome data
+sce_get_outcomes(low_r0_data)
+```
+
+## Check whether scenarios are comparable
+
+```{r}
+# comparing scenarios while expecting an identical match
+# this is less useful when comparing scenarios that obviously
+# differ on an important parameter such as R0
+sce_are_comparable(
+  baseline = low_r0_data,
+  compare = high_r0_data,
+  match_variables = "r0",
+  comparison_variables = "p_infected",
+  expect_identical_match = c(
+    r0 = TRUE
+  )
+)
+
+# setting identical matching to FALSE can help compare scenarios where
+# key parameters are expected to be different
+sce_are_comparable(
+  baseline = low_r0_data,
+  compare = high_r0_data,
+  match_variables = "r0",
+  comparison_variables = "p_infected",
+  expect_identical_match = c(
+    r0 = FALSE
+  )
+)
+
+# an identical match can help ensure comparisons between
+# the same population
+sce_are_comparable(
+  baseline = low_r0_data,
+  compare = high_r0_data,
+  match_variables = c("r0", "demography_vector"),
+  comparison_variables = "p_infected",
+  expect_identical_match = c(
+    r0 = FALSE,
+    demography_vector = TRUE
+  )
+)
+```
+
+## Creating a comparison object
+
+```{r}
+# create object, passing prepared scenarios with some names
+outbreak_comparison <- comparison(
+  pandemic_flu = low_r0_data, covid19 = high_r0_data,
+  baseline = "pandemic_flu"
+)
+
+# print to examine output
+outbreak_comparison
+```
+
+```{r}
+# scenario output can be accessed from a comparison object as well
+# using multiple dispatch on the sce_get_outcomes function
+sce_get_outcomes(outbreak_comparison)
+```
+
