@@ -1,5 +1,7 @@
-#' Get scenario parameters
+#' Get scenario information
 #'
+#' @description Prints the value of an object in the `parameters` or in the
+#' extra information list `extra_info`.
 #' @param x A 'scenario' object.
 #' @param which Which parameters to print.
 #'
@@ -15,19 +17,38 @@
 #' )
 #'
 #' # get all parameters
-#' sce_get_parameters(scenario_pandemic_flu)
+#' sce_get_information(scenario_pandemic_flu)
 #'
 #' # get only some parameters
-#' sce_get_parameters(scenario_pandemic_flu, which = c("r0", "solver"))
-sce_get_parameters <- function(x, which = NULL) {
+#' sce_get_information(scenario_pandemic_flu, which = c("r0", "solver"))
+sce_get_information <- function(x, which) {
   # check input
   checkmate::assert_class(x, "scenario")
 
   # print/return chosen parameters as list
-  if (is.null(which)) {
-    x$parameters
+  if (missing(which)) {
+    list(
+      model_parameters = x$parameters,
+      scenario_information = x$extra_info
+    )
   } else {
-    x$parameters[which]
+    info_list <- c(
+      x$parameters[which],
+      x$extra_info[which]
+    )
+    info_list <- Filter(function(x) !is.null(x), info_list)
+    if (length(info_list) == 0L) {
+      stop(
+        glue::glue(
+          "
+          '{which}' not found among scenario model parameters or extra \\
+          information
+          "
+        )
+      )
+    } else {
+      info_list
+    }
   }
 }
 
@@ -55,7 +76,8 @@ sce_get_parameters <- function(x, which = NULL) {
 #'
 #' # for a 'comparison' object
 #' comparison_flu_covid <- comparison(
-#'   pandemic_flu, covid19
+#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   baseline = "pandemic_flu"
 #' )
 #' sce_has_data(comparison_flu_covid)
 sce_has_data <- function(x) {
@@ -204,8 +226,8 @@ sce_aggregate_outcomes <- function(x, grouping_variables, measure_variables,
   # fix malformed names from dcast
   if (length(measure_variables) == 1 && length(summary_functions) == 1) {
     # fix names when only a single column is cast
-    data.table::setnames(dt, ".", sprintf(
-      "%s_%s", measure_variables, summary_functions
+    data.table::setnames(dt, ".", glue::glue(
+      "{measure_variables}_{summary_functions}"
     ))
   }
 
