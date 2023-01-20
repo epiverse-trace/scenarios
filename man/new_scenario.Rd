@@ -4,7 +4,12 @@
 \alias{new_scenario}
 \title{Constructor for the \code{scenario} class}
 \usage{
-new_scenario(model_function, parameters = list(), replicates = integer(1))
+new_scenario(
+  model_function,
+  parameters,
+  extra_info = list(),
+  replicates = integer(1)
+)
 }
 \arguments{
 \item{model_function}{Function that is expected to run an epidemic scenario
@@ -13,8 +18,11 @@ model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a
 
 \item{parameters}{Parameters to the \code{model_function}.}
 
+\item{extra_info}{Extra model information that may be useful for matching
+models.}
+
 \item{replicates}{The number of scenario replicates. This is the number of
-times the \code{model_function} is run.}
+times the model_function is run.}
 }
 \value{
 A \code{scenario} object

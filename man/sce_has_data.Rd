@@ -34,7 +34,8 @@ sce_has_data(pandemic_flu)
 
 # for a 'comparison' object
 comparison_flu_covid <- comparison(
-  pandemic_flu, covid19
+  pandemic_flu = pandemic_flu, covid19 = covid19,
+  baseline = "pandemic_flu"
 )
 sce_has_data(comparison_flu_covid)
 }

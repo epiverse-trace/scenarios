@@ -4,15 +4,14 @@
 \alias{comparison}
 \title{Create a 'comparison' object}
 \usage{
-comparison(..., baseline = 1L, match_variables, comparison_variables)
+comparison(..., baseline, match_variables, comparison_variables)
 }
 \arguments{
 \item{...}{Multiple 'scenario's or a list of 'scenario' objects.}
 
-\item{baseline}{A string or integer for the element of the list of 'scenario'
+\item{baseline}{A string for the element of the list of 'scenario'
 objects which indicates which should be considered the 'baseline' outcome,
-against which other outcomes are compared. Taken to be the first element from
-among the 'scenario' objects provided.}
+against which other outcomes are compared.}
 
 \item{match_variables}{The variables in the 'scenario' outputs on which to
 match the scenarios and check whether they are comparable.}
@@ -45,6 +44,13 @@ covid19 <- scenario(
 # create a comparison object
 comparison(
   pandemic_flu = pandemic_flu, covid19 = covid19,
+  baseline = "pandemic_flu"
+)
+
+# pass scenario objects as a list
+# create a comparison object
+comparison(
+  list(pandemic_flu = pandemic_flu, covid19 = covid19),
   baseline = "pandemic_flu"
 )
 }

@@ -19,3 +19,4 @@ in \code{x$data}.
 \description{
 Check for variables in scenario outcomes
 }
+\keyword{internal}

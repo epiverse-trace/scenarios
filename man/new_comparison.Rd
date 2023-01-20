@@ -4,12 +4,12 @@
 \alias{new_comparison}
 \title{Constructor for the 'comparison' class}
 \usage{
-new_comparison(data, baseline = 1, match_variables, comparison_variables)
+new_comparison(data, baseline, match_variables, comparison_variables)
 }
 \arguments{
 \item{data}{A list of 'scenario' objects.}
 
-\item{baseline}{A string or integer for the element of the list of 'scenario'
+\item{baseline}{A string for the element of the list of 'scenario'
 objects which indicates which should be considered the 'baseline' outcome,
 against which other outcomes are compared.}
 

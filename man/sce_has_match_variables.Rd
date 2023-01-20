@@ -9,8 +9,8 @@ sce_has_match_variables(x, variables)
 \arguments{
 \item{x}{A 'scenario' object.}
 
-\item{variables}{A character vector of 'scenario' parameter names for which
-to search in \code{x}.}
+\item{variables}{A character vector of 'scenario' parameter names or extra
+information names for which to search in \code{x}.}
 }
 \value{
 A logical indicating whether the variables correspond to parameter
@@ -19,3 +19,4 @@ names in \code{x}.
 \description{
 Check for scenario matching variables
 }
+\keyword{internal}
