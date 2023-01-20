@@ -1,9 +1,9 @@
 #' Check for scenario matching variables
 #'
 #' @param x A 'scenario' object.
-#' @param variables A character vector of 'scenario' parameter names for which
-#' to search in `x`.
-#'
+#' @param variables A character vector of 'scenario' parameter names or extra
+#' information names for which to search in `x`.
+#' @keywords internal
 #' @return A logical indicating whether the variables correspond to parameter
 #' names in `x`.
 sce_has_match_variables <- function(x, variables) {
@@ -12,7 +12,7 @@ sce_has_match_variables <- function(x, variables) {
       is.scenario(x)
   )
   # informative error message about which variable(s) is/are missing
-  if (all(variables %in% names(x$parameters))) {
+  if (all(variables %in% c(names(x$parameters), names(x$extra_info)))) {
     return(TRUE)
   } else {
     return(FALSE)
@@ -24,7 +24,7 @@ sce_has_match_variables <- function(x, variables) {
 #' @param x A 'scenario' object.
 #' @param variables A character vector of variables that are expected to be
 #' found in the `data` list of `x`.
-#'
+#' @keywords internal
 #' @return A logical indicating whether the variables correspond to column names
 #' in `x$data`.
 sce_has_comparison_variables <- function(x, variables) {
@@ -53,6 +53,9 @@ sce_has_comparison_variables <- function(x, variables) {
 #' @param comparison_variables A character string of column names expected in
 #' the scenarios' outcome data. This is used to check whether the scenarios both
 #' have the required columns in their data.
+#' @param expect_identical_match A named logical vector that indicates whether
+#' the matching variables should be identical. Vector names should correspond to
+#' names in `match_variables`, and must be in the same order.
 #'
 #' @return A logical value indicating whether a pair of scenarios is comparable.
 #' @export
@@ -80,22 +83,30 @@ sce_has_comparison_variables <- function(x, variables) {
 #'   baseline = pandemic_flu,
 #'   compare = covid19,
 #'   match_variables = "demography_vector",
-#'   comparison_variables = "p_infected"
+#'   comparison_variables = "p_infected",
+#'   expect_identical_match = c(
+#'     demography_vector = TRUE
+#'   )
 #' )
 sce_are_comparable <- function(baseline, compare, match_variables,
-                               comparison_variables) {
+                               comparison_variables,
+                               expect_identical_match = FALSE) {
   # check inputs
   stopifnot(
-    "Baseline or comparator are not 'scenario' objects" =
+    "Baseline or comparator must be 'scenario' objects" =
       (all(is.scenario(baseline), is.scenario(compare))),
     "Matching variables are missing, pass a string of variables" =
       !missing(match_variables),
     "Comparison variables are missing, pass a string of variables" =
       !missing(comparison_variables),
-    "Matching variables are not strings" =
+    "Matching variables must be character vectors or single string" =
       is.character(match_variables),
-    "Comparison variables are not strings" =
+    "Comparison variables must be character vectors or single string" =
       is.character(comparison_variables),
+    "Matching variables and identical expectations must be same length" =
+      (length(match_variables) == length(expect_identical_match)),
+    "All matching variables must have an expectation for being identical" =
+      all(match_variables %in% names(expect_identical_match)),
     # check whether scenarios have the same model function
     # no allowances made for differences in namespacing
     "Scenarios have different model functions and cannot be compared" =
@@ -111,19 +122,39 @@ sce_are_comparable <- function(baseline, compare, match_variables,
   ) &&
     sce_has_comparison_variables(compare, comparison_variables)
 
-  # if scenarios have variables, check whether matching variables are identical
+  # continue processing for different cases of match and comparison variables
   if (all(have_match_variables, have_comparison_variables)) {
-    baseline_parameters <- sce_get_parameters(baseline, which = match_variables)
-    compare_parameters <- sce_get_parameters(compare, which = match_variables)
+    # if scenarios have variables check whether matching variables are identical
+    # only if expect_identical_match is TRUE
 
+    # get baseline and comparator scenario parameters
+    baseline_parameters <- sce_get_information(
+      baseline,
+      which = match_variables
+    )
+    compare_parameters <- sce_get_information(
+      compare,
+      which = match_variables
+    )
+
+    # get expectations vector in the same order as matching variables vector
+    expect_identical_match <- expect_identical_match[match_variables]
+
+    # check whether all matching parameters are identical (equivalent)
     can_match <- mapply(
-      baseline_parameters, compare_parameters,
-      FUN = function(x, y) {
+      baseline_parameters, compare_parameters, expect_identical_match,
+      FUN = function(x, y, expectation) {
         stopifnot(
           "Matching variables must refer to atomic parameters" =
             all(is.atomic(x), is.atomic(y))
         )
-        all(x == y)
+
+        # compare only if identical match expected
+        if (expectation) {
+          all(x == y)
+        } else {
+          TRUE
+        }
       }
     )
 
@@ -139,7 +170,8 @@ sce_are_comparable <- function(baseline, compare, match_variables,
       message(
         glue::glue(
           "Scenario parameters do not match, scenarios are not comparable.
-          These parameters do not match: {non_match_variables}"
+          These parameters do not match: {non_match_variables}
+          Expecting a non-identical match for some parameters may help."
         )
       )
       return(FALSE)
