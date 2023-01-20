@@ -1,14 +1,22 @@
 #### Test functions for comparing scenarios ####
 
+age_groups <- rownames(make_parameters_finalsize_UK()$contact_matrix)
+
 # prepare two scenarios
 pandemic_flu <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 1.5),
+  extra_info = list(
+    age_groups = age_groups
+  ),
   replicates = 1L
 )
 covid19 <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
+  extra_info = list(
+    age_groups = age_groups
+  ),
   replicates = 1L
 )
 
@@ -19,7 +27,10 @@ test_that("Scenario matching works", {
       baseline = pandemic_flu,
       compare = covid19,
       match_variables = "demography_vector",
-      comparison_variables = "p_infected"
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        demography_vector = TRUE
+      )
     ),
     regexp = "Scenario object must have data to check for comparison variables"
   )
@@ -32,17 +43,23 @@ test_that("Scenario matching works", {
       baseline = pandemic_flu,
       compare = covid19,
       match_variables = "demography_vector",
-      comparison_variables = "p_infected"
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        demography_vector = TRUE
+      )
     )
   )
 
-  # expect false and also a message
+  # expect false when expecting an identical match on R0, as they differ
   expect_false(
     sce_are_comparable(
       baseline = pandemic_flu,
       compare = covid19,
       match_variables = "r0",
-      comparison_variables = "p_infected"
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        r0 = TRUE
+      )
     )
   )
   expect_message(
@@ -50,9 +67,27 @@ test_that("Scenario matching works", {
       baseline = pandemic_flu,
       compare = covid19,
       match_variables = "r0",
-      comparison_variables = "p_infected"
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        r0 = TRUE
+      )
     ),
     regexp = "(Scenario parameters do not match)*(do not match: 'r0')"
+  )
+
+  # expect scenarios are comparable when expect identical is turned off
+  # for R0 but set to true for demography
+  expect_true(
+    sce_are_comparable(
+      baseline = pandemic_flu,
+      compare = covid19,
+      match_variables = c("demography_vector", "r0"),
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        r0 = FALSE,
+        demography_vector = TRUE
+      )
+    )
   )
 
   # expect error when variables are missing
@@ -80,7 +115,10 @@ test_that("Scenario matching works", {
       baseline = pandemic_flu,
       compare = covid19,
       match_variables = "demography_vector",
-      comparison_variables = "test_outcome"
+      comparison_variables = "test_outcome",
+      expect_identical_match = c(
+        demography_vector = TRUE
+      )
     ),
     regexp = "(Scenarios do not have)*(matching)*(comparison)"
   )
@@ -92,7 +130,10 @@ test_that("Scenario matching works", {
       baseline = pandemic_flu,
       compare = covid19,
       match_variables = "demography_vector",
-      comparison_variables = "p_infected"
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        demography_vector = TRUE
+      )
     ),
     regexp = "Scenarios have different model functions and cannot be compared"
   )

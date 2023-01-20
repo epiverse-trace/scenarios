@@ -1,35 +1,43 @@
 
 # Prepare a finalsize scenario
 n_replicates <- 3L
+age_groups <- rownames(make_parameters_finalsize_UK()$contact_matrix)
 scenario_pandemic_flu <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(),
+  extra_info = list(
+    age_groups = age_groups
+  ),
   replicates = n_replicates # note extra replicates
 )
 
-#### Tests for sce_get_parameters ####
-test_that("Getting parameters from scenario", {
+#### Tests for sce_get_information ####
+test_that("Getting information from scenario", {
   # general case
-  parameters <- sce_get_parameters(scenario_pandemic_flu)
+  parameters <- sce_get_information(scenario_pandemic_flu)
   expect_vector(parameters, ptype = list())
   expect_named(
     parameters,
-    names(scenario_pandemic_flu$parameters)
+    c("model_parameters", "scenario_information")
   )
 
   # subset parameters
-  which_params <- "r0"
-  parameters <- sce_get_parameters(scenario_pandemic_flu, which = which_params)
+  which_params <- c("r0", "age_groups")
+  parameters <- sce_get_information(scenario_pandemic_flu, which = which_params)
   expect_length(
     parameters,
     length(which_params)
   )
   expect_named(
-    parameters, "r0"
+    parameters, which_params
+  )
+  expect_error(
+    sce_get_information(scenario_pandemic_flu, which = "some param"),
+    regexp = "('some param')*(not found among)"
   )
 })
 
-#### Tests for sce_get_parameters ####
+#### Tests for sce_get_information ####
 test_that("Checking for scenario data", {
   expect_false(
     sce_has_data(scenario_pandemic_flu)
@@ -73,7 +81,7 @@ test_that("Aggregate scenario outcome data", {
     colnames(agg),
     c(
       grouping_variable,
-      sprintf("%s_%s", measure_variable, summary_funs)
+      glue::glue("{measure_variable}_{summary_funs}")
     )
   )
   # check for grouping variable names
@@ -93,7 +101,7 @@ test_that("Aggregate scenario outcome data", {
     colnames(agg),
     c(
       grouping_variable,
-      sprintf("%s_%s", measure_variable, summary_funs)
+      glue::glue("{measure_variable}_{summary_funs}")
     )
   )
 })
