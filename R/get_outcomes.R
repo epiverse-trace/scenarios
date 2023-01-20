@@ -110,10 +110,10 @@ sce_get_outcomes.comparison <- function(x) {
   scenario_names <- names(x$data)
   # check if all are NULL and assign synthetic names
   if (all(vapply(scenario_names, is.null, FUN.VALUE = TRUE))) {
-    scenario_names <- sprintf("scenario_%i", length(x$data))
+    scenario_names <- glue::glue("scenario_{length(x$data)}")
   } else if (any(scenario_names == "")) {
-    scenario_names[scenario_names == ""] <- sprintf(
-      "scenario_%i", which(scenario_names == "")
+    scenario_names[scenario_names == ""] <- glue::glue(
+      "scenario_{which(scenario_names == '')}"
     )
   }
 
