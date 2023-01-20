@@ -6,13 +6,16 @@
 #' model, such as [finalsize::final_size()], as a string e.g.
 #' "finalsize::final_size". Explicit namespacing is preferred.
 #' @param parameters Parameters to the `model_function`.
+#' @param extra_info Extra model information that may be useful for matching
+#' models.
 #' @param replicates The number of scenario replicates. This is the number of
-#' times the `model_function` is run.
+#' times the model_function is run.
 #'
 #' @return A `scenario` object
 #' @keywords internal
 new_scenario <- function(model_function,
-                         parameters = list(),
+                         parameters,
+                         extra_info = list(),
                          replicates = integer(1)) {
   # Input checking in `scenario()`
 
@@ -21,6 +24,7 @@ new_scenario <- function(model_function,
     list(
       model_function = model_function,
       parameters = parameters,
+      extra_info = extra_info,
       replicates = replicates,
       data = vector("list", length = replicates)
     ),
@@ -39,6 +43,8 @@ new_scenario <- function(model_function,
 #' model, such as [finalsize::final_size()], as a string e.g.
 #' "finalsize::final_size". Explicit namespacing is preferred.
 #' @param parameters Parameters to the `model_function`.
+#' @param extra_info Extra information that is useful when comparing scenarios,
+#' such as details of the population structure or infection characteristics.
 #' @param replicates The number of scenario replicates. This is the number of
 #' times the `model_function` is run.
 #'
@@ -50,17 +56,25 @@ new_scenario <- function(model_function,
 #' # using the included convenience function
 #' pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
 #'
+#' # prepare extra information on age group limits
+#' age_groups <- rownames(pandemic_flu_args$contact_matrix)
+#'
 #' scenario(
 #'   model_function = "finalsize::final_size",
 #'   parameters = pandemic_flu_args,
+#'   extra_info = list(
+#'     age_groups = age_groups
+#'   ),
 #'   replicates = 1L
 #' )
 scenario <- function(model_function,
-                     parameters = list(),
+                     parameters,
+                     extra_info = list(),
                      replicates = integer(1)) {
   # check input
   checkmate::assert_string(model_function)
   checkmate::assert_list(parameters, any.missing = FALSE, names = "unique")
+  checkmate::assert_list(extra_info, any.missing = FALSE, names = "unique")
   checkmate::assert_integerish(replicates, lower = 1, null.ok = FALSE)
 
   if (!grepl(pattern = "::", x = model_function, fixed = TRUE)) {
@@ -75,6 +89,7 @@ scenario <- function(model_function,
   scenario <- new_scenario(
     model_function = model_function,
     parameters = parameters,
+    extra_info = extra_info,
     replicates = replicates
   )
 
@@ -100,12 +115,14 @@ validate_scenario <- function(scenario, data_ok = FALSE) {
       (inherits(scenario, "scenario")),
     "scenario object does not contain the correct attributes" =
       (c(
-        "model_function", "parameters", "replicates", "data"
+        "model_function", "parameters", "extra_info", "replicates", "data"
       ) %in% attributes(scenario)$names),
     "Model function must be a single function name" =
       (is.character(scenario$model_function)),
     "Model parameter list must be a list" =
       (is.list(scenario$parameters)),
+    "Extra information must be a list" =
+      (is.list(scenario$extra_info)),
     "Model replicates must be at least 1" =
       (checkmate::check_integerish(scenario$replicates) &&
         scenario$replicates >= 1),
@@ -122,14 +139,27 @@ validate_scenario <- function(scenario, data_ok = FALSE) {
 
 #' @export
 print.scenario <- function(x, ...) {
+
+  # collect information
+  extra_info <- glue::glue_collapse(
+    glue::glue("'{names(x$extra_info)}'"),
+    sep = ", "
+  )
+  extra_info <- cli::col_cyan(extra_info)
+
+  # print to screen
   writeLines(
     c(
       cli::style_bold("Epidemic scenario object"),
-      glue::glue(" Model function: {cli::col_green(x$model_function)}"),
-      sprintf(" Scenario replicates: %s", x$replicates),
-      sprintf(" Scenario outcomes are %s", ifelse(
-        sce_has_data(x), "prepared", "not prepared"
-      ))
+      glue::glue(" Model function: {cli::col_cyan(x$model_function)}"),
+      glue::glue(" Extra information on: {extra_info}"),
+      glue::glue(" Scenario replicates: {x$replicates}"),
+      glue::glue(
+        "
+         Scenario outcomes are \\
+        {ifelse(sce_has_data(x), 'prepared', 'not prepared')}
+        "
+      )
     )
   )
 
