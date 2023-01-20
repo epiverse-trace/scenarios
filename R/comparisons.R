@@ -3,7 +3,7 @@
 #' @description Create a 'comparison' object after input checks.
 #'
 #' @param data A list of 'scenario' objects.
-#' @param baseline A string or integer for the element of the list of 'scenario'
+#' @param baseline A string for the element of the list of 'scenario'
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
 #' @param match_variables The variables in the 'scenario' outputs on which to
@@ -14,7 +14,7 @@
 #' @return A 'comparison' object
 #' @keywords internal
 new_comparison <- function(data,
-                           baseline = 1,
+                           baseline,
                            match_variables,
                            comparison_variables) {
   # Input checking in `comparison()`
@@ -38,10 +38,9 @@ new_comparison <- function(data,
 #' comparisons.
 #'
 #' @param ... Multiple 'scenario's or a list of 'scenario' objects.
-#' @param baseline A string or integer for the element of the list of 'scenario'
+#' @param baseline A string for the element of the list of 'scenario'
 #' objects which indicates which should be considered the 'baseline' outcome,
-#' against which other outcomes are compared. Taken to be the first element from
-#' among the 'scenario' objects provided.
+#' against which other outcomes are compared.
 #' @param match_variables The variables in the 'scenario' outputs on which to
 #' match the scenarios and check whether they are comparable.
 #' @param comparison_variables The variables in the 'scenario' outputs to
@@ -69,8 +68,15 @@ new_comparison <- function(data,
 #'   pandemic_flu = pandemic_flu, covid19 = covid19,
 #'   baseline = "pandemic_flu"
 #' )
+#'
+#' # pass scenario objects as a list
+#' # create a comparison object
+#' comparison(
+#'   list(pandemic_flu = pandemic_flu, covid19 = covid19),
+#'   baseline = "pandemic_flu"
+#' )
 comparison <- function(...,
-                       baseline = 1L,
+                       baseline,
                        match_variables,
                        comparison_variables) {
   # check input
@@ -94,14 +100,7 @@ comparison <- function(...,
         )
       ),
     "Baseline must be among scenario names, or a numeric list index" =
-      (
-        # first check for named scenarios and baseline
-        (is.character(baseline) &&
-          baseline %in% names(data)) ||
-          # check for baseline passed as integer-like number
-          (checkmate::check_integerish(baseline) &&
-            (baseline <= length(data)))
-      ),
+      (is.character(baseline) && baseline %in% names(data)),
     "Matching variables must be a string" =
       (is.character(match_variables)),
     "Comparison variables must be a string" =
@@ -147,14 +146,8 @@ validate_comparison <- function(object) {
         )
       )),
     "Baseline must be among scenario names, or a numeric list index" =
-      (
-        # first check for named scenarios and baseline
-        (is.character(object$baseline) &&
-          object$baseline %in% names(object$data)) ||
-          # check for baseline passed as integer-like number
-          (checkmate::check_integerish(object$baseline) &&
-            (object$baseline <= length(object$data)))
-      )
+      (is.character(object$baseline) &&
+        object$baseline %in% names(object$data))
   )
   invisible(object)
 }
@@ -162,8 +155,8 @@ validate_comparison <- function(object) {
 #' @export
 print.comparison <- function(x, ...) {
   # prepare information
-  header <- cli::style_bold(sprintf("Scenario comparison object"))
-  scenario_count <- sprintf(" # Scenarios: %i", length(x$data))
+  header <- cli::style_bold("Scenario comparison object")
+  scenario_count <- glue::glue(" # Scenarios: {length(x$data)}")
   data_status <- ifelse(
     !all(
       vapply(x$data, sce_has_data, FUN.VALUE = TRUE)
@@ -173,12 +166,13 @@ print.comparison <- function(x, ...) {
     ),
     " All scenario data are prepared, use `sce_get_outcomes()` to get data"
   )
+  baseline <- glue::glue(" Baseline scenario: {cli::col_blue(x$baseline)}")
   # the scenario matching variables
   matching_variables <- c(
     " Scenario matching variables:",
     ifelse(is.na(x$match_variables),
       cli::col_magenta("  No matching variables specified!"),
-      cli::col_green(sprintf("  %s", x$match_variables))
+      cli::col_green(glue::glue("  {x$match_variables}"))
     )
   )
   # the output comparison variables
@@ -186,20 +180,20 @@ print.comparison <- function(x, ...) {
     " Scenario comparison variables:",
     ifelse(is.na(x$comparison_variables),
       cli::col_magenta("  No comparison variables specified!"),
-      cli::col_green(sprintf("  %s", x$comparison_variables))
+      cli::col_green(glue::glue("  {x$comparison_variables}"))
     )
   )
   # the model function(s)
   model_fun <- c(
     " Model functions found:",
     cli::col_cyan(
-      sprintf("  %s", unique(unlist(lapply(x$data, `[`, "model_function"))))
+      glue::glue("  {unique(unlist(lapply(x$data, `[`, 'model_function')))}")
     )
   )
   # output all
   writeLines(
     c(
-      header, scenario_count, data_status,
+      header, scenario_count, baseline, data_status,
       matching_variables, comparison_variables, model_fun
     )
   )
