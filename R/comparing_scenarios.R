@@ -137,8 +137,8 @@ sce_are_comparable <- function(baseline, compare, match_variables,
       which = match_variables
     )
 
-    # get expectations vector in the same order as matching variables vector
-    expect_identical_match <- expect_identical_match[match_variables]
+    # get expectations vector in the same order as parameters list
+    expect_identical_match <- expect_identical_match[names(baseline_parameters)]
 
     # check whether all matching parameters are identical (equivalent)
     can_match <- mapply(

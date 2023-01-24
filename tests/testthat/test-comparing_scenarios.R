@@ -116,8 +116,9 @@ test_that("Scenario matching works", {
       match_variables = c("demography_vector", "r0"),
       comparison_variables = "p_infected",
       expect_identical_match = c(
-        r0 = FALSE,
-        demography_vector = TRUE
+        # order reversed here to check correct matching by name
+        demography_vector = TRUE,
+        r0 = FALSE
       )
     )
   )
