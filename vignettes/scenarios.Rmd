@@ -14,26 +14,27 @@ editor_options:
   chunk_output_type: console
 ---
 
-Opening paragraph goes here.
+This is a bare-bones vignette showing the basic functionality of _scenarios_. This package is a work in progress, and more functionality and documentation, including updates to this vignette, will be added in the near future.
 
 ::: {.alert .alert-warning}
-**New to epidemic modelling in R?** It may help to read [The Epidemiologist R Handbook](https://epirhandbook.com/en/epidemic-modeling.html) ... add resources here.
+**New to epidemic modelling in R?** It may help to read [The Epidemiologist R Handbook](https://epirhandbook.com/en/epidemic-modeling.html) for a primer on scenario modelling.
 :::
 
 ::: {.alert .alert-primary}
 ## Use case {-}
 
-Use case text with bold font for main goal here.
+To **compare** the outcomes of epidemic scenario models, such as the proportion of the population infected at a stage of the outbreak. Current use cases focus on comparing the cumulative proportion of individuals infected over the course of an epidemic wave, called the 'final size' of the epidemic.
 :::
 
 ::: {.alert .alert-secondary}
-### What we have {-}
+### What you need {-}
 
-  Numbered list of data available goes here.
+  1. An epidemic model R function that produces data frames as outputs,
+  2. Parameters to the epidemic model, which are typically arguments to the model function.
 
 ### What we assume {-}
 
-  Numbered list of assumptions.
+  1. That the epidemic scenarios are broadly comparable on a conceptual level.
 :::
 
 ```{r, include = FALSE}
@@ -51,39 +52,44 @@ library(scenarios)
 
 The _scenarios_ package is intended to help with the comparison of epidemic model scenarios.
 The _scenarios_ package defines the `scenario` class, which is an epidemic model definition with or without its associated data.
-Each `scenario` is expected to have a model function, the model parameters in the form of named function arguments, and the number of replicates to run.
+Each `scenario` is expected to have:
 
-::: {.alert .alert-secondary}
+1. A model function, 
+2. The model parameters in the form of named function arguments, and
+3. The number of replicates to run.
+
+<!-- ::: {.alert .alert-secondary}
 ### Example of epidemic scenario model
 
-:::
+::: -->
 
 ## Defining scenarios for the final size of an epidemic
 
-Text about finalsize calculations here, with a box - link to finalsize website.
-Set the scene for when this sort of comparison is likely to be necessary --- new epidemic outbreak, quick comparison of potential outcomes wanted.
-
-```{r}
-# install packages for final size calculations
-if (!require("finalsize")) install.packages("finalsize")
-```
+<!-- Text about finalsize calculations here, with a box - link to finalsize website.
+Set the scene for when this sort of comparison is likely to be necessary --- new epidemic outbreak, quick comparison of potential outcomes wanted. -->
 
 This example considers the definition of scenario specifications for the outbreak of an epidemic in the U.K. population, and uses demography and social contact data from the POLYMOD survey [@mossong2008].
 These are conveniently provided in the _finalsize_ package, and can be obtained for other coutries (and other surveys) from the _[socialmixr](https://epiforecasts.io/socialmixr/)_ package.
 
+First define epidemic scenarios.
+
 ```{r}
-# define a low R0 scenario comparable to pandemic influenza
+# get inbuilt parameters using a convenience function
 parameters_finalsize_low_r0 <- make_parameters_finalsize_UK(r0 = 1.5)
+age_groups <- rownames(parameters_finalsize_low_r0$contact_matrix)
+
+# define a low R0 scenario comparable to pandemic influenza
 low_r0 <- scenario(
   model_function = "finalsize::final_size",
-  parameters = make_parameters_finalsize_UK(r0 = 1.5),
+  parameters = parameters_finalsize_low_r0,
   extra_info = list(
-    age_groups = rownames(parameters_finalsize_low_r0$contact_matrix)
+    age_groups = age_groups
   ),
   replicates = 1L
 )
 
 # define a higher R0 scenario comparable to Covid-19
+# note no age group information is added yet
 high_r0 <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
@@ -99,21 +105,48 @@ high_r0
 
 ## Getting scenario parameters
 
+Scenario objects can be queried for their information using `sce_get_information()`. This function searches the scenario's `parameters` and `extra_info` lists for named elements and returns them if found.
+
 ```{r}
 # get information on the model parameter r0
 sce_get_information(low_r0, which = "r0")
 
 # get information on the demography groups
-sce_get_information(low_r0, which = "age_groups")
+sce_get_information(low_r0, which = c("r0", "age_groups"))
 
 sce_get_information(low_r0, which = "contact_matrix")
 ```
 
-## Prepare scenario data
+When the scenario does not have this information, an informative error message is returned.
 
-Text that the scenario now has data. Memory concerns.
+```{r error=TRUE}
+# no data found
+sce_get_information(high_r0, which = "age_groups")
+```
+
+## Adding information to scenarios
+
+Information can be added to scenarios using `sce_add_info()`, with the information passed as an element of a named list. This function checks whether the list names are already present in the `extra_info` list, and adds them if they are not present, erroring otherwise.
 
 ```{r}
+# add age group size information
+high_r0 <- sce_add_info(
+  high_r0, list(age_groups = age_groups)
+)
+
+# print to check that data are added
+high_r0
+```
+
+## Prepare scenario data
+
+The scenario objects created thus far do not have any data, and this is because the `model_function` has not been called with the `parameters` to populate the `data` list.
+
+The scenario outcome data can be added to the scenario by running the scenario using `run_scenario()`.
+
+```{r}
+# add outcome data to scenarios
+# assigning to different object for clarity
 low_r0_data <- run_scenario(low_r0)
 high_r0_data <- run_scenario(high_r0)
 ```
@@ -123,20 +156,15 @@ high_r0_data <- run_scenario(high_r0)
 low_r0_data
 ```
 
-### Alert: Note on object size {-}
-
-```{r}
-object.size(low_r0)
-object.size(low_r0_data)
-```
-
 ## Getting scenario data
 
+The scenario data can be accessed (so long as they are data frames) using `sce_get_outcomes()`, which returns a `data.table` of outcomes, with an additional column to indicate the replicate number.
+
 ```{r}
-# peeking at data
+# peeking at data to examine column names
 sce_peek_outcomes(low_r0_data, view_rows = FALSE)
 
-# get full outcome data
+# get full outcome data as data.table
 sce_get_outcomes(low_r0_data)
 ```
 
@@ -156,33 +184,24 @@ sce_are_comparable(
   )
 )
 
-# setting identical matching to FALSE can help compare scenarios where
-# key parameters are expected to be different
+# setting some identical matching to FALSE can help compare scenarios where
+# key parameters are *expected* to be different, but where some parameters
+# must be *identical*
 sce_are_comparable(
   baseline = low_r0_data,
   compare = high_r0_data,
-  match_variables = "r0",
-  comparison_variables = "p_infected",
-  expect_identical_match = c(
-    r0 = FALSE
-  )
-)
-
-# an identical match can help ensure comparisons between
-# the same population
-sce_are_comparable(
-  baseline = low_r0_data,
-  compare = high_r0_data,
-  match_variables = c("r0", "demography_vector"),
+  match_variables = c("age_groups", "r0"),
   comparison_variables = "p_infected",
   expect_identical_match = c(
     r0 = FALSE,
-    demography_vector = TRUE
+    age_groups = TRUE # age group limits must be identical for valid comparison
   )
 )
 ```
 
 ## Creating a comparison object
+
+Scenarios can be wrapped into a `comparison` object. This is a convenient and structured way of holding numerous scenarios. A brief introduction is given here.
 
 ```{r}
 # create object, passing prepared scenarios with some names
@@ -191,9 +210,14 @@ outbreak_comparison <- comparison(
   baseline = "pandemic_flu"
 )
 
+# check the scenario names in this comparison
+sce_get_scenario_names(outbreak_comparison)
+
 # print to examine output
 outbreak_comparison
 ```
+
+The data from individual scenarios can be accessed as a single data table using the `sce_get_outcomes()` function.
 
 ```{r}
 # scenario output can be accessed from a comparison object as well
@@ -201,3 +225,4 @@ outbreak_comparison
 sce_get_outcomes(outbreak_comparison)
 ```
 
+## References
