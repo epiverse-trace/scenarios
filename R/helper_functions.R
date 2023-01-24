@@ -1,11 +1,15 @@
 #' Get scenario information
 #'
-#' @description Prints the value of an object in the `parameters` or in the
+#' @description Gets the value of one or more object in the `parameters` or the
 #' extra information list `extra_info`.
 #' @param x A 'scenario' object.
 #' @param which Which parameters to print.
 #'
-#' @return Nothing. Prints a list of parameters to screen.
+#' @return A named list with two elements, 'parameters' and 'extra_info', which
+#' are themselves lists. Each of these lists has named elements corresponding to
+#' the names passed in `which`. These are separated into two lists to make it
+#' easier to identify whether they are model function arguments or extra
+#' information for the scenario.
 #' @export
 #'
 #' @examples
@@ -23,7 +27,10 @@
 #' sce_get_information(scenario_pandemic_flu, which = c("r0", "solver"))
 sce_get_information <- function(x, which) {
   # check input
-  checkmate::assert_class(x, "scenario")
+  stopifnot(
+    "Input 'x' must be a 'scenario' object" =
+      is.scenario(x)
+  )
 
   # print/return chosen parameters as list
   if (missing(which)) {
@@ -50,6 +57,48 @@ sce_get_information <- function(x, which) {
       info_list
     }
   }
+}
+
+#' Add extra information to a scenario
+#'
+#' @param x A 'scenario' object.
+#' @param info A named list of information to be added to the `extra_info` list
+#' of the scenario object `x`.
+#'
+#' @return The scenario `x` with the extra information added.
+#' @export
+#'
+#' @examples
+#' # get some parameters for a `finalsize` run
+#' parameters <- make_parameters_finalsize_UK(r0 = 1.5)
+#' extra_info <- list(
+#'   age_groups = rownames(parameters$contact_matrix)
+#' )
+#' x <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = parameters
+#' )
+#'
+#' sce_add_info(x, extra_info)
+#'
+sce_add_info <- function(x, info) {
+  # check input
+  stopifnot(
+    "Input 'x' must be a 'scenario' object" =
+      is.scenario(x),
+    "Input 'info' must be a list with unique names" =
+      checkmate::test_list(info, any.missing = FALSE, names = "unique"),
+    # check for names already present in extra info
+    "Some input list elements in 'info' are already present in this scenario" =
+      (!any(names(info) %in% names(x$extra_info)))
+  )
+
+  # add data
+  x$extra_info <- c(x$extra_info, info)
+
+  # validate scenario and return
+  validate_scenario(x)
+  x
 }
 
 #' Check for scenario data
