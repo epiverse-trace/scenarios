@@ -105,3 +105,36 @@ test_that("Aggregate scenario outcome data", {
     )
   )
 })
+
+# test adding information
+test_that("Adding extra information to a scenario", {
+  parameters <- make_parameters_finalsize_UK()
+  extra_info <- list(
+    age_groups = rownames(parameters$contact_matrix)
+  )
+  x <- scenario(
+    model_function = "finalsize::final_size",
+    parameters = parameters
+  )
+
+  # expect success
+  expect_silent(
+    x <- sce_add_info(x, extra_info)
+  )
+  expect_named(
+    x$extra_info,
+    "age_groups"
+  )
+
+  # expect failure if x is not a scenario
+  expect_error(
+    sce_add_info("x", extra_info),
+    regexp = "(Input)*(must be a 'scenario' object)"
+  )
+
+  # expect failure if adding information again
+  expect_error(
+    x <- sce_add_info(x, extra_info),
+    regexp = "(Some input list elements)*(are already present in this scenario)"
+  )
+})
