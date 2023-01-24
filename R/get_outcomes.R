@@ -99,19 +99,14 @@ sce_get_outcomes.comparison <- function(x) {
       sce_has_data(x)
   )
   data <- lapply(x$data, sce_get_outcomes.scenario)
-  # check whether all outputs inherit from data.frames
-  if (!all(vapply(data, is.data.frame, FUN.VALUE = TRUE))) {
-    stop(
-      "Scenario model outputs must all be or inherit from `data.frame`s."
-    )
-  }
+  # this lapply throws errors when the outcomes are not data.frames
 
   # check for scenario names in x$data and fix names if needed
   scenario_names <- names(x$data)
-  # check if all are NULL and assign synthetic names
-  if (all(vapply(scenario_names, is.null, FUN.VALUE = TRUE))) {
-    scenario_names <- glue::glue("scenario_{length(x$data)}")
-  } else if (any(scenario_names == "")) {
+  # check if any scenario names are missing and assign synthetic names
+  # all names cannot be missing as at least one named scenario,
+  # the baseline, must exist
+  if (any(scenario_names == "")) {
     scenario_names[scenario_names == ""] <- glue::glue(
       "scenario_{which(scenario_names == '')}"
     )

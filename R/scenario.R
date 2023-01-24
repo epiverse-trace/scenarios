@@ -70,7 +70,7 @@ new_scenario <- function(model_function,
 scenario <- function(model_function,
                      parameters,
                      extra_info = list(),
-                     replicates = integer(1)) {
+                     replicates = 1L) {
   # check input
   checkmate::assert_string(model_function)
   checkmate::assert_list(parameters, any.missing = FALSE, names = "unique")
@@ -79,9 +79,11 @@ scenario <- function(model_function,
 
   if (!grepl(pattern = "::", x = model_function, fixed = TRUE)) {
     warning(
-      "`model_function` may not be explicitly namespaced. ",
-      "Explicit namespacing is preferred to avoid confusion. ",
-      "E.g. 'finalsize::final_size' rather than 'final_size'."
+      glue::glue(
+        "'model_function' may not be explicitly namespaced.
+        Explicit namespacing is preferred to avoid confusion.
+        E.g. 'finalsize::final_size' rather than 'final_size'."
+      )
     )
   }
 
@@ -94,7 +96,7 @@ scenario <- function(model_function,
   )
 
   # call scenario validator
-  validate_scenario(scenario = scenario)
+  validate_scenario(object = scenario)
 
   # return scenario object
   scenario
@@ -102,39 +104,39 @@ scenario <- function(model_function,
 
 #' Validator for the `scenario` class
 #'
-#' @param scenario A `scenario` object
+#' @param object A `scenario` object
 #' @param data_ok A boolean of whether the scenario can have data. This is
 #' useful when creating scenarios manually from existing objects, or when
 #' reading in a `scenario` with data from a file.
 #'
 #' @return None. Errors when an invalid `scenario` object is provided.
-validate_scenario <- function(scenario, data_ok = FALSE) {
+validate_scenario <- function(object, data_ok = FALSE) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class scenario" =
-      (inherits(scenario, "scenario")),
+      (is.scenario(object)),
     "scenario object does not contain the correct attributes" =
       (c(
         "model_function", "parameters", "extra_info", "replicates", "data"
-      ) %in% attributes(scenario)$names),
+      ) %in% attributes(object)$names),
     "Model function must be a single function name" =
-      (is.character(scenario$model_function)),
+      (is.character(object$model_function)),
     "Model parameter list must be a list" =
-      (is.list(scenario$parameters)),
+      (is.list(object$parameters)),
     "Extra information must be a list" =
-      (is.list(scenario$extra_info)),
+      (is.list(object$extra_info)),
     "Model replicates must be at least 1" =
-      (checkmate::check_integerish(scenario$replicates) &&
-        scenario$replicates >= 1),
+      (checkmate::check_integerish(object$replicates) &&
+        object$replicates >= 1),
     "Scenario data must be the same length as the number of replicates" =
-      (nrow(scenario$data) == scenario$replicates),
+      (nrow(object$data) == object$replicates),
     "Scenario data list should not be initialised" =
       (data_ok || all(
-        vapply(scenario$data, is.null, FUN.VALUE = TRUE)
+        vapply(object$data, is.null, FUN.VALUE = TRUE)
       )
       )
   )
-  invisible(scenario)
+  invisible(object)
 }
 
 #' @export

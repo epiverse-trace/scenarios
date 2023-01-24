@@ -37,7 +37,10 @@ new_comparison <- function(data,
 #' compare among them. One 'scenario' must be set as the 'baseline' for such
 #' comparisons.
 #'
-#' @param ... Multiple 'scenario's or a list of 'scenario' objects.
+#' @param ... Multiple 'scenario's or a list of 'scenario' objects. At least one
+#' of these scenarios, the 'baseline' scenario, must be named for the comparison
+#' to be correctly constructed. The baseline scenario name must be the same as
+#' passed to `baseline`.
 #' @param baseline A string for the element of the list of 'scenario'
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
@@ -81,7 +84,8 @@ comparison <- function(...,
                        comparison_variables) {
   # check input
   data <- list(...)
-  if ((length(data) == 1L) && (is.list(data[[1]]))) {
+  if ((length(data) == 1L) && (is.list(data[[1]])) &&
+    (!is.scenario(data[[1]]))) {
     data <- data[[1]]
   }
   if (missing(match_variables)) {
@@ -95,11 +99,11 @@ comparison <- function(...,
     "All objects must be of the 'scenario' class" =
       all(
         vapply(
-          data, function(x) inherits(x, "scenario"),
+          data, is.scenario,
           FUN.VALUE = TRUE
         )
       ),
-    "Baseline must be among scenario names, or a numeric list index" =
+    "Baseline must be among scenario names" =
       (is.character(baseline) && baseline %in% names(data)),
     "Matching variables must be a string" =
       (is.character(match_variables)),
@@ -128,7 +132,7 @@ validate_comparison <- function(object) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class comparison" =
-      (inherits(object, "comparison")),
+      (is.comparison(object)),
     "'comparison' object does not contain the correct attributes" =
       (all(
         c(
@@ -140,12 +144,12 @@ validate_comparison <- function(object) {
       (is.list(object$data) && (
         all(
           vapply(
-            object$data, function(x) inherits(x, "scenario"),
+            object$data, is.scenario,
             FUN.VALUE = TRUE
           )
         )
       )),
-    "Baseline must be among scenario names, or a numeric list index" =
+    "Baseline must be among scenario names" =
       (is.character(object$baseline) &&
         object$baseline %in% names(object$data))
   )
