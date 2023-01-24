@@ -51,7 +51,8 @@ test_that("'run_scenario' works for 'scenario' class", {
         )
       ),
       replicates = 1
-    )
+    ),
+    regexp = "(model_function)*(may not be explicitly namespaced)"
   )
   expect_silent(
     run_scenario(scenario_lm)

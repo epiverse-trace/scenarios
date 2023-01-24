@@ -33,6 +33,6 @@ test_that("Model function namespacing warning", {
       parameters = make_parameters_finalsize_UK(),
       replicates = 3 # note extra replicates
     ),
-    regexp = "`model_function` may not be explicitly namespaced."
+    regexp = "(model_function)*(may not be explicitly namespaced.)"
   )
 })

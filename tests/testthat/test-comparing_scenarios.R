@@ -52,13 +52,16 @@ test_that("Scenario matching works", {
 
   # expect false when expecting an identical match on R0, as they differ
   expect_false(
-    sce_are_comparable(
-      baseline = pandemic_flu,
-      compare = covid19,
-      match_variables = "r0",
-      comparison_variables = "p_infected",
-      expect_identical_match = c(
-        r0 = TRUE
+    # suppress extra message here, tested below
+    suppressMessages(
+      sce_are_comparable(
+        baseline = pandemic_flu,
+        compare = covid19,
+        match_variables = "r0",
+        comparison_variables = "p_infected",
+        expect_identical_match = c(
+          r0 = TRUE
+        )
       )
     )
   )
@@ -73,6 +76,35 @@ test_that("Scenario matching works", {
       )
     ),
     regexp = "(Scenario parameters do not match)*(do not match: 'r0')"
+  )
+
+  # expect false and message when matching variables are missing
+  expect_message(
+    sce_are_comparable(
+      baseline = pandemic_flu,
+      compare = covid19,
+      match_variables = "some_variable",
+      comparison_variables = "p_infected",
+      expect_identical_match = c(
+        some_variable = TRUE
+      )
+    ),
+    regexp = "(Scenarios do not share matching or comparison variables)"
+  )
+
+  expect_false(
+    # suppress message here, tested above
+    suppressMessages(
+      sce_are_comparable(
+        baseline = pandemic_flu,
+        compare = covid19,
+        match_variables = "some_variable",
+        comparison_variables = "p_infected",
+        expect_identical_match = c(
+          some_variable = TRUE
+        )
+      )
+    )
   )
 
   # expect scenarios are comparable when expect identical is turned off

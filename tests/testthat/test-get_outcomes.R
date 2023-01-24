@@ -52,4 +52,52 @@ test_that("'sce_get_outcome' works with 'comparison' object", {
   expect_s3_class(
     data, "data.frame"
   )
+
+  # check that scenario name is generated if missing
+  x <- comparison(
+    pandemic_flu = pandemic_flu, covid19,
+    baseline = "pandemic_flu"
+  )
+  data <- sce_get_outcomes(x)
+  expect_identical(
+    unique(data$scenario_name),
+    c("pandemic_flu", "scenario_2")
+  )
+})
+
+test_that("'sce_get_outcome' errors with non-dataframe output", {
+  scenario_lm <- list()
+
+  # suppress unwanted warnings here
+  suppressWarnings(
+    scenario_lm <- scenario(
+      model_function = "lm",
+      parameters = list(
+        formula = as.formula("y ~ x"),
+        data = data.frame(
+          x = seq(10), y = seq(10)
+        )
+      ),
+      replicates = 1
+    )
+  )
+  scenario_lm <- run_scenario(scenario_lm)
+
+  # expect that this works
+  # NB: This is a clear case of bad use of the 'comparison' class
+  # as this is not how it is intended to be used. Please do not copy.
+  expect_silent(
+    tmp_comparison <- comparison(
+      x = scenario_lm,
+      match_variables = "formula",
+      comparison_variables = "formula",
+      baseline = "x"
+    )
+  )
+
+  # expect error when 'get_outcomes' is called
+  expect_error(
+    sce_get_outcomes(tmp_comparison),
+    regexp = "Scenario model outputs are not `data.frames`"
+  )
 })
