@@ -4,12 +4,7 @@
 \alias{scenario}
 \title{Create a \code{scenario} object}
 \usage{
-scenario(
-  model_function,
-  parameters,
-  extra_info = list(),
-  replicates = integer(1)
-)
+scenario(model_function, parameters, extra_info = list(), replicates = 1L)
 }
 \arguments{
 \item{model_function}{Function that is expected to run an epidemic scenario

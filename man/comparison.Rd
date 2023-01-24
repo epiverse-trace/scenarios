@@ -7,7 +7,10 @@
 comparison(..., baseline, match_variables, comparison_variables)
 }
 \arguments{
-\item{...}{Multiple 'scenario's or a list of 'scenario' objects.}
+\item{...}{Multiple 'scenario's or a list of 'scenario' objects. At least one
+of these scenarios, the 'baseline' scenario, must be named for the comparison
+to be correctly constructed. The baseline scenario name must be the same as
+passed to \code{baseline}.}
 
 \item{baseline}{A string for the element of the list of 'scenario'
 objects which indicates which should be considered the 'baseline' outcome,

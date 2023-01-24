@@ -12,10 +12,14 @@ sce_get_information(x, which)
 \item{which}{Which parameters to print.}
 }
 \value{
-Nothing. Prints a list of parameters to screen.
+A named list with two elements, 'parameters' and 'extra_info', which
+are themselves lists. Each of these lists has named elements corresponding to
+the names passed in \code{which}. These are separated into two lists to make it
+easier to identify whether they are model function arguments or extra
+information for the scenario.
 }
 \description{
-Prints the value of an object in the \code{parameters} or in the
+Gets the value of one or more object in the \code{parameters} or the
 extra information list \code{extra_info}.
 }
 \examples{
