@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#' # For the 'scenario' class
+#' # For the `scenario` class
 #' # create a scenario specification
 #' scenario_pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",
@@ -25,7 +25,7 @@
 #' # get outcomes
 #' sce_get_outcomes(scenario_pandemic_flu)
 #'
-#' # For the 'comparison' class
+#' # For the `comparison` class
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",
@@ -40,14 +40,14 @@
 #' )
 #'
 #' # create a comparison object
-#' a <- comparison(
+#' outbreak_comparison <- comparison(
 #'   pandemic_flu = pandemic_flu, covid19 = covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
-#' a <- run_scenario(a)
+#' outbreak_comparison <- run_scenario(outbreak_comparison)
 #'
-#' sce_get_outcomes(a)
+#' sce_get_outcomes(outbreak_comparison)
 #'
 sce_get_outcomes <- function(x) {
   UseMethod("sce_get_outcomes", x)

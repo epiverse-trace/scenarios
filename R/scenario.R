@@ -114,7 +114,7 @@ validate_scenario <- function(object, data_ok = FALSE) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class scenario" =
-      (is.scenario(object)),
+      (is_scenario(object)),
     "scenario object does not contain the correct attributes" =
       (c(
         "model_function", "parameters", "extra_info", "replicates", "data"
@@ -168,12 +168,12 @@ print.scenario <- function(x, ...) {
   invisible(x)
 }
 
-#' Check whether an object is a 'scenario'
+#' Check whether an object is a `scenario`
 #'
 #' @param x An R object.
 #'
 #' @return A logical indicating whether the object inherits from the class
-#' 'scenario'.
+#' `scenario`.
 #'
 #' @export
 #'
@@ -185,5 +185,5 @@ print.scenario <- function(x, ...) {
 #'   replicates = 1L
 #' )
 #'
-#' is.scenario(pandemic_flu)
-is.scenario <- function(x) inherits(x, "scenario")
+#' is_scenario(pandemic_flu)
+is_scenario <- function(x) inherits(x, "scenario")

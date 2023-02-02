@@ -27,8 +27,8 @@
 sce_get_scenario_names <- function(x) {
   # input checking
   stopifnot(
-    "Input 'x' must be a 'comparison' object" =
-      is.comparison(x)
+    "Input 'x' must be a `comparison` object" =
+      is_comparison(x)
   )
 
   names(x$data)
@@ -36,7 +36,7 @@ sce_get_scenario_names <- function(x) {
 
 #' Set scenario names in a comparison object.
 #'
-#' @param x A 'comparison' object.
+#' @param x A `comparison` object.
 #' @param old_names A character vector of the names of the scenarios in this
 #' comparison object, which are to be replaced.
 #' @param new_names A character vector of the names with which to replace the
@@ -44,7 +44,7 @@ sce_get_scenario_names <- function(x) {
 #' @param new_baseline Optional. The name of the new baseline scenario, if this
 #' has been changed. The old baseline is retained if this argument is missing.
 #'
-#' @return A 'comparison' object with new scenario names.
+#' @return A `comparison` object with new scenario names.
 #' @export
 #'
 #' @examples
@@ -78,8 +78,8 @@ sce_get_scenario_names <- function(x) {
 sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
   # input checking
   stopifnot(
-    "Input 'x' must be a 'comparison' object" =
-      is.comparison(x),
+    "Input 'x' must be a `comparison` object" =
+      is_comparison(x),
     "Old names must be passed as a character vector" =
       is.character(old_names),
     "New names must be passed as a character vector" =
@@ -114,11 +114,11 @@ sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
 
 #' Change the baseline scenario in a comparison
 #'
-#' @param x A 'comparison' object.
-#' @param new_baseline The name of a 'scenario' object contained in the
-#' 'comparison' which is to be considered the new baseline.
+#' @param x A `comparison` object.
+#' @param new_baseline The name of a `scenario` object contained in the
+#' `comparison` which is to be considered the new baseline.
 #'
-#' @return The 'comparison' object with the baseline tag set to the new baseline
+#' @return The `comparison` object with the baseline tag set to the new baseline
 #' .
 #' @export
 #'
@@ -150,8 +150,8 @@ sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
 sce_set_baseline <- function(x, new_baseline) {
   # input checking
   stopifnot(
-    "Input 'x' must be a 'comparison' object" =
-      is.comparison(x),
+    "Input 'x' must be a `comparison` object" =
+      is_comparison(x),
     "New baseline must be a single string" =
       is.character(new_baseline) && length(new_baseline) == 1L,
     "New baseline must be among scenario names" =
@@ -174,7 +174,7 @@ sce_set_baseline <- function(x, new_baseline) {
 
 #' Get the name of the baseline scenario
 #'
-#' @param x A 'comparison' object.
+#' @param x A `comparison` object.
 #'
 #' @return The name of the baseline scenario of the comparison.
 #' @export

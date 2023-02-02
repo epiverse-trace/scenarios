@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @examples
-#' # For a 'scenario' object
+#' # For a `scenario` object
 #' # prepare a scenario
 #' scenario_pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",
@@ -33,7 +33,7 @@
 #' # print to check that data are prepared
 #' scenario_pandemic_flu
 #'
-#' # For a 'comparison' object
+#' # For a `comparison` object
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",

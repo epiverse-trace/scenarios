@@ -2,7 +2,7 @@
 #'
 #' @description Gets the value of one or more object in the `parameters` or the
 #' extra information list `extra_info`.
-#' @param x A 'scenario' object.
+#' @param x A `scenario` object.
 #' @param which Which parameters to print.
 #'
 #' @return A named list with two elements, 'parameters' and 'extra_info', which
@@ -28,8 +28,8 @@
 sce_get_information <- function(x, which) {
   # check input
   stopifnot(
-    "Input 'x' must be a 'scenario' object" =
-      is.scenario(x)
+    "Input 'x' must be a `scenario` object" =
+      is_scenario(x)
   )
 
   # print/return chosen parameters as list
@@ -61,7 +61,7 @@ sce_get_information <- function(x, which) {
 
 #' Add extra information to a scenario
 #'
-#' @param x A 'scenario' object.
+#' @param x A `scenario` object.
 #' @param info A named list of information to be added to the `extra_info` list
 #' of the scenario object `x`.
 #'
@@ -84,8 +84,8 @@ sce_get_information <- function(x, which) {
 sce_add_info <- function(x, info) {
   # check input
   stopifnot(
-    "Input 'x' must be a 'scenario' object" =
-      is.scenario(x),
+    "Input 'x' must be a `scenario` object" =
+      is_scenario(x),
     "Input 'info' must be a list with unique names" =
       checkmate::test_list(info, any.missing = FALSE, names = "unique"),
     # check for names already present in extra info
@@ -103,9 +103,9 @@ sce_add_info <- function(x, info) {
 
 #' Check for scenario data
 #'
-#' @param x A 'scenario' or 'comparison' object.
-#' @return Whether the 'scenario' has data, or whether all 'scenario' objects in
-#' a 'comparison' object have data generated.
+#' @param x A `scenario` or `comparison` object.
+#' @return Whether the `scenario` has data, or whether all `scenario` objects in
+#' a `comparison` object have data generated.
 #' @export
 #' @examples
 #' # create a scenario
@@ -120,10 +120,10 @@ sce_add_info <- function(x, info) {
 #'   replicates = 1
 #' )
 #'
-#' # for a 'scenario' object
+#' # for a `scenario` object
 #' sce_has_data(pandemic_flu)
 #'
-#' # for a 'comparison' object
+#' # for a `comparison` object
 #' comparison_flu_covid <- comparison(
 #'   pandemic_flu = pandemic_flu, covid19 = covid19,
 #'   baseline = "pandemic_flu"
@@ -135,7 +135,7 @@ sce_has_data <- function(x) {
 
 #' Check for scenario data
 #'
-#' @param x A 'scenario' object.
+#' @param x A `scenario` object.
 #'
 #' @return A boolean, whether the simulation object has data.
 #' @method sce_has_data scenario
@@ -149,7 +149,7 @@ sce_has_data.scenario <- function(x) {
 
 #' Check for scenario data
 #'
-#' @param x A 'comparison' object.
+#' @param x A `comparison` object.
 #'
 #' @method sce_has_data comparison
 #' @export
@@ -163,7 +163,7 @@ sce_has_data.comparison <- function(x) {
 
 #' Get scenario outcome names
 #'
-#' Function to quickly view the names and types of columns in the 'scenario'
+#' Function to quickly view the names and types of columns in the `scenario`
 #' outcome data. Operates on the first replicate of each scenario run, and
 #' assumes that the outcome data are data.frames.
 #'
@@ -207,6 +207,9 @@ sce_peek_outcomes <- function(x, view_rows = FALSE) {
 
 #' Aggregate scenario outcomes across replicates
 #'
+#' @description Function to aggregate outcomes from the replicate data of a
+#' `scenario` object. The use case of this function is to provide a compact
+#' representation of the model output, especially that of stochastic models.
 #' @param x A scenario object with data prepared.
 #' @param grouping_variables The variables that should be used to group the
 #' outcomes of interest. Examples include demographic and susceptibility groups.

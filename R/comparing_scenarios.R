@@ -1,15 +1,15 @@
 #' Check for scenario matching variables
 #'
-#' @param x A 'scenario' object.
-#' @param variables A character vector of 'scenario' parameter names or extra
+#' @param x A `scenario` object.
+#' @param variables A character vector of `scenario` parameter names or extra
 #' information names for which to search in `x`.
 #' @keywords internal
 #' @return A logical indicating whether the variables correspond to parameter
 #' names in `x`.
 sce_has_match_variables <- function(x, variables) {
   stopifnot(
-    "Object must be of the 'scenario' class" =
-      is.scenario(x)
+    "Object must be of the `scenario` class" =
+      is_scenario(x)
   )
   # informative error message about which variable(s) is/are missing
   if (all(variables %in% c(names(x$parameters), names(x$extra_info)))) {
@@ -21,7 +21,7 @@ sce_has_match_variables <- function(x, variables) {
 
 #' Check for variables in scenario outcomes
 #'
-#' @param x A 'scenario' object.
+#' @param x A `scenario` object.
 #' @param variables A character vector of variables that are expected to be
 #' found in the `data` list of `x`.
 #' @keywords internal
@@ -29,8 +29,8 @@ sce_has_match_variables <- function(x, variables) {
 #' in `x$data`.
 sce_has_comparison_variables <- function(x, variables) {
   stopifnot(
-    "Object must be of the 'scenario' class" =
-      is.scenario(x),
+    "Object must be of the `scenario` class" =
+      is_scenario(x),
     "Scenario object must have data to check for comparison variables" =
       sce_has_data(x)
   )
@@ -46,8 +46,8 @@ sce_has_comparison_variables <- function(x, variables) {
 
 #' Check whether a pair of scenarios is comparable
 #'
-#' @param baseline A 'scenario' object.
-#' @param compare A second 'scenario' object.
+#' @param baseline A `scenario` object.
+#' @param compare A second `scenario` object.
 #' @param match_variables A character string of scenario parameter names that is
 #' used to check whether the two scenarios have identical parameters.
 #' @param comparison_variables A character string of column names expected in
@@ -93,8 +93,8 @@ sce_are_comparable <- function(baseline, compare, match_variables,
                                expect_identical_match = FALSE) {
   # check inputs
   stopifnot(
-    "Baseline or comparator must be 'scenario' objects" =
-      (all(is.scenario(baseline), is.scenario(compare))),
+    "Baseline or comparator must be `scenario` objects" =
+      (all(is_scenario(baseline), is_scenario(compare))),
     "Matching variables are missing, pass a string of variables" =
       !missing(match_variables),
     "Comparison variables are missing, pass a string of variables" =

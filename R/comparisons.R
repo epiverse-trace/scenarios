@@ -1,17 +1,17 @@
-#' Constructor for the 'comparison' class
+#' Constructor for the `comparison` class
 #'
-#' @description Create a 'comparison' object after input checks.
+#' @description Create a `comparison` object after input checks.
 #'
-#' @param data A list of 'scenario' objects.
-#' @param baseline A string for the element of the list of 'scenario'
+#' @param data A list of `scenario` objects.
+#' @param baseline A string for the element of the list of `scenario`
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
-#' @param match_variables The variables in the 'scenario' outputs on which to
+#' @param match_variables The variables in the `scenario` outputs on which to
 #' match the scenarios and check whether they are comparable.
-#' @param comparison_variables The variables in the 'scenario' outputs to
+#' @param comparison_variables The variables in the `scenario` outputs to
 #' compare against the 'baseline' scenario.
 #'
-#' @return A 'comparison' object
+#' @return A `comparison` object
 #' @keywords internal
 new_comparison <- function(data,
                            baseline,
@@ -31,25 +31,25 @@ new_comparison <- function(data,
   )
 }
 
-#' Create a 'comparison' object
+#' Create a `comparison` object
 #'
-#' @description The 'comparison' class is intended to store 'scenario's and to
-#' compare among them. One 'scenario' must be set as the 'baseline' for such
+#' @description The `comparison` class is intended to store `scenario`s and to
+#' compare among them. One `scenario` must be set as the 'baseline' for such
 #' comparisons.
 #'
-#' @param ... Multiple 'scenario's or a list of 'scenario' objects. At least one
+#' @param ... Multiple `scenario`s or a list of `scenario` objects. At least one
 #' of these scenarios, the 'baseline' scenario, must be named for the comparison
 #' to be correctly constructed. The baseline scenario name must be the same as
 #' passed to `baseline`.
-#' @param baseline A string for the element of the list of 'scenario'
+#' @param baseline A string for the element of the list of `scenario`
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
-#' @param match_variables The variables in the 'scenario' outputs on which to
+#' @param match_variables The variables in the `scenario` outputs on which to
 #' match the scenarios and check whether they are comparable.
-#' @param comparison_variables The variables in the 'scenario' outputs to
+#' @param comparison_variables The variables in the `scenario` outputs to
 #' compare against the 'baseline' scenario.
 #'
-#' @return A 'comparison' object
+#' @return A `comparison` object
 #' @export
 #'
 #' @examples
@@ -85,7 +85,7 @@ comparison <- function(...,
   # check input
   data <- list(...)
   if ((length(data) == 1L) && (is.list(data[[1]])) &&
-    (!is.scenario(data[[1]]))) {
+    (!is_scenario(data[[1]]))) {
     data <- data[[1]]
   }
   if (missing(match_variables)) {
@@ -96,10 +96,10 @@ comparison <- function(...,
   }
 
   stopifnot(
-    "All objects must be of the 'scenario' class" =
+    "All objects must be of the `scenario` class" =
       all(
         vapply(
-          data, is.scenario,
+          data, is_scenario,
           FUN.VALUE = TRUE
         )
       ),
@@ -123,28 +123,28 @@ comparison <- function(...,
   object
 }
 
-#' Validator for the 'comparison' class
+#' Validator for the `comparison` class
 #'
-#' @param object A 'comparison' object.
+#' @param object A `comparison` object.
 #'
-#' @return None. Errors when an invalid 'comparison' object is provided.
+#' @return None. Errors when an invalid `comparison` object is provided.
 validate_comparison <- function(object) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class comparison" =
-      (is.comparison(object)),
-    "'comparison' object does not contain the correct attributes" =
+      (is_comparison(object)),
+    "`comparison` object does not contain the correct attributes" =
       (all(
         c(
           "data", "baseline"
         ) %in% attributes(object)$names
       )
       ),
-    "Comparison must be a list of 'scenario' objects" =
+    "Comparison must be a list of `scenario` objects" =
       (is.list(object$data) && (
         all(
           vapply(
-            object$data, is.scenario,
+            object$data, is_scenario,
             FUN.VALUE = TRUE
           )
         )
@@ -204,12 +204,12 @@ print.comparison <- function(x, ...) {
   invisible(x)
 }
 
-#' Check whether an object is a 'comparison'
+#' Check whether an object is a `comparison`
 #'
 #' @param x An R object.
 #'
 #' @return A logical indicating whether the object inherits from the class
-#' 'comparison'.
+#' `comparison`.
 #'
 #' @export
 #'
@@ -233,7 +233,7 @@ print.comparison <- function(x, ...) {
 #'   baseline = "pandemic_flu"
 #' )
 #'
-#' is.comparison(x)
-is.comparison <- function(x) {
+#' is_comparison(x)
+is_comparison <- function(x) {
   inherits(x, "comparison")
 }
