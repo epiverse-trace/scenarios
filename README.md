@@ -1,8 +1,6 @@
 
 # *scenarios*: Compare epidemic scenarios
 
-<img src="man/figures/logo.png" align="right" width="130"/>
-
 <!-- badges: start -->
 
 [![License:
@@ -131,7 +129,7 @@ scenario_sir <- scenario(
 )
 
 # view the initial conditions and infection parameters
-sce_get_parameters(scenario_sir, which = c("init", "parms"))
+sce_get_information(scenario_sir, which = c("init", "parms"))
 #> $init
 #>    S    I    R 
 #> 0.99 0.01 0.00 
