@@ -14,9 +14,7 @@
 #' @return A `comparison` object
 #' @keywords internal
 new_comparison <- function(data,
-                           baseline,
-                           match_variables,
-                           comparison_variables) {
+                           baseline) {
   # Input checking in `comparison()`
 
   # create and return comparison class
@@ -24,8 +22,8 @@ new_comparison <- function(data,
     list(
       "data" = data,
       "baseline" = baseline,
-      "match_variables" = match_variables,
-      "comparison_variables" = comparison_variables
+      "match_variables" = NA_character_,
+      "comparison_variables" = NA_character_
     ),
     class = "comparison"
   )
@@ -95,13 +93,9 @@ comparison <- function(...,
       (is.character(baseline) && baseline %in% names(data))
   )
 
-  # make NA match and comparison variables
-  match_variables <- NA_character_
-  comparison_variables <- NA_character_
-
   # call comparison constructor
   object <- new_comparison(
-    data, baseline, match_variables, comparison_variables
+    data = data, baseline = baseline
   )
 
   # call comparison validator
@@ -141,9 +135,9 @@ validate_comparison <- function(object) {
       (is.character(object$baseline) &&
         object$baseline %in% names(object$data)),
     "Matching variables must be a string" =
-      (is.character(match_variables)),
+      (is.character(object$match_variables)),
     "Comparison variables must be a string" =
-      (is.character(comparison_variables))
+      (is.character(object$comparison_variables))
   )
   invisible(object)
 }
@@ -162,12 +156,14 @@ print.comparison <- function(x, ...) {
     ),
     " All scenario data are prepared, use `sce_get_outcomes()` to get data"
   )
-  baseline <- glue::glue(" Baseline scenario: {cli::col_blue(x$baseline)}")
+  baseline <- glue::glue(
+    " Baseline scenario: {cli::col_blue(glue::double_quote(x$baseline))}"
+  )
   # the scenario matching variables
   matching_variables <- c(
     " Scenario matching variables:",
     ifelse(is.na(x$match_variables),
-      cli::col_magenta("  No matching variables specified!"),
+      cli::col_magenta("  No matching variables specified yet."),
       cli::col_green(glue::glue("  {x$match_variables}"))
     )
   )
@@ -175,7 +171,7 @@ print.comparison <- function(x, ...) {
   comparison_variables <- c(
     " Scenario comparison variables:",
     ifelse(is.na(x$comparison_variables),
-      cli::col_magenta("  No comparison variables specified!"),
+      cli::col_magenta("  No comparison variables specified yet."),
       cli::col_green(glue::glue("  {x$comparison_variables}"))
     )
   )
