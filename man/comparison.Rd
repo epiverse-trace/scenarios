@@ -4,7 +4,7 @@
 \alias{comparison}
 \title{Create a \code{comparison} object}
 \usage{
-comparison(..., baseline, match_variables, comparison_variables)
+comparison(..., baseline)
 }
 \arguments{
 \item{...}{Multiple \code{scenario}s or a list of \code{scenario} objects. At least one
@@ -15,12 +15,6 @@ passed to \code{baseline}.}
 \item{baseline}{A string for the element of the list of \code{scenario}
 objects which indicates which should be considered the 'baseline' outcome,
 against which other outcomes are compared.}
-
-\item{match_variables}{The variables in the \code{scenario} outputs on which to
-match the scenarios and check whether they are comparable.}
-
-\item{comparison_variables}{The variables in the \code{scenario} outputs to
-compare against the 'baseline' scenario.}
 }
 \value{
 A \code{comparison} object
