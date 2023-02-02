@@ -91,11 +91,13 @@ test_that("Scenario matching works", {
 
   # expect scenarios are not comparable when some parameters do not match
   expect_false(
-    sce_are_comparable(
-      baseline = pandemic_flu,
-      compare = covid19,
-      match_variables = c("demography_vector", "r0"),
-      comparison_variables = "p_infected"
+    suppressMessages(
+      sce_are_comparable(
+        baseline = pandemic_flu,
+        compare = covid19,
+        match_variables = c("demography_vector", "r0"),
+        comparison_variables = "p_infected"
+      )
     )
   )
 

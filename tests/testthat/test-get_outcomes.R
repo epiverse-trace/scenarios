@@ -89,8 +89,6 @@ test_that("'sce_get_outcome' errors with non-dataframe output", {
   expect_silent(
     tmp_comparison <- comparison(
       x = scenario_lm,
-      match_variables = "formula",
-      comparison_variables = "formula",
       baseline = "x"
     )
   )
