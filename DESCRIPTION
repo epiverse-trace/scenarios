@@ -1,6 +1,6 @@
 Package: scenarios
 Title: Compare Epidemic Scenarios
-Version: 0.1.0
+Version: 0.0.0.9000
 Authors@R: 
     c(
         person(
@@ -9,6 +9,20 @@ Authors@R:
             role = c("aut", "cre", "cph"),
             email = "pratik.gupte@lshtm.ac.uk",
             comment = c(ORCID = "https://orcid.org/0000-0001-5294-7819")
+        ),
+        person(
+            given = "Rosalind",
+            family = "Eggo",
+            role = c("aut", "cph"),
+            email = "rosalind.eggo@lshtm.ac.uk",
+            comment = c(ORCID = "https://orcid.org/0000-0002-0362-6717")
+        ),
+        person(
+            given = "Edwin",
+            family = "Van Leeuwen",
+            role = c("aut", "cph"),
+            email = "edwin.vanleeuwen@ukhsa.gov.uk",
+            comment = c(ORCID = "https://orcid.org/0000-0002-2383-5305")
         )
     )
 Description: Compare epidemic scenarios such as those from the 'finalsize' package.
