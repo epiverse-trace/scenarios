@@ -160,7 +160,7 @@ validate_comparison <- function(object) {
 print.comparison <- function(x, ...) {
   # prepare information
   header <- cli::style_bold("Scenario comparison object")
-  scenario_count <- glue::glue(" # Scenarios: {length(x$data)}")
+  scenario_count <- glue::glue(" Number of scenarios: {length(x$data)}")
   data_status <- ifelse(
     !all(
       vapply(x$data, sce_has_data, FUN.VALUE = TRUE)

@@ -248,6 +248,8 @@ sce_aggregate_outcomes <- function(x, grouping_variables, measure_variables,
                                    summary_functions = c("mean", "sd")) {
   # check input
   checkmate::assert_class(x, "scenario")
+  checkmate::assert_character(grouping_variables, min.len = 1)
+  checkmate::assert_character(measure_variables, min.len = 1)
 
   stopifnot(
     "Scenario data are not prepared, run `run_scenario()` to prepare data." =

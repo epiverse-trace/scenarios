@@ -73,7 +73,11 @@ scenario <- function(model_function,
                      replicates = 1L) {
   # check input
   checkmate::assert_string(model_function)
-  checkmate::assert_list(parameters, any.missing = FALSE, names = "unique")
+  checkmate::assert_list(
+    parameters,
+    all.missing = FALSE, any.missing = FALSE,
+    min.len = 1, names = "unique", null.ok = FALSE
+  )
   checkmate::assert_list(extra_info, any.missing = FALSE, names = "unique")
   checkmate::assert_integerish(replicates, lower = 1, null.ok = FALSE)
 
@@ -121,8 +125,13 @@ validate_scenario <- function(object, data_ok = FALSE) {
       ) %in% attributes(object)$names),
     "Model function must be a single function name" =
       (is.character(object$model_function)),
-    "Model parameter list must be a list" =
-      (is.list(object$parameters)),
+    "Model parameter list must be a named, non-empty list with no NULLs" =
+      (checkmate::test_list(
+        object$parameters,
+        all.missing = FALSE, any.missing = FALSE,
+        min.len = 1, names = "unique", null.ok = FALSE
+      )
+      ),
     "Extra information must be a list" =
       (is.list(object$extra_info)),
     "Model replicates must be at least 1" =
