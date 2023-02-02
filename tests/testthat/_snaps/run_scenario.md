@@ -14,7 +14,7 @@
       print(x)
     Output
       Scenario comparison object
-       # Scenarios: 2
+       Number of scenarios: 2
        Baseline scenario: pandemic_flu
        All scenario data are prepared, use `sce_get_outcomes()` to get data
        Scenario matching variables:

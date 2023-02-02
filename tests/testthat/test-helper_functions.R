@@ -37,7 +37,7 @@ test_that("Getting information from scenario", {
   )
 })
 
-#### Tests for sce_get_information ####
+#### Tests for sce_has_data ####
 test_that("Checking for scenario data", {
   expect_false(
     sce_has_data(scenario_pandemic_flu)
@@ -129,7 +129,7 @@ test_that("Adding extra information to a scenario", {
   # expect failure if x is not a scenario
   expect_error(
     sce_add_info("x", extra_info),
-    regexp = "(Input)*(must be a 'scenario' object)"
+    regexp = "(Input)*(must be a `scenario` object)"
   )
 
   # expect failure if adding information again

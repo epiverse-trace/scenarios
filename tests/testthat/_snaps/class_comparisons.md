@@ -4,7 +4,7 @@
       print(x1)
     Output
       Scenario comparison object
-       # Scenarios: 2
+       Number of scenarios: 2
        Baseline scenario: pandemic_flu
        Some scenarios have no data, use `run_scenario()` to prepare data
        Scenario matching variables:
