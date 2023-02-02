@@ -186,3 +186,46 @@ sce_are_comparable <- function(baseline, compare, match_variables,
     return(FALSE)
   }
 }
+
+#' Filter for comparable scenarios
+#'
+#' @param x A 'comparison' object comprised of 'scenario' objects, each of which
+#' must have data prepared.
+#' @param match_variables A character string of scenario parameter names that is
+#' used to check whether the two scenarios have identical parameters.
+#' @param comparison_variables A character string of column names expected in
+#' the scenarios' outcome data. This is used to check whether the scenarios both
+#' have the required columns in their data.
+#'
+#' @return A 'comparison' object retaining only those 'scenario' objects in the
+#' data list that are comparable with the baseline scenario.
+#' @export
+#'
+#' @examples
+sce_filter_comparable <- function(x, match_variables,
+                                  comparison_variables) {
+  stopifnot(
+    "Error: 'x' must be a 'comparison' object" = is.comparison(x),
+    "Matching variables must be a string" =
+      (is.character(match_variables)),
+    "Comparison variables must be a string" =
+      (is.character(comparison_variables))
+  )
+  # get which scenarios match
+  does_match <- vapply(
+    x$data, sce_are_comparable,
+    FUN.VALUE = TRUE,
+    baseline = x$data[[x$baseline]],
+    match_variables = match_variables,
+    comparison_variables = comparison_variables
+  )
+  # filter for matches. the baseline is always returned as a match
+  x$data <- x$data[does_match]
+
+  # set comparison match and comparison variables
+  x$match_variables <- match_variables
+  x$comparison_variables <- comparison_variables
+
+  # return comparison object
+  x
+}
