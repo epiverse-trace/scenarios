@@ -288,3 +288,71 @@ sce_aggregate_outcomes <- function(x, grouping_variables, measure_variables,
   # return data.table
   dt
 }
+
+#' Drop outcome data from a `scenario` or `comparison` object
+#'
+#' @param x A `scenario` or `comparison` object.
+#'
+#' @export
+#' @return A `scenario` or `comparison` object where the `data` field is, for
+#' `scenario` objects, an empty list of the same length as the number of
+#' scenario replicates, and for `comparison` objects, a list of `scenario`
+#' objects with the data removed.
+#' @examples
+#' pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
+#'   extra_info = list(country = "UK", pathogen = "flu")
+#' )
+#'
+#' # run scenarios to generate data
+#' pandemic_flu <- run_scenario(pandemic_flu)
+#'
+#' # drop data
+#' sce_drop_data(pandemic_flu)
+sce_drop_data <- function(x) {
+  UseMethod("sce_drop_data", x)
+}
+
+#' Drop outcome data from a `scenario` object
+#'
+#' @param x A `scenario` object.
+#'
+#' @method sce_drop_data scenario
+#' @export
+#' @return A `scenario` object where the `data` field is an empty list of the
+#' same length as the number of scenario replicates.
+sce_drop_data.scenario <- function(x) {
+  # check input
+  checkmate::assert_class(x, "scenario")
+  stopifnot(
+    "`scenario` does not have data prepared" =
+      sce_has_data(x)
+  )
+
+  # make data an empty list, validate, and return
+  x$data <- vector("list", length = x$replicates)
+  validate_scenario(x)
+  x
+}
+
+#' Drop outcome data from a `comparison` object
+#'
+#' @param x A `comparison` object.
+#'
+#' @method sce_drop_data comparison
+#' @export
+#' @return A `comparison` object where the `data` field is populated with
+#' `scenario` objects from which the outcome data, if originally present,
+#' has been dropped.
+sce_drop_data.comparison <- function(x) {
+  # check input
+  checkmate::assert_class(x, "comparison")
+  # do not check for data present in comparison object,
+  # as there may be a mix of scenario objects with and without data
+
+  # make data an empty list, validate, and return
+  x$data <- lapply(x$data, sce_drop_data)
+  validate_comparison(x)
+  x
+}
