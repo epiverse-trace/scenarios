@@ -135,7 +135,7 @@ validate_scenario <- function(object, data_ok = FALSE) {
     "Extra information must be a list" =
       (is.list(object$extra_info)),
     "Model replicates must be at least 1" =
-      (checkmate::check_integerish(object$replicates) &&
+      (checkmate::test_integerish(object$replicates) &&
         object$replicates >= 1),
     "Scenario data must be the same length as the number of replicates" =
       (nrow(object$data) == object$replicates),
