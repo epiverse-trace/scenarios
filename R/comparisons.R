@@ -44,10 +44,6 @@ new_comparison <- function(data,
 #' @param baseline A string for the element of the list of `scenario`
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
-#' @param match_variables The variables in the `scenario` outputs on which to
-#' match the scenarios and check whether they are comparable.
-#' @param comparison_variables The variables in the `scenario` outputs to
-#' compare against the 'baseline' scenario.
 #'
 #' @return A `comparison` object
 #' @export
@@ -79,20 +75,12 @@ new_comparison <- function(data,
 #'   baseline = "pandemic_flu"
 #' )
 comparison <- function(...,
-                       baseline,
-                       match_variables,
-                       comparison_variables) {
+                       baseline) {
   # check input
   data <- list(...)
   if ((length(data) == 1L) && (is.list(data[[1]])) &&
     (!is_scenario(data[[1]]))) {
     data <- data[[1]]
-  }
-  if (missing(match_variables)) {
-    match_variables <- NA_character_
-  }
-  if (missing(comparison_variables)) {
-    comparison_variables <- NA_character_
   }
 
   stopifnot(
@@ -104,12 +92,12 @@ comparison <- function(...,
         )
       ),
     "Baseline must be among scenario names" =
-      (is.character(baseline) && baseline %in% names(data)),
-    "Matching variables must be a string" =
-      (is.character(match_variables)),
-    "Comparison variables must be a string" =
-      (is.character(comparison_variables))
+      (is.character(baseline) && baseline %in% names(data))
   )
+
+  # make NA match and comparison variables
+  match_variables <- NA_character_
+  comparison_variables <- NA_character_
 
   # call comparison constructor
   object <- new_comparison(
@@ -151,7 +139,11 @@ validate_comparison <- function(object) {
       )),
     "Baseline must be among scenario names" =
       (is.character(object$baseline) &&
-        object$baseline %in% names(object$data))
+        object$baseline %in% names(object$data)),
+    "Matching variables must be a string" =
+      (is.character(match_variables)),
+    "Comparison variables must be a string" =
+      (is.character(comparison_variables))
   )
   invisible(object)
 }
@@ -201,7 +193,6 @@ print.comparison <- function(x, ...) {
       matching_variables, comparison_variables, model_fun
     )
   )
-  invisible(x)
 }
 
 #' Check whether an object is a `comparison`
