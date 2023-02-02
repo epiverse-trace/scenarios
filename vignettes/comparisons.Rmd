@@ -1,0 +1,203 @@
+---
+title: "Comparing epidemic scenarios"
+output:
+  bookdown::html_vignette2:
+    fig_caption: yes
+    code_folding: show
+pkgdown:
+  as_is: true
+bibliography: references.bib
+link-citations: true
+vignette: >
+  %\VignetteIndexEntry{Comparing epidemic scenarios}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(scenarios)
+library(ggplot2)
+```
+
+```{r}
+# UK population size is about 67 million in 2023
+uk_pop <- 67 * 1e6
+
+# R0 for pandemic influenza
+r0_flu <- 1.5
+```
+
+This first example considers two scenarios of the final size of an influenza epidemic, and examines how considering the age structure of the population can influence estimates of the final epidemic size.
+  1. Scenario 1 is the uniform mixing scenario, in which all individuals are assumed to be mixing homogeneously, with no differences in social contacts by age or other demographic characteristics.
+  2. Scenario 2 is the age-stratified mixing scenario, in which individuals are divided into three age bins, 0 -- 19, 20 -- 39, and 40+, with different social contact patterns for each age group with the other age groups.
+
+```{r}
+# create a scenario object for uniform mixing and susceptibility
+uniform_mixing <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = list(
+    r0 = r0_flu,
+    contact_matrix = matrix(data = 1.0 / uk_pop),
+    demography_vector = uk_pop,
+    susceptibility = matrix(1.0),
+    p_susceptibility = matrix(1.0),
+    solver = "newton"
+  ),
+  extra_info = list(
+    country = "UK",
+    age_groups = "uniform population"
+  ),
+  replicates = 1
+)
+
+# a scenario for age stratified mixing
+# get age group names
+age_groups <- rownames(make_parameters_finalsize_UK()$contact_matrix)
+
+age_stratified_mixing <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = r0_flu), # use convenience fn
+  extra_info = list(
+    country = "UK",
+    age_groups = age_groups
+  ),
+  replicates = 1
+)
+```
+
+```{r}
+# create a third scenario from a different country, say, Germany
+# with uniform mixing and susceptibility
+# create a scenario object for uniform mixing
+de_pop <- 84 * 1e6 # about 84 million
+uniform_mixing_de <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = list(
+    r0 = r0_flu,
+    contact_matrix = matrix(data = 1.0 / de_pop),
+    demography_vector = de_pop,
+    susceptibility = matrix(1.0),
+    p_susceptibility = matrix(1.0),
+    solver = "newton"
+  ),
+  extra_info = list(
+    age_groups = "uniform population"
+  ),
+  replicates = 1
+)
+
+# print to view
+uniform_mixing_de
+
+# add extra information to the Germany scenario using a helper function
+uniform_mixing_de <- sce_add_info(
+  uniform_mixing_de,
+  info = list(
+    country = "Germany"
+  )
+)
+```
+
+Run each scenario, so that data is available.
+
+```{r}
+uniform_mixing <- run_scenario(uniform_mixing)
+age_stratified_mixing <- run_scenario(age_stratified_mixing)
+uniform_mixing_de <- run_scenario(uniform_mixing_de)
+```
+
+Create a comparison object to hold the comparisons and filter for comparable
+scenarios.
+
+```{r}
+flu_comparison <- comparison(
+  uniform_mixing = uniform_mixing,
+  age_stratified_mixing = age_stratified_mixing,
+  uniform_mixing_de = uniform_mixing_de,
+  baseline = "uniform_mixing"
+)
+
+# print to view
+flu_comparison
+```
+
+## Comparing within the UK
+
+To compare within the UK, filter the `comparison` object by the "country" entry in the extra information in each scenario.
+
+```{r}
+# filter on the country and whether data have a 'p_infected' column
+flu_comparison_uk <- sce_filter_comparable(
+  flu_comparison,
+  match_variables = "country",
+  comparison_variables = "p_infected"
+)
+
+# print and view
+flu_comparison_uk
+
+sce_get_scenario_names(flu_comparison_uk)
+```
+
+Get scenario outcomes and visualise.
+
+```{r}
+# get data which are final_size outputs bound together
+data_comparison_uk <- sce_get_outcomes(flu_comparison_uk)
+
+# print to view
+data_comparison_uk
+```
+
+```{r}
+ggplot(data_comparison_uk) +
+  geom_col(
+    aes(demo_grp, p_infected, fill = scenario_name)
+  )
+```
+
+## Comparing uniform mixing, across countries
+
+Filter for the "age_groups" attribute to compare uniform_mixing across the UK and Germany.
+
+```{r}
+# filter on the country and whether data have a 'p_infected' column
+flu_comparison_uniform <- sce_filter_comparable(
+  flu_comparison,
+  match_variables = "age_groups",
+  comparison_variables = "p_infected"
+)
+
+# print and view
+flu_comparison_uniform
+
+# print scenario names in this comparison
+sce_get_scenario_names(flu_comparison_uniform)
+```
+
+Get scenario outcomes and visualise.
+
+```{r}
+# get data which are final_size outputs bound together
+data_comparison_uniform <- sce_get_outcomes(flu_comparison_uniform)
+
+# print to view
+data_comparison_uniform
+```
+
+```{r}
+ggplot(data_comparison_uniform) +
+  geom_col(
+    aes(demo_grp, p_infected, fill = scenario_name),
+    position = position_dodge(width = 1)
+  )
+```

@@ -1,5 +1,5 @@
 ---
-title: "Defining epidemic scenarios and comparison"
+title: "Defining epidemic scenarios and comparisons"
 output:
   bookdown::html_vignette2:
     fig_caption: yes
@@ -9,7 +9,7 @@ pkgdown:
 bibliography: references.bib
 link-citations: true
 vignette: >
-  %\VignetteIndexEntry{Defining epidemic scenarios and comparison}
+  %\VignetteIndexEntry{Defining epidemic scenarios and comparisons}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -180,24 +180,15 @@ sce_are_comparable(
   baseline = low_r0_data,
   compare = high_r0_data,
   match_variables = "r0",
-  comparison_variables = "p_infected",
-  expect_identical_match = c(
-    r0 = TRUE
-  )
+  comparison_variables = "p_infected"
 )
 
-# setting some identical matching to FALSE can help compare scenarios where
-# key parameters are *expected* to be different, but where some parameters
-# must be *identical*
+# match variables must be *identical*
 sce_are_comparable(
   baseline = low_r0_data,
   compare = high_r0_data,
-  match_variables = c("age_groups", "r0"),
-  comparison_variables = "p_infected",
-  expect_identical_match = c(
-    r0 = FALSE,
-    age_groups = TRUE # age group limits must be identical for valid comparison
-  )
+  match_variables = "age_groups",
+  comparison_variables = "p_infected"
 )
 ```
 
