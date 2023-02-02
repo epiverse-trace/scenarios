@@ -152,8 +152,7 @@ sce_are_comparable <- function(baseline, compare, match_variables,
       message(
         glue::glue(
           "Scenario parameters do not match, scenarios are not comparable.
-          These parameters do not match: {non_match_variables}
-          Expecting a non-identical match for some parameters may help."
+          These parameters do not match: {non_match_variables}"
         )
       )
       return(FALSE)
@@ -184,22 +183,53 @@ sce_are_comparable <- function(baseline, compare, match_variables,
 #' @export
 #'
 #' @examples
+#' pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
+#'   extra_info = list(country = "UK", pathogen = "flu")
+#' )
+#'
+#' covid19 <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
+#'   extra_info = list(country = "UK", pathogen = "SARS-CoV-2")
+#' )
+#'
+#' # run scenarios to generate data
+#' pandemic_flu <- run_scenario(pandemic_flu)
+#' covid19 <- run_scenario(covid19)
+#'
+#' # check whether scenarios are comparable
+#' outbreak_comparison <- comparison(
+#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   baseline = "pandemic_flu"
+#' )
+#'
+#' # filter on pathogen
+#' sce_filter_comparable(
+#'   outbreak_comparison,
+#'   match_variables = "pathogen",
+#'   comparison_variables = "p_infected"
+#' )
 sce_filter_comparable <- function(x, match_variables,
                                   comparison_variables) {
   stopifnot(
-    "Error: 'x' must be a 'comparison' object" = is.comparison(x),
+    "Error: 'x' must be a 'comparison' object" = is_comparison(x),
     "Matching variables must be a string" =
       (is.character(match_variables)),
     "Comparison variables must be a string" =
       (is.character(comparison_variables))
   )
   # get which scenarios match
-  does_match <- vapply(
-    x$data, sce_are_comparable,
-    FUN.VALUE = TRUE,
-    baseline = x$data[[x$baseline]],
-    match_variables = match_variables,
-    comparison_variables = comparison_variables
+  # suppress messages from sce_are_comparable
+  suppressMessages(
+    does_match <- vapply(
+      x$data, sce_are_comparable,
+      FUN.VALUE = TRUE,
+      baseline = x$data[[x$baseline]],
+      match_variables = match_variables,
+      comparison_variables = comparison_variables
+    )
   )
   # filter for matches. the baseline is always returned as a match
   x$data <- x$data[does_match]
