@@ -7,7 +7,7 @@
 \method{sce_has_data}{scenario}(x)
 }
 \arguments{
-\item{x}{A 'scenario' object.}
+\item{x}{A \code{scenario} object.}
 }
 \value{
 A boolean, whether the simulation object has data.

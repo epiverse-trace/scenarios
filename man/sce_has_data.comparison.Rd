@@ -7,7 +7,7 @@
 \method{sce_has_data}{comparison}(x)
 }
 \arguments{
-\item{x}{A 'comparison' object.}
+\item{x}{A \code{comparison} object.}
 }
 \value{
 A boolean, whether the simulation object has data.

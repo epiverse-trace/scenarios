@@ -7,11 +7,11 @@
 sce_has_data(x)
 }
 \arguments{
-\item{x}{A 'scenario' or 'comparison' object.}
+\item{x}{A \code{scenario} or \code{comparison} object.}
 }
 \value{
-Whether the 'scenario' has data, or whether all 'scenario' objects in
-a 'comparison' object have data generated.
+Whether the \code{scenario} has data, or whether all \code{scenario} objects in
+a \code{comparison} object have data generated.
 }
 \description{
 Check for scenario data
@@ -29,10 +29,10 @@ covid19 <- scenario(
   replicates = 1
 )
 
-# for a 'scenario' object
+# for a `scenario` object
 sce_has_data(pandemic_flu)
 
-# for a 'comparison' object
+# for a `comparison` object
 comparison_flu_covid <- comparison(
   pandemic_flu = pandemic_flu, covid19 = covid19,
   baseline = "pandemic_flu"

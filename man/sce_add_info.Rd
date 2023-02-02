@@ -7,7 +7,7 @@
 sce_add_info(x, info)
 }
 \arguments{
-\item{x}{A 'scenario' object.}
+\item{x}{A \code{scenario} object.}
 
 \item{info}{A named list of information to be added to the \code{extra_info} list
 of the scenario object \code{x}.}

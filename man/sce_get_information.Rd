@@ -7,7 +7,7 @@
 sce_get_information(x, which)
 }
 \arguments{
-\item{x}{A 'scenario' object.}
+\item{x}{A \code{scenario} object.}
 
 \item{which}{Which parameters to print.}
 }

@@ -7,7 +7,7 @@
 sce_set_scenario_names(x, old_names, new_names, new_baseline)
 }
 \arguments{
-\item{x}{A 'comparison' object.}
+\item{x}{A \code{comparison} object.}
 
 \item{old_names}{A character vector of the names of the scenarios in this
 comparison object, which are to be replaced.}
@@ -19,7 +19,7 @@ names given in \code{old_names}.}
 has been changed. The old baseline is retained if this argument is missing.}
 }
 \value{
-A 'comparison' object with new scenario names.
+A \code{comparison} object with new scenario names.
 }
 \description{
 Set scenario names in a comparison object.

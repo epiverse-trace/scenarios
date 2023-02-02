@@ -7,7 +7,7 @@
 sce_has_comparison_variables(x, variables)
 }
 \arguments{
-\item{x}{A 'scenario' object.}
+\item{x}{A \code{scenario} object.}
 
 \item{variables}{A character vector of variables that are expected to be
 found in the \code{data} list of \code{x}.}

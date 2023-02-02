@@ -7,13 +7,13 @@
 sce_set_baseline(x, new_baseline)
 }
 \arguments{
-\item{x}{A 'comparison' object.}
+\item{x}{A \code{comparison} object.}
 
-\item{new_baseline}{The name of a 'scenario' object contained in the
-'comparison' which is to be considered the new baseline.}
+\item{new_baseline}{The name of a \code{scenario} object contained in the
+\code{comparison} which is to be considered the new baseline.}
 }
 \value{
-The 'comparison' object with the baseline tag set to the new baseline
+The \code{comparison} object with the baseline tag set to the new baseline
 .
 }
 \description{

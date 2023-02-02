@@ -7,9 +7,9 @@
 sce_has_match_variables(x, variables)
 }
 \arguments{
-\item{x}{A 'scenario' object.}
+\item{x}{A \code{scenario} object.}
 
-\item{variables}{A character vector of 'scenario' parameter names or extra
+\item{variables}{A character vector of \code{scenario} parameter names or extra
 information names for which to search in \code{x}.}
 }
 \value{

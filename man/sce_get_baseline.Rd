@@ -7,7 +7,7 @@
 sce_get_baseline(x)
 }
 \arguments{
-\item{x}{A 'comparison' object.}
+\item{x}{A \code{comparison} object.}
 }
 \value{
 The name of the baseline scenario of the comparison.

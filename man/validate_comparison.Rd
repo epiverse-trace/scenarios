@@ -2,16 +2,16 @@
 % Please edit documentation in R/comparisons.R
 \name{validate_comparison}
 \alias{validate_comparison}
-\title{Validator for the 'comparison' class}
+\title{Validator for the \code{comparison} class}
 \usage{
 validate_comparison(object)
 }
 \arguments{
-\item{object}{A 'comparison' object.}
+\item{object}{A \code{comparison} object.}
 }
 \value{
-None. Errors when an invalid 'comparison' object is provided.
+None. Errors when an invalid \code{comparison} object is provided.
 }
 \description{
-Validator for the 'comparison' class
+Validator for the \code{comparison} class
 }

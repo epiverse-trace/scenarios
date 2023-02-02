@@ -13,9 +13,9 @@ sce_are_comparable(
 )
 }
 \arguments{
-\item{baseline}{A 'scenario' object.}
+\item{baseline}{A \code{scenario} object.}
 
-\item{compare}{A second 'scenario' object.}
+\item{compare}{A second \code{scenario} object.}
 
 \item{match_variables}{A character string of scenario parameter names that is
 used to check whether the two scenarios have identical parameters.}

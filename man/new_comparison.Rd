@@ -2,27 +2,27 @@
 % Please edit documentation in R/comparisons.R
 \name{new_comparison}
 \alias{new_comparison}
-\title{Constructor for the 'comparison' class}
+\title{Constructor for the \code{comparison} class}
 \usage{
 new_comparison(data, baseline, match_variables, comparison_variables)
 }
 \arguments{
-\item{data}{A list of 'scenario' objects.}
+\item{data}{A list of \code{scenario} objects.}
 
-\item{baseline}{A string for the element of the list of 'scenario'
+\item{baseline}{A string for the element of the list of \code{scenario}
 objects which indicates which should be considered the 'baseline' outcome,
 against which other outcomes are compared.}
 
-\item{match_variables}{The variables in the 'scenario' outputs on which to
+\item{match_variables}{The variables in the \code{scenario} outputs on which to
 match the scenarios and check whether they are comparable.}
 
-\item{comparison_variables}{The variables in the 'scenario' outputs to
+\item{comparison_variables}{The variables in the \code{scenario} outputs to
 compare against the 'baseline' scenario.}
 }
 \value{
-A 'comparison' object
+A \code{comparison} object
 }
 \description{
-Create a 'comparison' object after input checks.
+Create a \code{comparison} object after input checks.
 }
 \keyword{internal}

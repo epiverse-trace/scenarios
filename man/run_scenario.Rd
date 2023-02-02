@@ -24,7 +24,7 @@ of the function as specified in \code{replicates}. The simulation output data ar
 stored under \code{data}.
 }
 \examples{
-# For a 'scenario' object
+# For a `scenario` object
 # prepare a scenario
 scenario_pandemic_flu <- scenario(
   model_function = "finalsize::final_size",
@@ -41,7 +41,7 @@ scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
 # print to check that data are prepared
 scenario_pandemic_flu
 
-# For a 'comparison' object
+# For a `comparison` object
 # prepare two scenarios of the final size of an epidemic
 pandemic_flu <- scenario(
   model_function = "finalsize::final_size",

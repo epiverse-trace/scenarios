@@ -2,32 +2,32 @@
 % Please edit documentation in R/comparisons.R
 \name{comparison}
 \alias{comparison}
-\title{Create a 'comparison' object}
+\title{Create a \code{comparison} object}
 \usage{
 comparison(..., baseline, match_variables, comparison_variables)
 }
 \arguments{
-\item{...}{Multiple 'scenario's or a list of 'scenario' objects. At least one
+\item{...}{Multiple \code{scenario}s or a list of \code{scenario} objects. At least one
 of these scenarios, the 'baseline' scenario, must be named for the comparison
 to be correctly constructed. The baseline scenario name must be the same as
 passed to \code{baseline}.}
 
-\item{baseline}{A string for the element of the list of 'scenario'
+\item{baseline}{A string for the element of the list of \code{scenario}
 objects which indicates which should be considered the 'baseline' outcome,
 against which other outcomes are compared.}
 
-\item{match_variables}{The variables in the 'scenario' outputs on which to
+\item{match_variables}{The variables in the \code{scenario} outputs on which to
 match the scenarios and check whether they are comparable.}
 
-\item{comparison_variables}{The variables in the 'scenario' outputs to
+\item{comparison_variables}{The variables in the \code{scenario} outputs to
 compare against the 'baseline' scenario.}
 }
 \value{
-A 'comparison' object
+A \code{comparison} object
 }
 \description{
-The 'comparison' class is intended to store 'scenario's and to
-compare among them. One 'scenario' must be set as the 'baseline' for such
+The \code{comparison} class is intended to store \code{scenario}s and to
+compare among them. One \code{scenario} must be set as the 'baseline' for such
 comparisons.
 }
 \examples{

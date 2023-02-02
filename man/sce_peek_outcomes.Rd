@@ -18,7 +18,7 @@ Prints the scenario outcome data's column names and types to screen,
 or the \code{\link[=head]{head()}} of the first outcome replicate if \code{view_rows = TRUE}.
 }
 \description{
-Function to quickly view the names and types of columns in the 'scenario'
+Function to quickly view the names and types of columns in the \code{scenario}
 outcome data. Operates on the first replicate of each scenario run, and
 assumes that the outcome data are data.frames.
 }
