@@ -153,10 +153,10 @@ print.scenario <- function(x, ...) {
 
   # collect information
   extra_info <- glue::glue_collapse(
-    glue::glue("'{names(x$extra_info)}'"),
+    glue::double_quote(glue::glue("{names(x$extra_info)}")),
     sep = ", "
   )
-  extra_info <- cli::col_cyan(extra_info)
+  extra_info <- cli::col_green(extra_info)
 
   # print to screen
   writeLines(

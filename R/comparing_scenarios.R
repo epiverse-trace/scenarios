@@ -235,8 +235,16 @@ sce_filter_comparable <- function(x, match_variables,
   x$data <- x$data[does_match]
 
   # set comparison match and comparison variables
-  x$match_variables <- match_variables
-  x$comparison_variables <- comparison_variables
+  x$match_variables <- if (is.na(x$match_variables)) {
+    match_variables
+  } else {
+    union(x$match_variables, match_variables)
+  }
+  x$comparison_variables <- if (is.na(x$comparison_variables)) {
+    comparison_variables
+  } else {
+    union(x$comparison_variables, comparison_variables)
+  }
 
   # return comparison object
   x

@@ -162,17 +162,33 @@ print.comparison <- function(x, ...) {
   # the scenario matching variables
   matching_variables <- c(
     " Scenario matching variables:",
-    ifelse(is.na(x$match_variables),
+    ifelse(
+      all(is.na(x$match_variables)),
       cli::col_magenta("  No matching variables specified yet."),
-      cli::col_green(glue::glue("  {x$match_variables}"))
+      cli::col_green(
+        glue::glue(
+          "
+            {glue::glue_collapse(glue::double_quote(x$match_variables), \\
+          sep = ', ')}
+          "
+        )
+      )
     )
   )
   # the output comparison variables
   comparison_variables <- c(
     " Scenario comparison variables:",
-    ifelse(is.na(x$comparison_variables),
+    ifelse(
+      all(is.na(x$match_variables)),
       cli::col_magenta("  No comparison variables specified yet."),
-      cli::col_green(glue::glue("  {x$comparison_variables}"))
+      cli::col_green(
+        glue::glue(
+          "
+            {glue::glue_collapse(glue::double_quote(x$comparison_variables), \\
+          sep = ', ')}
+          "
+        )
+      )
     )
   )
   # the model function(s)
