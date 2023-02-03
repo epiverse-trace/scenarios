@@ -21,7 +21,7 @@ finalsize::final_size()."><meta property="og:image" content="/logo.png"><!-- mat
     
     <a class="navbar-brand me-2" href="../index.html">scenarios</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +29,10 @@ finalsize::final_size()."><meta property="og:image" content="/logo.png"><!-- mat
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/scenarios.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -62,7 +65,7 @@ initially targeted for compatibility with outputs from
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenario</span><span class="op">(</span><span class="va">model_function</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, replicates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenario</span><span class="op">(</span><span class="va">model_function</span>, <span class="va">parameters</span>, extra_info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, replicates <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,6 +78,11 @@ model, such as <code><a href="https://epiverse-trace.github.io/finalsize/referen
 
 <dt>parameters</dt>
 <dd><p>Parameters to the <code>model_function</code>.</p></dd>
+
+
+<dt>extra_info</dt>
+<dd><p>Extra information that is useful when comparing scenarios,
+such as details of the population structure or infection characteristics.</p></dd>
 
 
 <dt>replicates</dt>
@@ -92,15 +100,23 @@ times the <code>model_function</code> is run.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># prepare arguments to `finalsize::final_size()`</span></span></span>
+<span class="r-in"><span><span class="co"># using the included convenience function</span></span></span>
 <span class="r-in"><span><span class="va">pandemic_flu_args</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_parameters_finalsize_UK.html">make_parameters_finalsize_UK</a></span><span class="op">(</span>r0 <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">scenarios</span><span class="fu">::</span><span class="fu">scenario</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="co"># prepare extra information on age group limits</span></span></span>
+<span class="r-in"><span><span class="va">age_groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pandemic_flu_args</span><span class="op">$</span><span class="va">contact_matrix</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">scenario</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  model_function <span class="op">=</span> <span class="st">"finalsize::final_size"</span>,</span></span>
 <span class="r-in"><span>  parameters <span class="op">=</span> <span class="va">pandemic_flu_args</span>,</span></span>
+<span class="r-in"><span>  extra_info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    age_groups <span class="op">=</span> <span class="va">age_groups</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  replicates <span class="op">=</span> <span class="fl">1L</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Epidemic scenario object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Model function: finalsize::final_size</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Epidemic scenario object</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model function: <span style="color: #00BBBB;">finalsize::final_size</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Extra information on: <span style="color: #00BBBB;">'age_groups'</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario replicates: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario outcomes are not prepared</span>
 </code></pre></div>
@@ -110,7 +126,7 @@ times the <code>model_function</code> is run.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Pratik Gupte.</p>
+  <p></p><p>Developed by Pratik Gupte, Rosalind Eggo, Edwin Van Leeuwen.</p>
 </div>
 
 <div class="pkgdown-footer-right">

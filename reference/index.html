@@ -15,7 +15,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scenarios</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,10 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/scenarios.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -58,6 +61,21 @@
 
       <dl><dt>
           
+          <code><a href="comparison.html">comparison()</a></code> 
+        </dt>
+        <dd>Create a <code>comparison</code> object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_comparison.html">is_comparison()</a></code> 
+        </dt>
+        <dd>Check whether an object is a <code>comparison</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_scenario.html">is_scenario()</a></code> 
+        </dt>
+        <dd>Check whether an object is a <code>scenario</code></dd>
+      </dl><dl><dt>
+          
           <code><a href="make_parameters_SIR_epidemic.html">make_parameters_SIR_epidemic()</a></code> 
         </dt>
         <dd>Make useful default arguments to <code><a href="https://epiverse-trace.github.io/epidemics/reference/sir_desolve.html" class="external-link">epidemics::sir_desolve()</a></code></dd>
@@ -73,9 +91,29 @@
         <dd>Run a scenario</dd>
       </dl><dl><dt>
           
+          <code><a href="run_scenario.comparison.html">run_scenario(<i>&lt;comparison&gt;</i>)</a></code> 
+        </dt>
+        <dd>Run scenarios contained in a comparison</dd>
+      </dl><dl><dt>
+          
+          <code><a href="run_scenario.scenario.html">run_scenario(<i>&lt;scenario&gt;</i>)</a></code> 
+        </dt>
+        <dd>Run a scenario</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_add_info.html">sce_add_info()</a></code> 
+        </dt>
+        <dd>Add extra information to a scenario</dd>
+      </dl><dl><dt>
+          
           <code><a href="sce_aggregate_outcomes.html">sce_aggregate_outcomes()</a></code> 
         </dt>
         <dd>Aggregate scenario outcomes across replicates</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_are_comparable.html">sce_are_comparable()</a></code> 
+        </dt>
+        <dd>Check whether a pair of scenarios is comparable</dd>
       </dl><dl><dt>
           
           <code><a href="sce_from_json.html">sce_from_json()</a></code> 
@@ -83,14 +121,34 @@
         <dd>Read scenario from JSON</dd>
       </dl><dl><dt>
           
+          <code><a href="sce_get_baseline.html">sce_get_baseline()</a></code> 
+        </dt>
+        <dd>Get the name of the baseline scenario</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_get_information.html">sce_get_information()</a></code> 
+        </dt>
+        <dd>Get scenario information</dd>
+      </dl><dl><dt>
+          
           <code><a href="sce_get_outcomes.html">sce_get_outcomes()</a></code> 
         </dt>
         <dd>Get scenario outcomes</dd>
       </dl><dl><dt>
           
-          <code><a href="sce_get_parameters.html">sce_get_parameters()</a></code> 
+          <code><a href="sce_get_outcomes.comparison.html">sce_get_outcomes(<i>&lt;comparison&gt;</i>)</a></code> 
         </dt>
-        <dd>Print scenario parameters</dd>
+        <dd>Get scenario outcomes from a comparison object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_get_outcomes.scenario.html">sce_get_outcomes(<i>&lt;scenario&gt;</i>)</a></code> 
+        </dt>
+        <dd>Get scenario outcomes from a scenario object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_get_scenario_names.html">sce_get_scenario_names()</a></code> 
+        </dt>
+        <dd>Get scenario names from a comparison object</dd>
       </dl><dl><dt>
           
           <code><a href="sce_has_data.html">sce_has_data()</a></code> 
@@ -98,9 +156,29 @@
         <dd>Check for scenario data</dd>
       </dl><dl><dt>
           
+          <code><a href="sce_has_data.comparison.html">sce_has_data(<i>&lt;comparison&gt;</i>)</a></code> 
+        </dt>
+        <dd>Check for scenario data</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_has_data.scenario.html">sce_has_data(<i>&lt;scenario&gt;</i>)</a></code> 
+        </dt>
+        <dd>Check for scenario data</dd>
+      </dl><dl><dt>
+          
           <code><a href="sce_peek_outcomes.html">sce_peek_outcomes()</a></code> 
         </dt>
         <dd>Get scenario outcome names</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_set_baseline.html">sce_set_baseline()</a></code> 
+        </dt>
+        <dd>Change the baseline scenario in a comparison</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sce_set_scenario_names.html">sce_set_scenario_names()</a></code> 
+        </dt>
+        <dd>Set scenario names in a comparison object.</dd>
       </dl><dl><dt>
           
           <code><a href="sce_to_json.html">sce_to_json()</a></code> 
@@ -113,6 +191,11 @@
         <dd>Create a <code>scenario</code> object</dd>
       </dl><dl><dt>
           
+          <code><a href="validate_comparison.html">validate_comparison()</a></code> 
+        </dt>
+        <dd>Validator for the <code>comparison</code> class</dd>
+      </dl><dl><dt>
+          
           <code><a href="validate_scenario.html">validate_scenario()</a></code> 
         </dt>
         <dd>Validator for the <code>scenario</code> class</dd>
@@ -121,7 +204,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Pratik Gupte.</p>
+  <p></p><p>Developed by Pratik Gupte, Rosalind Eggo, Edwin Van Leeuwen.</p>
 </div>
 
 <div class="pkgdown-footer-right">

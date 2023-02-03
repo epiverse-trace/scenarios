@@ -10,13 +10,28 @@
     <loc>/LICENSE.html</loc>
   </url>
   <url>
+    <loc>/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>/articles/scenarios.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/comparison.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/is_comparison.html</loc>
+  </url>
+  <url>
+    <loc>/reference/is_scenario.html</loc>
   </url>
   <url>
     <loc>/reference/make_parameters_SIR_epidemic.html</loc>
@@ -25,28 +40,73 @@
     <loc>/reference/make_parameters_finalsize_UK.html</loc>
   </url>
   <url>
+    <loc>/reference/new_comparison.html</loc>
+  </url>
+  <url>
     <loc>/reference/new_scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/run_scenario.comparison.html</loc>
   </url>
   <url>
     <loc>/reference/run_scenario.html</loc>
   </url>
   <url>
+    <loc>/reference/run_scenario.scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_add_info.html</loc>
+  </url>
+  <url>
     <loc>/reference/sce_aggregate_outcomes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_are_comparable.html</loc>
   </url>
   <url>
     <loc>/reference/sce_from_json.html</loc>
   </url>
   <url>
+    <loc>/reference/sce_get_baseline.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_get_information.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_get_outcomes.comparison.html</loc>
+  </url>
+  <url>
     <loc>/reference/sce_get_outcomes.html</loc>
   </url>
   <url>
-    <loc>/reference/sce_get_parameters.html</loc>
+    <loc>/reference/sce_get_outcomes.scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_get_scenario_names.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_has_comparison_variables.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_has_data.comparison.html</loc>
   </url>
   <url>
     <loc>/reference/sce_has_data.html</loc>
   </url>
   <url>
+    <loc>/reference/sce_has_data.scenario.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_has_match_variables.html</loc>
+  </url>
+  <url>
     <loc>/reference/sce_peek_outcomes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_set_baseline.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sce_set_scenario_names.html</loc>
   </url>
   <url>
     <loc>/reference/sce_to_json.html</loc>
@@ -56,6 +116,9 @@
   </url>
   <url>
     <loc>/reference/scenarios-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/validate_comparison.html</loc>
   </url>
   <url>
     <loc>/reference/validate_scenario.html</loc>

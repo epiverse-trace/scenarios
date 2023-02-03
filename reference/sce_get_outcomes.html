@@ -15,7 +15,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scenarios</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,10 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/scenarios.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -43,7 +46,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get scenario outcomes</h1>
-      <small class="dont-index">Source: <a href="https://github.com/epiverse-trace/scenarios/blob/HEAD/R/helper_functions.R" class="external-link"><code>R/helper_functions.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/epiverse-trace/scenarios/blob/HEAD/R/get_outcomes.R" class="external-link"><code>R/get_outcomes.R</code></a></small>
       <div class="d-none name"><code>sce_get_outcomes.Rd</code></div>
     </div>
 
@@ -59,22 +62,25 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A scenario object with data prepared. Check for whether data has
-been prepared using <code><a href="sce_has_data.html">sce_has_data()</a></code>.</p></dd>
+<dd><p>A <code>scenario</code> or <code>comparison</code> object with the scenario outcome data
+prepared. Check for whether data has been prepared using <code><a href="sce_has_data.html">sce_has_data()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A single data.table holding the output of all replicates of the
-scenario. Contains the <code>replicate</code> column to help differentiate data from
-each replicate.</p>
+<p>A single <code>data.table</code> holding the output of all replicates of the
+scenario. If <code>x</code> is a <code>comparison</code> object, the <code>data.table</code> holds the
+outcomes of each replicate of each scenario specified therein. Scenarios in
+this case are identified either by their names if any, or by a simple
+synthetic identifier such as 'scenario_01'.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create a scenario</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># For the `scenario` class</span></span></span>
+<span class="r-in"><span><span class="co"># create a scenario specification</span></span></span>
 <span class="r-in"><span><span class="va">scenario_pandemic_flu</span> <span class="op">&lt;-</span> <span class="fu"><a href="scenario.html">scenario</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  model_function <span class="op">=</span> <span class="st">"finalsize::final_size"</span>,</span></span>
 <span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="make_parameters_finalsize_UK.html">make_parameters_finalsize_UK</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
@@ -96,6 +102,38 @@ each replicate.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7:   [0,20) susc_grp_1              1  0.6544866         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8:  [20,40) susc_grp_1              1  0.5750030         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9:      40+ susc_grp_1              1  0.4588871         3</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For the `comparison` class</span></span></span>
+<span class="r-in"><span><span class="co"># prepare two scenarios of the final size of an epidemic</span></span></span>
+<span class="r-in"><span><span class="va">pandemic_flu</span> <span class="op">&lt;-</span> <span class="fu"><a href="scenario.html">scenario</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model_function <span class="op">=</span> <span class="st">"finalsize::final_size"</span>,</span></span>
+<span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="make_parameters_finalsize_UK.html">make_parameters_finalsize_UK</a></span><span class="op">(</span>r0 <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  replicates <span class="op">=</span> <span class="fl">1L</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">covid19</span> <span class="op">&lt;-</span> <span class="fu"><a href="scenario.html">scenario</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model_function <span class="op">=</span> <span class="st">"finalsize::final_size"</span>,</span></span>
+<span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="make_parameters_finalsize_UK.html">make_parameters_finalsize_UK</a></span><span class="op">(</span>r0 <span class="op">=</span> <span class="fl">5.0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  replicates <span class="op">=</span> <span class="fl">1L</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a comparison object</span></span></span>
+<span class="r-in"><span><span class="va">outbreak_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="comparison.html">comparison</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  pandemic_flu <span class="op">=</span> <span class="va">pandemic_flu</span>, covid19 <span class="op">=</span> <span class="va">covid19</span>,</span></span>
+<span class="r-in"><span>  baseline <span class="op">=</span> <span class="st">"pandemic_flu"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">outbreak_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_scenario.html">run_scenario</a></span><span class="op">(</span><span class="va">outbreak_comparison</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">sce_get_outcomes</span><span class="op">(</span><span class="va">outbreak_comparison</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    demo_grp   susc_grp susceptibility p_infected replicate scenario_name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   [0,20) susc_grp_1              1  0.6544866         1  pandemic_flu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  [20,40) susc_grp_1              1  0.5750030         1  pandemic_flu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:      40+ susc_grp_1              1  0.4588871         1  pandemic_flu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:   [0,20) susc_grp_1              1  0.9973053         1       covid19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:  [20,40) susc_grp_1              1  0.9941026         1       covid19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:      40+ susc_grp_1              1  0.9785699         1       covid19</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -103,7 +141,7 @@ each replicate.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Pratik Gupte.</p>
+  <p></p><p>Developed by Pratik Gupte, Rosalind Eggo, Edwin Van Leeuwen.</p>
 </div>
 
 <div class="pkgdown-footer-right">
