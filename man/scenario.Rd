@@ -4,7 +4,7 @@
 \alias{scenario}
 \title{Create a \code{scenario} object}
 \usage{
-scenario(model_function, parameters = list(), replicates = integer(1))
+scenario(model_function, parameters, extra_info = list(), replicates = 1L)
 }
 \arguments{
 \item{model_function}{Function that is expected to run an epidemic scenario
@@ -12,6 +12,9 @@ model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a
 "finalsize::final_size". Explicit namespacing is preferred.}
 
 \item{parameters}{Parameters to the \code{model_function}.}
+
+\item{extra_info}{Extra information that is useful when comparing scenarios,
+such as details of the population structure or infection characteristics.}
 
 \item{replicates}{The number of scenario replicates. This is the number of
 times the \code{model_function} is run.}
@@ -27,11 +30,18 @@ initially targeted for compatibility with outputs from
 }
 \examples{
 # prepare arguments to `finalsize::final_size()`
+# using the included convenience function
 pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
 
-scenarios::scenario(
+# prepare extra information on age group limits
+age_groups <- rownames(pandemic_flu_args$contact_matrix)
+
+scenario(
   model_function = "finalsize::final_size",
   parameters = pandemic_flu_args,
+  extra_info = list(
+    age_groups = age_groups
+  ),
   replicates = 1L
 )
 }

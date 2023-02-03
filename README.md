@@ -1,12 +1,6 @@
 
 # *scenarios*: Compare epidemic scenarios
 
-<img src="man/figures/logo.png" align="right" width="130"/>
-
-*scenarios* is intended to provide functions to compare the outcomes of
-epidemic modelling simulations. This package is still a work in
-progress.
-
 <!-- badges: start -->
 
 [![License:
@@ -20,6 +14,10 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 [![CRAN
 status](https://www.r-pkg.org/badges/version/scenarios)](https://CRAN.R-project.org/package=scenarios)
 <!-- badges: end -->
+
+*scenarios* is intended to provide functions to compare the outcomes of
+epidemic modelling simulations. This package is still a work in
+progress.
 
 ## Installation
 
@@ -131,7 +129,7 @@ scenario_sir <- scenario(
 )
 
 # view the initial conditions and infection parameters
-sce_get_parameters(scenario_sir, which = c("init", "parms"))
+sce_get_information(scenario_sir, which = c("init", "parms"))
 #> $init
 #>    S    I    R 
 #> 0.99 0.01 0.00 

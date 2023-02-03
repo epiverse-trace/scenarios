@@ -29,7 +29,9 @@ A data.table with the outcomes of interest (measure variables)
 summarised using the summary functions, by each grouping variable.
 }
 \description{
-Aggregate scenario outcomes across replicates
+Function to aggregate outcomes from the replicate data of a
+\code{scenario} object. The use case of this function is to provide a compact
+representation of the model output, especially that of stochastic models.
 }
 \examples{
 # create a scenario

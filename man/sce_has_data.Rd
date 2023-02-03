@@ -7,21 +7,35 @@
 sce_has_data(x)
 }
 \arguments{
-\item{x}{A \code{scenario} object.}
+\item{x}{A \code{scenario} or \code{comparison} object.}
 }
 \value{
-A boolean, whether the simulation object has data.
+Whether the \code{scenario} has data, or whether all \code{scenario} objects in
+a \code{comparison} object have data generated.
 }
 \description{
 Check for scenario data
 }
 \examples{
 # create a scenario
-scenario_pandemic_flu <- scenario(
+pandemic_flu <- scenario(
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(),
   replicates = 1
 )
+covid19 <- scenario(
+  model_function = "finalsize::final_size",
+  parameters = make_parameters_finalsize_UK(r0 = 3.0),
+  replicates = 1
+)
 
-sce_has_data(scenario_pandemic_flu)
+# for a `scenario` object
+sce_has_data(pandemic_flu)
+
+# for a `comparison` object
+comparison_flu_covid <- comparison(
+  pandemic_flu = pandemic_flu, covid19 = covid19,
+  baseline = "pandemic_flu"
+)
+sce_has_data(comparison_flu_covid)
 }

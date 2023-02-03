@@ -1,9 +1,15 @@
-#' Print scenario parameters
+#' Get scenario information
 #'
-#' @param x A [scenarios::scenario()] object.
+#' @description Gets the value of one or more object in the `parameters` or the
+#' extra information list `extra_info`.
+#' @param x A `scenario` object.
 #' @param which Which parameters to print.
 #'
-#' @return Nothing. Prints a list of parameters to screen.
+#' @return A named list with two elements, 'parameters' and 'extra_info', which
+#' are themselves lists. Each of these lists has named elements corresponding to
+#' the names passed in `which`. These are separated into two lists to make it
+#' easier to identify whether they are model function arguments or extra
+#' information for the scenario.
 #' @export
 #'
 #' @examples
@@ -15,20 +21,116 @@
 #' )
 #'
 #' # get all parameters
-#' sce_get_parameters(scenario_pandemic_flu)
+#' sce_get_information(scenario_pandemic_flu)
 #'
 #' # get only some parameters
-#' sce_get_parameters(scenario_pandemic_flu, which = c("r0", "solver"))
-sce_get_parameters <- function(x, which = NULL) {
+#' sce_get_information(scenario_pandemic_flu, which = c("r0", "solver"))
+sce_get_information <- function(x, which) {
   # check input
-  checkmate::assert_class(x, "scenario")
+  stopifnot(
+    "Input 'x' must be a `scenario` object" =
+      is_scenario(x)
+  )
 
   # print/return chosen parameters as list
-  if (is.null(which)) {
-    x$parameters
+  if (missing(which)) {
+    list(
+      model_parameters = x$parameters,
+      scenario_information = x$extra_info
+    )
   } else {
-    x$parameters[which]
+    info_list <- c(
+      x$parameters[which],
+      x$extra_info[which]
+    )
+    info_list <- Filter(function(x) !is.null(x), info_list)
+    if (length(info_list) == 0L) {
+      stop(
+        glue::glue(
+          "
+          '{which}' not found among scenario model parameters or extra \\
+          information
+          "
+        )
+      )
+    } else {
+      info_list
+    }
   }
+}
+
+#' Add extra information to a scenario
+#'
+#' @param x A `scenario` object.
+#' @param info A named list of information to be added to the `extra_info` list
+#' of the scenario object `x`.
+#'
+#' @return The scenario `x` with the extra information added.
+#' @export
+#'
+#' @examples
+#' # get some parameters for a `finalsize` run
+#' parameters <- make_parameters_finalsize_UK(r0 = 1.5)
+#' extra_info <- list(
+#'   age_groups = rownames(parameters$contact_matrix)
+#' )
+#' x <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = parameters
+#' )
+#'
+#' sce_add_info(x, extra_info)
+#'
+sce_add_info <- function(x, info) {
+  # check input
+  stopifnot(
+    "Input 'x' must be a `scenario` object" =
+      is_scenario(x),
+    "Input 'info' must be a list with unique names" =
+      checkmate::test_list(info, any.missing = FALSE, names = "unique"),
+    # check for names already present in extra info
+    "Some input list elements in 'info' are already present in this scenario" =
+      (!any(names(info) %in% names(x$extra_info)))
+  )
+
+  # add data
+  x$extra_info <- c(x$extra_info, info)
+
+  # validate scenario and return
+  validate_scenario(x)
+  x
+}
+
+#' Check for scenario data
+#'
+#' @param x A `scenario` or `comparison` object.
+#' @return Whether the `scenario` has data, or whether all `scenario` objects in
+#' a `comparison` object have data generated.
+#' @export
+#' @examples
+#' # create a scenario
+#' pandemic_flu <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(),
+#'   replicates = 1
+#' )
+#' covid19 <- scenario(
+#'   model_function = "finalsize::final_size",
+#'   parameters = make_parameters_finalsize_UK(r0 = 3.0),
+#'   replicates = 1
+#' )
+#'
+#' # for a `scenario` object
+#' sce_has_data(pandemic_flu)
+#'
+#' # for a `comparison` object
+#' comparison_flu_covid <- comparison(
+#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   baseline = "pandemic_flu"
+#' )
+#' sce_has_data(comparison_flu_covid)
+sce_has_data <- function(x) {
+  UseMethod("sce_has_data", x)
 }
 
 #' Check for scenario data
@@ -36,61 +138,27 @@ sce_get_parameters <- function(x, which = NULL) {
 #' @param x A `scenario` object.
 #'
 #' @return A boolean, whether the simulation object has data.
+#' @method sce_has_data scenario
 #' @export
-#' @examples
-#' # create a scenario
-#' scenario_pandemic_flu <- scenario(
-#'   model_function = "finalsize::final_size",
-#'   parameters = make_parameters_finalsize_UK(),
-#'   replicates = 1
-#' )
-#'
-#' sce_has_data(scenario_pandemic_flu)
-sce_has_data <- function(x) {
+sce_has_data.scenario <- function(x) {
   # check input
   checkmate::assert_class(x, "scenario")
 
   !all(vapply(x$data, is.null, FUN.VALUE = TRUE))
 }
 
-#' Get scenario outcomes
+#' Check for scenario data
 #'
-#' @param x A scenario object with data prepared. Check for whether data has
-#' been prepared using [sce_has_data()].
+#' @param x A `comparison` object.
 #'
-#' @return A single data.table holding the output of all replicates of the
-#' scenario. Contains the `replicate` column to help differentiate data from
-#' each replicate.
+#' @method sce_has_data comparison
 #' @export
-#'
-#' @examples
-#' # create a scenario
-#' scenario_pandemic_flu <- scenario(
-#'   model_function = "finalsize::final_size",
-#'   parameters = make_parameters_finalsize_UK(),
-#'   replicates = 3 # note extra replicates
-#' )
-#'
-#' # run scenario
-#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-#'
-#' # get outcomes
-#' sce_get_outcomes(scenario_pandemic_flu)
-sce_get_outcomes <- function(x) {
+#' @return A boolean, whether the simulation object has data.
+sce_has_data.comparison <- function(x) {
   # check input
-  checkmate::assert_class(x, "scenario")
+  checkmate::assert_class(x, "comparison")
 
-  stopifnot(
-    "Scenario data are not prepared, run `run_scenario()` to prepare data." =
-      sce_has_data(x)
-  )
-  if (!is.data.frame(data.table::first(x$data))) {
-    stop(
-      "Scenario model outputs are not `data.frames`."
-    )
-  }
-
-  data.table::rbindlist(x$data)
+  all(vapply(x$data, sce_has_data.scenario, FUN.VALUE = TRUE))
 }
 
 #' Get scenario outcome names
@@ -139,6 +207,9 @@ sce_peek_outcomes <- function(x, view_rows = FALSE) {
 
 #' Aggregate scenario outcomes across replicates
 #'
+#' @description Function to aggregate outcomes from the replicate data of a
+#' `scenario` object. The use case of this function is to provide a compact
+#' representation of the model output, especially that of stochastic models.
 #' @param x A scenario object with data prepared.
 #' @param grouping_variables The variables that should be used to group the
 #' outcomes of interest. Examples include demographic and susceptibility groups.
@@ -177,6 +248,8 @@ sce_aggregate_outcomes <- function(x, grouping_variables, measure_variables,
                                    summary_functions = c("mean", "sd")) {
   # check input
   checkmate::assert_class(x, "scenario")
+  checkmate::assert_character(grouping_variables, min.len = 1)
+  checkmate::assert_character(measure_variables, min.len = 1)
 
   stopifnot(
     "Scenario data are not prepared, run `run_scenario()` to prepare data." =
@@ -207,8 +280,8 @@ sce_aggregate_outcomes <- function(x, grouping_variables, measure_variables,
   # fix malformed names from dcast
   if (length(measure_variables) == 1 && length(summary_functions) == 1) {
     # fix names when only a single column is cast
-    data.table::setnames(dt, ".", sprintf(
-      "%s_%s", measure_variables, summary_functions
+    data.table::setnames(dt, ".", glue::glue(
+      "{measure_variables}_{summary_functions}"
     ))
   }
 

@@ -62,7 +62,9 @@ sce_from_json <- function(file) {
   )
   checkmate::assert_names(
     names(input),
-    must.include = c("model_function", "parameters", "replicates", "data")
+    must.include = c(
+      "model_function", "parameters", "extra_info", "replicates", "data"
+    )
   )
 
   # get model function
@@ -70,6 +72,9 @@ sce_from_json <- function(file) {
 
   # get parameter list
   parameters <- input[["parameters"]]
+
+  # get extra_information
+  extra_info <- input[["extra_info"]]
 
   # get replicates
   replicates <- input[["replicates"]]
@@ -86,6 +91,7 @@ sce_from_json <- function(file) {
     list(
       model_function = model_function,
       parameters = parameters,
+      extra_info = extra_info,
       replicates = replicates,
       data = data
     ),

@@ -1,26 +1,30 @@
 #' Constructor for the `scenario` class
 #'
-#' @description Create a scenario object check inputs.
+#' @description Create a scenario object with input checks.
 #'
 #' @param model_function Function that is expected to run an epidemic scenario
 #' model, such as [finalsize::final_size()], as a string e.g.
 #' "finalsize::final_size". Explicit namespacing is preferred.
 #' @param parameters Parameters to the `model_function`.
+#' @param extra_info Extra model information that may be useful for matching
+#' models.
 #' @param replicates The number of scenario replicates. This is the number of
-#' times the `model_function` is run.
+#' times the model_function is run.
 #'
-#' @return scenario object
+#' @return A `scenario` object
 #' @keywords internal
 new_scenario <- function(model_function,
-                         parameters = list(),
+                         parameters,
+                         extra_info = list(),
                          replicates = integer(1)) {
   # Input checking in `scenario()`
 
-  # create and return epidist class
+  # create and return scenario class
   structure(
     list(
       model_function = model_function,
       parameters = parameters,
+      extra_info = extra_info,
       replicates = replicates,
       data = vector("list", length = replicates)
     ),
@@ -39,6 +43,8 @@ new_scenario <- function(model_function,
 #' model, such as [finalsize::final_size()], as a string e.g.
 #' "finalsize::final_size". Explicit namespacing is preferred.
 #' @param parameters Parameters to the `model_function`.
+#' @param extra_info Extra information that is useful when comparing scenarios,
+#' such as details of the population structure or infection characteristics.
 #' @param replicates The number of scenario replicates. This is the number of
 #' times the `model_function` is run.
 #'
@@ -47,26 +53,41 @@ new_scenario <- function(model_function,
 #'
 #' @examples
 #' # prepare arguments to `finalsize::final_size()`
+#' # using the included convenience function
 #' pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
 #'
-#' scenarios::scenario(
+#' # prepare extra information on age group limits
+#' age_groups <- rownames(pandemic_flu_args$contact_matrix)
+#'
+#' scenario(
 #'   model_function = "finalsize::final_size",
 #'   parameters = pandemic_flu_args,
+#'   extra_info = list(
+#'     age_groups = age_groups
+#'   ),
 #'   replicates = 1L
 #' )
 scenario <- function(model_function,
-                     parameters = list(),
-                     replicates = integer(1)) {
+                     parameters,
+                     extra_info = list(),
+                     replicates = 1L) {
   # check input
   checkmate::assert_string(model_function)
-  checkmate::assert_list(parameters, any.missing = FALSE, names = "unique")
+  checkmate::assert_list(
+    parameters,
+    all.missing = FALSE, any.missing = FALSE,
+    min.len = 1, names = "unique", null.ok = FALSE
+  )
+  checkmate::assert_list(extra_info, any.missing = FALSE, names = "unique")
   checkmate::assert_integerish(replicates, lower = 1, null.ok = FALSE)
 
   if (!grepl(pattern = "::", x = model_function, fixed = TRUE)) {
     warning(
-      "`model_function` may not be explicitly namespaced. ",
-      "Explicit namespacing is preferred to avoid confusion. ",
-      "E.g. 'finalsize::final_size' rather than 'final_size'."
+      glue::glue(
+        "'model_function' may not be explicitly namespaced.
+        Explicit namespacing is preferred to avoid confusion.
+        E.g. 'finalsize::final_size' rather than 'final_size'."
+      )
     )
   }
 
@@ -74,124 +95,104 @@ scenario <- function(model_function,
   scenario <- new_scenario(
     model_function = model_function,
     parameters = parameters,
+    extra_info = extra_info,
     replicates = replicates
   )
 
   # call scenario validator
-  validate_scenario(scenario = scenario)
+  validate_scenario(object = scenario)
 
-  # return epidist object
+  # return scenario object
   scenario
 }
 
 #' Validator for the `scenario` class
 #'
-#' @param scenario A `scenario` object
+#' @param object A `scenario` object
 #' @param data_ok A boolean of whether the scenario can have data. This is
 #' useful when creating scenarios manually from existing objects, or when
 #' reading in a `scenario` with data from a file.
 #'
 #' @return None. Errors when an invalid `scenario` object is provided.
-validate_scenario <- function(scenario, data_ok = FALSE) {
+validate_scenario <- function(object, data_ok = FALSE) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class scenario" =
-      (inherits(scenario, "scenario")),
+      (is_scenario(object)),
     "scenario object does not contain the correct attributes" =
       (c(
-        "model_function", "parameters", "replicates", "data"
-      ) %in% attributes(scenario)$names),
+        "model_function", "parameters", "extra_info", "replicates", "data"
+      ) %in% attributes(object)$names),
     "Model function must be a single function name" =
-      (is.character(scenario$model_function)),
-    "Model parameter list must be a list" =
-      (is.list(scenario$parameters)),
+      (is.character(object$model_function)),
+    "Model parameter list must be a named, non-empty list with no NULLs" =
+      (checkmate::test_list(
+        object$parameters,
+        all.missing = FALSE, any.missing = FALSE,
+        min.len = 1, names = "unique", null.ok = FALSE
+      )
+      ),
+    "Extra information must be a list" =
+      (is.list(object$extra_info)),
     "Model replicates must be at least 1" =
-      (checkmate::check_integerish(scenario$replicates) &&
-        scenario$replicates >= 1),
+      (checkmate::check_integerish(object$replicates) &&
+        object$replicates >= 1),
     "Scenario data must be the same length as the number of replicates" =
-      (nrow(scenario$data) == scenario$replicates),
+      (nrow(object$data) == object$replicates),
     "Scenario data list should not be initialised" =
       (data_ok || all(
-        vapply(scenario$data, is.null, FUN.VALUE = TRUE)
+        vapply(object$data, is.null, FUN.VALUE = TRUE)
       )
       )
   )
-  invisible(scenario)
+  invisible(object)
 }
 
 #' @export
 print.scenario <- function(x, ...) {
+
+  # collect information
+  extra_info <- glue::glue_collapse(
+    glue::glue("'{names(x$extra_info)}'"),
+    sep = ", "
+  )
+  extra_info <- cli::col_cyan(extra_info)
+
+  # print to screen
   writeLines(
     c(
-      sprintf("Epidemic scenario object"),
-      sprintf(" Model function: %s", x$model_function),
-      sprintf(" Scenario replicates: %s", x$replicates),
-      sprintf(" Scenario outcomes are %s", ifelse(
-        sce_has_data(x), "prepared", "not prepared"
-      ))
+      cli::style_bold("Epidemic scenario object"),
+      glue::glue(" Model function: {cli::col_cyan(x$model_function)}"),
+      glue::glue(" Extra information on: {extra_info}"),
+      glue::glue(" Scenario replicates: {x$replicates}"),
+      glue::glue(
+        "
+         Scenario outcomes are \\
+        {ifelse(sce_has_data(x), 'prepared', 'not prepared')}
+        "
+      )
     )
   )
 
   invisible(x)
 }
 
-#' Run a scenario
+#' Check whether an object is a `scenario`
 #'
-#' @description Run an epidemic model scenario using the function stored in
-#' `model_function` with the arguments in `parameters`. Runs as many replicates
-#' of the function as specified in `replicates`. The simulation output data are
-#' stored under `data`, and the `data_available` tag is updated to `TRUE`.
+#' @param x An R object.
 #'
-#' @param x A `scenario` object.
+#' @return A logical indicating whether the object inherits from the class
+#' `scenario`.
 #'
-#' @return The original `scenario` object with the `data` field populated with
-#' simulation output. This object must be assigned.
 #' @export
 #'
 #' @examples
-#' # prepare a scenario
-#' scenario_pandemic_flu <- scenario(
+#' # prepare two scenarios of the final size of an epidemic
+#' pandemic_flu <- scenario(
 #'   model_function = "finalsize::final_size",
-#'   parameters = make_parameters_finalsize_UK(), # using helper function
+#'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
-#' # print to check that data are not prepared
-#' scenario_pandemic_flu
-#'
-#' # generate scenario data
-#' scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
-#'
-#' # print to check that data are prepared
-#' scenario_pandemic_flu
-run_scenario <- function(x) {
-
-  # input checking
-  checkmate::assert_class(x, "scenario")
-
-  # get model function whether explicitly namespaced or not
-  if (grepl(pattern = "::", x = x$model_function, fixed = TRUE)) {
-    pkg_name <- sub("::.*", "", x$model_function)
-    fn_name <- sub(".*::", "", x$model_function)
-    fn <- get(fn_name, asNamespace(pkg_name))
-  } else {
-    fn <- x$model_function
-  }
-
-  # populate the data list
-  output <- lapply(
-    seq_len(x$replicates),
-    function(i) {
-      data <- do.call(
-        what = fn,
-        args = x$parameters
-      )
-      data$replicate <- i
-      data
-    }
-  )
-  # assign output to data
-  x$data <- output
-
-  x
-}
+#' is_scenario(pandemic_flu)
+is_scenario <- function(x) inherits(x, "scenario")
