@@ -46,7 +46,8 @@ Suggests:
     bookdown,
     rmarkdown,
     testthat (>= 3.0.0),
-    ggplot2
+    ggplot2,
+    scales
 Config/testthat/edition: 3
 Remotes: 
     epiverse-trace/epidemics@f1275c

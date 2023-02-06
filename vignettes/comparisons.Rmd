@@ -192,7 +192,7 @@ ggplot(data_comparison_uk) +
   theme_classic() +
   theme(
     legend.position = "top",
-    legend.key.height = unit(2, "mm"),
+    legend.key.height = unit(2, "mm")
   ) +
   coord_cartesian(
     expand = FALSE

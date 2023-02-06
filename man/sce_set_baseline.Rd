@@ -29,7 +29,7 @@ pandemic_flu <- scenario(
 )
 
 covid19 <- scenario(
-name = "covid19",
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   replicates = 1L
