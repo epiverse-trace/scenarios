@@ -39,3 +39,19 @@ test_that("Correct printing of comparison class", {
     print(x) # conflicts with method from 'testthat'
   )
 })
+
+test_that("comparison object is initialised correctly in alternative ways", {
+  # with a single scenario object
+  x <- comparison(
+    pandemic_flu,
+    baseline = "pandemic_flu"
+  )
+  expect_s3_class(x, "comparison")
+
+  # with a single list of scenarios
+  x <- comparison(
+    list(pandemic_flu, covid19),
+    baseline = "pandemic_flu"
+  )
+  expect_s3_class(x, "comparison")
+})
