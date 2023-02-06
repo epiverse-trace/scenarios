@@ -28,6 +28,7 @@
 #' # For the `comparison` class
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
@@ -41,7 +42,7 @@
 #'
 #' # create a comparison object
 #' outbreak_comparison <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
@@ -102,13 +103,13 @@ sce_get_outcomes.comparison <- function(x) {
   # this lapply throws errors when the outcomes are not data.frames
 
   # check for scenario names in x$data and fix names if needed
-  scenario_names <- names(x$data)
+  scenario_names <- vapply(x$data, `[[`, "name", FUN.VALUE = "string")
   # check if any scenario names are missing and assign synthetic names
   # all names cannot be missing as at least one named scenario,
   # the baseline, must exist
-  if (any(scenario_names == "")) {
-    scenario_names[scenario_names == ""] <- glue::glue(
-      "scenario_{which(scenario_names == '')}"
+  if (anyNA(scenario_names)) {
+    scenario_names[is.na(scenario_names)] <- glue::glue(
+      "scenario_{which(is.na(scenario_names))}"
     )
   }
 

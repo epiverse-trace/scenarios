@@ -184,12 +184,14 @@ sce_are_comparable <- function(baseline, compare, match_variables,
 #'
 #' @examples
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   extra_info = list(country = "UK", pathogen = "flu")
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   extra_info = list(country = "UK", pathogen = "SARS-CoV-2")
@@ -201,7 +203,7 @@ sce_are_comparable <- function(baseline, compare, match_variables,
 #'
 #' # check whether scenarios are comparable
 #' outbreak_comparison <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
@@ -220,13 +222,17 @@ sce_filter_comparable <- function(x, match_variables,
     "Comparison variables must be a string" =
       (is.character(comparison_variables))
   )
+  # get baseline scenario
+  baseline_ <- x$data[[Position(
+    f = function(sc) sc$name == x$baseline, x$data
+  )]]
   # get which scenarios match
   # suppress messages from sce_are_comparable
   suppressMessages(
     does_match <- vapply(
       x$data, sce_are_comparable,
       FUN.VALUE = TRUE,
-      baseline = x$data[[x$baseline]],
+      baseline = baseline_,
       match_variables = match_variables,
       comparison_variables = comparison_variables
     )

@@ -49,12 +49,14 @@ new_comparison <- function(data,
 #' @examples
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   replicates = 1L
@@ -62,14 +64,14 @@ new_comparison <- function(data,
 #'
 #' # create a comparison object
 #' comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
 #' # pass scenario objects as a list
 #' # create a comparison object
 #' comparison(
-#'   list(pandemic_flu = pandemic_flu, covid19 = covid19),
+#'   list(pandemic_flu, covid19),
 #'   baseline = "pandemic_flu"
 #' )
 comparison <- function(...,
@@ -90,7 +92,7 @@ comparison <- function(...,
         )
       ),
     "Baseline must be among scenario names" =
-      (is.character(baseline) && baseline %in% names(data))
+      (is.character(baseline) && baseline %in% vapply(data, `[[`, "ch", "name"))
   )
 
   # call comparison constructor
@@ -133,7 +135,7 @@ validate_comparison <- function(object) {
       )),
     "Baseline must be among scenario names" =
       (is.character(object$baseline) &&
-        object$baseline %in% names(object$data)),
+        object$baseline %in% sce_get_scenario_names(object)),
     "Matching variables must be a string" =
       (is.character(object$match_variables)),
     "Comparison variables must be a string" =
@@ -219,12 +221,14 @@ print.comparison <- function(x, ...) {
 #' @examples
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   replicates = 1L
@@ -232,7 +236,7 @@ print.comparison <- function(x, ...) {
 #'
 #' # create a comparison object
 #' x <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'

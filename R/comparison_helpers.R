@@ -8,6 +8,7 @@
 #' @examples
 #' # create some scenarios
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
@@ -21,7 +22,7 @@
 #'
 #' # create comparison, passing prepared scenarios with some names
 #' outbreak_comparison <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 sce_get_scenario_names <- function(x) {
@@ -31,7 +32,7 @@ sce_get_scenario_names <- function(x) {
       is_comparison(x)
   )
 
-  names(x$data)
+  vapply(x$data, `[[`, "name", FUN.VALUE = "string")
 }
 
 #' Set scenario names in a comparison object.
@@ -50,6 +51,7 @@ sce_get_scenario_names <- function(x) {
 #' @examples
 #' # create some scenarios
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
@@ -63,7 +65,7 @@ sce_get_scenario_names <- function(x) {
 #'
 #' # create comparison, passing prepared scenarios with some names
 #' outbreak_comparison <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
@@ -78,6 +80,8 @@ sce_get_scenario_names <- function(x) {
 sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
   # input checking
   stopifnot(
+    "All scenario names are `NA`; assign names when creating `scenarios`." =
+      !all(is.na(sce_get_scenario_names(x))),
     "Input 'x' must be a `comparison` object" =
       is_comparison(x),
     "Old names must be passed as a character vector" =
@@ -96,11 +100,14 @@ sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
   )
 
   # swap names: make new names named, match names to data, assign new names
-  names(new_names) <- old_names
-  new_names_ <- names(x$data)
-  names(new_names_) <- new_names_
-  new_names_[old_names] <- new_names[old_names]
-  names(x$data) <- new_names_
+  current_names <- sce_get_scenario_names(x)
+  current_names[current_names == old_names] <- new_names
+
+  # change names in scenario objects
+  x$data <- Map(x$data, current_names, f = function(sc, name) {
+    sc$name <- name
+    sc
+  })
 
   # set new baseline if needed
   if (!missing(new_baseline)) {
@@ -125,12 +132,14 @@ sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
 #' @examples
 #' # create some scenarios
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   replicates = 1L
@@ -138,7 +147,7 @@ sce_set_scenario_names <- function(x, old_names, new_names, new_baseline) {
 #'
 #' # create comparison, passing prepared scenarios with some names
 #' outbreak_comparison <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
@@ -182,12 +191,14 @@ sce_set_baseline <- function(x, new_baseline) {
 #' @examples
 #' # create some scenarios
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   replicates = 1L
@@ -195,7 +206,7 @@ sce_set_baseline <- function(x, new_baseline) {
 #'
 #' # create comparison, passing prepared scenarios with some names
 #' outbreak_comparison <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
