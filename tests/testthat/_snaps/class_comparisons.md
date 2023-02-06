@@ -1,7 +1,7 @@
 # Correct printing of comparison class
 
     Code
-      print(x1)
+      print(x)
     Output
       Scenario comparison object
        Number of scenarios: 2

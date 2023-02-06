@@ -1,6 +1,7 @@
 
 # Prepare a finalsize scenario
 scenario_pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(),
   replicates = 3 # note extra replicates
@@ -8,10 +9,13 @@ scenario_pandemic_flu <- scenario(
 
 test_that("scenario class is initialised correctly", {
   expect_s3_class(scenario_pandemic_flu, class = "scenario")
-  expect_length(scenario_pandemic_flu, 5L)
+  expect_length(scenario_pandemic_flu, 6L)
   expect_named(
     scenario_pandemic_flu,
-    c("model_function", "parameters", "extra_info", "replicates", "data")
+    c(
+      "name", "model_function", "parameters",
+      "extra_info", "replicates", "data"
+    )
   )
   expect_type(scenario_pandemic_flu$model_function, "character")
   expect_type(scenario_pandemic_flu$parameters, "list")
