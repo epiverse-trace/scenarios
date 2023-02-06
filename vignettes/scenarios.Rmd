@@ -82,6 +82,7 @@ age_groups <- rownames(parameters_finalsize_low_r0$contact_matrix)
 
 # define a low R0 scenario comparable to pandemic influenza
 low_r0 <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = parameters_finalsize_low_r0,
   extra_info = list(
@@ -93,6 +94,7 @@ low_r0 <- scenario(
 # define a higher R0 scenario comparable to Covid-19
 # note no age group information is added yet
 high_r0 <- scenario(
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   replicates = 1L
@@ -199,7 +201,7 @@ Scenarios can be wrapped into a `comparison` object. This is a convenient and st
 ```{r}
 # create object, passing prepared scenarios with some names
 outbreak_comparison <- comparison(
-  pandemic_flu = low_r0_data, covid19 = high_r0_data,
+  low_r0_data, high_r0_data,
   baseline = "pandemic_flu"
 )
 

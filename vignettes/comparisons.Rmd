@@ -43,6 +43,7 @@ This first example considers two scenarios of the final size of an influenza epi
 ```{r}
 # create a scenario object for uniform mixing and susceptibility
 uniform_mixing <- scenario(
+  name = "uniform_mixing",
   model_function = "finalsize::final_size",
   parameters = list(
     r0 = r0_flu,
@@ -64,6 +65,7 @@ uniform_mixing <- scenario(
 age_groups <- rownames(make_parameters_finalsize_UK()$contact_matrix)
 
 age_stratified_mixing <- scenario(
+  name = "age_stratified_mixing",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = r0_flu), # use convenience fn
   extra_info = list(
@@ -80,6 +82,7 @@ age_stratified_mixing <- scenario(
 # create a scenario object for uniform mixing
 de_pop <- 84 * 1e6 # about 84 million
 uniform_mixing_de <- scenario(
+  name = "uniform_mixing_de",
   model_function = "finalsize::final_size",
   parameters = list(
     r0 = r0_flu,
