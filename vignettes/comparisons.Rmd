@@ -19,7 +19,10 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  dpi = 150
 )
 ```
 
@@ -74,6 +77,9 @@ age_stratified_mixing <- scenario(
   ),
   replicates = 1
 )
+
+# view scenario
+age_stratified_mixing
 ```
 
 ```{r}
@@ -108,28 +114,29 @@ uniform_mixing_de <- sce_add_info(
     country = "Germany"
   )
 )
+
+# check that information has been added
+uniform_mixing_de
 ```
 
-Run each scenario, so that data is available.
-
-```{r}
-uniform_mixing <- run_scenario(uniform_mixing)
-age_stratified_mixing <- run_scenario(age_stratified_mixing)
-uniform_mixing_de <- run_scenario(uniform_mixing_de)
-```
-
-Create a comparison object to hold the comparisons and filter for comparable
-scenarios.
+Create a comparison object to hold the comparisons and filter for comparable scenarios.
 
 ```{r}
 flu_comparison <- comparison(
-  uniform_mixing = uniform_mixing,
-  age_stratified_mixing = age_stratified_mixing,
-  uniform_mixing_de = uniform_mixing_de,
+  uniform_mixing, age_stratified_mixing, uniform_mixing_de,
   baseline = "uniform_mixing"
 )
 
 # print to view
+flu_comparison
+```
+
+Prepare data for all scenarios at once using the `run_scenario()` method for `comparison` objects.
+
+```{r}
+flu_comparison <- run_scenario(flu_comparison)
+
+# check that data is ready
 flu_comparison
 ```
 
@@ -159,12 +166,40 @@ data_comparison_uk <- sce_get_outcomes(flu_comparison_uk)
 
 # print to view
 data_comparison_uk
+
+# change name of total population group
+data_comparison_uk[scenario_name == "uniform_mixing", demo_grp := "Total pop."]
 ```
 
 ```{r}
 ggplot(data_comparison_uk) +
   geom_col(
-    aes(demo_grp, p_infected, fill = scenario_name)
+    aes(demo_grp, p_infected, fill = scenario_name),
+    col = "black"
+  ) +
+  expand_limits(
+    x = c(0.5, nrow(data_comparison_uk) + 0.5)
+  ) +
+  scale_fill_brewer(
+    palette = "Accent",
+    name = "Population susceptibility",
+    labels = c("Heterogeneous", "Uniform")
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, 1)
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "top",
+    legend.key.height = unit(2, "mm"),
+  ) +
+  coord_cartesian(
+    expand = FALSE
+  ) +
+  labs(
+    x = "Age group",
+    y = "% Infected"
   )
 ```
 
@@ -201,6 +236,32 @@ data_comparison_uniform
 ggplot(data_comparison_uniform) +
   geom_col(
     aes(demo_grp, p_infected, fill = scenario_name),
+    col = "black",
     position = position_dodge(width = 1)
+  ) +
+  expand_limits(
+    x = c(0.5, 1.5)
+  ) +
+  scale_fill_brewer(
+    palette = "Dark2",
+    name = "Country",
+    labels = c("UK", "DE")
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, 1)
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "top",
+    legend.key.height = unit(2, "mm"),
+    axis.text.x = element_blank()
+  ) +
+  coord_cartesian(
+    expand = FALSE
+  ) +
+  labs(
+    x = "Total population",
+    y = "% Infected"
   )
 ```
