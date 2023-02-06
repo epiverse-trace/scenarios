@@ -19,6 +19,7 @@ Check for scenario data
 \examples{
 # create a scenario
 pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(),
   replicates = 1
@@ -34,7 +35,7 @@ sce_has_data(pandemic_flu)
 
 # for a `comparison` object
 comparison_flu_covid <- comparison(
-  pandemic_flu = pandemic_flu, covid19 = covid19,
+  pandemic_flu, covid19,
   baseline = "pandemic_flu"
 )
 sce_has_data(comparison_flu_covid)

@@ -17,6 +17,7 @@ Read scenario from JSON
 }
 \examples{
 scenario_pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(),
   replicates = 1

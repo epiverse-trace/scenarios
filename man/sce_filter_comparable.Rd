@@ -26,12 +26,14 @@ Filter for comparable scenarios
 }
 \examples{
 pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 1.5),
   extra_info = list(country = "UK", pathogen = "flu")
 )
 
 covid19 <- scenario(
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   extra_info = list(country = "UK", pathogen = "SARS-CoV-2")
@@ -43,7 +45,7 @@ covid19 <- run_scenario(covid19)
 
 # check whether scenarios are comparable
 outbreak_comparison <- comparison(
-  pandemic_flu = pandemic_flu, covid19 = covid19,
+  pandemic_flu, covid19,
   baseline = "pandemic_flu"
 )
 
