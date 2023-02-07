@@ -35,6 +35,12 @@ finalsize::final_size()."><meta property="og:image" content="/logo.png"><!-- mat
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/comparisons.html">Comparing epidemic scenarios</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -65,12 +71,22 @@ initially targeted for compatibility with outputs from
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenario</span><span class="op">(</span><span class="va">model_function</span>, <span class="va">parameters</span>, extra_info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, replicates <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenario</span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
+<span>  <span class="va">model_function</span>,</span>
+<span>  <span class="va">parameters</span>,</span>
+<span>  extra_info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  replicates <span class="op">=</span> <span class="fl">1L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>model_function</dt>
+    <dl><dt>name</dt>
+<dd><p>The scenario name as a string. Defaults to <code>NA</code> if not provided.</p></dd>
+
+
+<dt>model_function</dt>
 <dd><p>Function that is expected to run an epidemic scenario
 model, such as <code><a href="https://epiverse-trace.github.io/finalsize/reference/final_size.html" class="external-link">finalsize::final_size()</a></code>, as a string e.g.
 "finalsize::final_size". Explicit namespacing is preferred.</p></dd>
@@ -115,8 +131,9 @@ times the <code>model_function</code> is run.</p></dd>
 <span class="r-in"><span>  replicates <span class="op">=</span> <span class="fl">1L</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Epidemic scenario object</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario name: No name specified (NA)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Model function: <span style="color: #00BBBB;">finalsize::final_size</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Extra information on: <span style="color: #00BBBB;">'age_groups'</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Extra information on: <span style="color: #00BB00;">"age_groups"</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario replicates: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Scenario outcomes are not prepared</span>
 </code></pre></div>

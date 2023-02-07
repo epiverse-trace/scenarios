@@ -29,6 +29,12 @@
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/comparisons.html">Comparing epidemic scenarios</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -56,13 +62,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sce_are_comparable</span><span class="op">(</span></span>
-<span>  <span class="va">baseline</span>,</span>
-<span>  <span class="va">compare</span>,</span>
-<span>  <span class="va">match_variables</span>,</span>
-<span>  <span class="va">comparison_variables</span>,</span>
-<span>  expect_identical_match <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sce_are_comparable</span><span class="op">(</span><span class="va">baseline</span>, <span class="va">compare</span>, <span class="va">match_variables</span>, <span class="va">comparison_variables</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,19 +77,14 @@
 
 <dt>match_variables</dt>
 <dd><p>A character string of scenario parameter names that is
-used to check whether the two scenarios have identical parameters.</p></dd>
+used to check whether the two scenarios have identical parameters or other
+characteristics (stored in <code>extra_information</code>).</p></dd>
 
 
 <dt>comparison_variables</dt>
 <dd><p>A character string of column names expected in
 the scenarios' outcome data. This is used to check whether the scenarios both
 have the required columns in their data.</p></dd>
-
-
-<dt>expect_identical_match</dt>
-<dd><p>A named logical vector that indicates whether
-the matching variables should be identical. Vector names should correspond to
-names in <code>match_variables</code>, and must be in the same order.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -123,10 +118,7 @@ names in <code>match_variables</code>, and must be in the same order.</p></dd>
 <span class="r-in"><span>  baseline <span class="op">=</span> <span class="va">pandemic_flu</span>,</span></span>
 <span class="r-in"><span>  compare <span class="op">=</span> <span class="va">covid19</span>,</span></span>
 <span class="r-in"><span>  match_variables <span class="op">=</span> <span class="st">"demography_vector"</span>,</span></span>
-<span class="r-in"><span>  comparison_variables <span class="op">=</span> <span class="st">"p_infected"</span>,</span></span>
-<span class="r-in"><span>  expect_identical_match <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    demography_vector <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  comparison_variables <span class="op">=</span> <span class="st">"p_infected"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>

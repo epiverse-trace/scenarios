@@ -29,6 +29,12 @@
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/comparisons.html">Comparing epidemic scenarios</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -76,6 +82,7 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create some scenarios</span></span></span>
 <span class="r-in"><span><span class="va">pandemic_flu</span> <span class="op">&lt;-</span> <span class="fu"><a href="scenario.html">scenario</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"pandemic_flu"</span>,</span></span>
 <span class="r-in"><span>  model_function <span class="op">=</span> <span class="st">"finalsize::final_size"</span>,</span></span>
 <span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="make_parameters_finalsize_UK.html">make_parameters_finalsize_UK</a></span><span class="op">(</span>r0 <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  replicates <span class="op">=</span> <span class="fl">1L</span></span></span>
@@ -89,7 +96,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create comparison, passing prepared scenarios with some names</span></span></span>
 <span class="r-in"><span><span class="va">outbreak_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="comparison.html">comparison</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  pandemic_flu <span class="op">=</span> <span class="va">pandemic_flu</span>, covid19 <span class="op">=</span> <span class="va">covid19</span>,</span></span>
+<span class="r-in"><span>  <span class="va">pandemic_flu</span>, <span class="va">covid19</span>,</span></span>
 <span class="r-in"><span>  baseline <span class="op">=</span> <span class="st">"pandemic_flu"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
