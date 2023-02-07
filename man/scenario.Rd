@@ -4,9 +4,17 @@
 \alias{scenario}
 \title{Create a \code{scenario} object}
 \usage{
-scenario(model_function, parameters, extra_info = list(), replicates = 1L)
+scenario(
+  name = NA_character_,
+  model_function,
+  parameters,
+  extra_info = list(),
+  replicates = 1L
+)
 }
 \arguments{
+\item{name}{The scenario name as a string. Defaults to \code{NA} if not provided.}
+
 \item{model_function}{Function that is expected to run an epidemic scenario
 model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a string e.g.
 "finalsize::final_size". Explicit namespacing is preferred.}

@@ -4,7 +4,7 @@
 \alias{comparison}
 \title{Create a \code{comparison} object}
 \usage{
-comparison(..., baseline, match_variables, comparison_variables)
+comparison(..., baseline)
 }
 \arguments{
 \item{...}{Multiple \code{scenario}s or a list of \code{scenario} objects. At least one
@@ -15,12 +15,6 @@ passed to \code{baseline}.}
 \item{baseline}{A string for the element of the list of \code{scenario}
 objects which indicates which should be considered the 'baseline' outcome,
 against which other outcomes are compared.}
-
-\item{match_variables}{The variables in the \code{scenario} outputs on which to
-match the scenarios and check whether they are comparable.}
-
-\item{comparison_variables}{The variables in the \code{scenario} outputs to
-compare against the 'baseline' scenario.}
 }
 \value{
 A \code{comparison} object
@@ -33,12 +27,14 @@ comparisons.
 \examples{
 # prepare two scenarios of the final size of an epidemic
 pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 1.5),
   replicates = 1L
 )
 
 covid19 <- scenario(
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   replicates = 1L
@@ -46,14 +42,14 @@ covid19 <- scenario(
 
 # create a comparison object
 comparison(
-  pandemic_flu = pandemic_flu, covid19 = covid19,
+  pandemic_flu, covid19,
   baseline = "pandemic_flu"
 )
 
 # pass scenario objects as a list
 # create a comparison object
 comparison(
-  list(pandemic_flu = pandemic_flu, covid19 = covid19),
+  list(pandemic_flu, covid19),
   baseline = "pandemic_flu"
 )
 }

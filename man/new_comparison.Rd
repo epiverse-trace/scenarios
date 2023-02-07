@@ -4,7 +4,7 @@
 \alias{new_comparison}
 \title{Constructor for the \code{comparison} class}
 \usage{
-new_comparison(data, baseline, match_variables, comparison_variables)
+new_comparison(data, baseline)
 }
 \arguments{
 \item{data}{A list of \code{scenario} objects.}

@@ -25,7 +25,9 @@ sce_to_json <- function(x, file) {
   jsonlite::write_json(
     lapply(x, `[`),
     path = file,
-    pretty = TRUE
+    pretty = TRUE,
+    auto_unbox = TRUE,
+    na = "null"
   )
 }
 
@@ -38,6 +40,7 @@ sce_to_json <- function(x, file) {
 #'
 #' @examples
 #' scenario_pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(),
 #'   replicates = 1
@@ -63,9 +66,12 @@ sce_from_json <- function(file) {
   checkmate::assert_names(
     names(input),
     must.include = c(
+      "name",
       "model_function", "parameters", "extra_info", "replicates", "data"
     )
   )
+  # get scenario name
+  name <- ifelse(is.null(input[["name"]]), NA_character_, input[["name"]])
 
   # get model function
   model_function <- input[["model_function"]]
@@ -89,6 +95,7 @@ sce_from_json <- function(file) {
   # create scenario object
   scenario_ <- structure(
     list(
+      name = name,
       model_function = model_function,
       parameters = parameters,
       extra_info = extra_info,

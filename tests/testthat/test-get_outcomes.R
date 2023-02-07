@@ -2,11 +2,13 @@
 #### Tests for sce_get_outcomes ####
 # Prepare a comparison of two scenarios of the final size of an epidemic
 pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 1.5),
   replicates = 1L
 )
 covid19 <- scenario(
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   replicates = 1L
@@ -18,7 +20,7 @@ covid19 <- run_scenario(covid19)
 
 # create a comparison object without matching or comparison variables
 x <- comparison(
-  pandemic_flu = pandemic_flu, covid19 = covid19,
+  pandemic_flu, covid19,
   baseline = "pandemic_flu"
 )
 
@@ -54,10 +56,19 @@ test_that("'sce_get_outcome' works with 'comparison' object", {
   )
 
   # check that scenario name is generated if missing
+  covid19 <- scenario(
+    # no name
+    model_function = "finalsize::final_size",
+    parameters = make_parameters_finalsize_UK(r0 = 5.0),
+    replicates = 1L
+  )
+
   x <- comparison(
-    pandemic_flu = pandemic_flu, covid19,
+    pandemic_flu, covid19,
     baseline = "pandemic_flu"
   )
+  # regenerate data
+  x <- run_scenario(x)
   data <- sce_get_outcomes(x)
   expect_identical(
     unique(data$scenario_name),
@@ -71,6 +82,7 @@ test_that("'sce_get_outcome' errors with non-dataframe output", {
   # suppress unwanted warnings here
   suppressWarnings(
     scenario_lm <- scenario(
+      name = "linear_model",
       model_function = "lm",
       parameters = list(
         formula = as.formula("y ~ x"),
@@ -88,10 +100,8 @@ test_that("'sce_get_outcome' errors with non-dataframe output", {
   # as this is not how it is intended to be used. Please do not copy.
   expect_silent(
     tmp_comparison <- comparison(
-      x = scenario_lm,
-      match_variables = "formula",
-      comparison_variables = "formula",
-      baseline = "x"
+      scenario_lm,
+      baseline = "linear_model"
     )
   )
 

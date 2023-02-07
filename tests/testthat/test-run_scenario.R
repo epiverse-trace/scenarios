@@ -1,12 +1,14 @@
 #### Tests for the generic function  'run_scenario' ####
 # Prepare a comparison of two scenarios of the final size of an epidemic
 pandemic_flu <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 1.5),
   replicates = 1L
 )
 
 covid19 <- scenario(
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   replicates = 1L
@@ -14,7 +16,7 @@ covid19 <- scenario(
 
 # create a comparison object without matching or comparison variables
 x <- comparison(
-  pandemic_flu = pandemic_flu, covid19 = covid19,
+  pandemic_flu, covid19,
   baseline = "pandemic_flu"
 )
 

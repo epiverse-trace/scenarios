@@ -2,6 +2,7 @@
 #'
 #' @description Create a scenario object with input checks.
 #'
+#' @param name The scenario name as a string. Defaults to `NA` if not provided.
 #' @param model_function Function that is expected to run an epidemic scenario
 #' model, such as [finalsize::final_size()], as a string e.g.
 #' "finalsize::final_size". Explicit namespacing is preferred.
@@ -13,7 +14,8 @@
 #'
 #' @return A `scenario` object
 #' @keywords internal
-new_scenario <- function(model_function,
+new_scenario <- function(name,
+                         model_function,
                          parameters,
                          extra_info = list(),
                          replicates = integer(1)) {
@@ -22,6 +24,7 @@ new_scenario <- function(model_function,
   # create and return scenario class
   structure(
     list(
+      name = name,
       model_function = model_function,
       parameters = parameters,
       extra_info = extra_info,
@@ -39,6 +42,7 @@ new_scenario <- function(model_function,
 #' initially targeted for compatibility with outputs from
 #' [finalsize::final_size()].
 #'
+#' @param name The scenario name as a string. Defaults to `NA` if not provided.
 #' @param model_function Function that is expected to run an epidemic scenario
 #' model, such as [finalsize::final_size()], as a string e.g.
 #' "finalsize::final_size". Explicit namespacing is preferred.
@@ -67,11 +71,13 @@ new_scenario <- function(model_function,
 #'   ),
 #'   replicates = 1L
 #' )
-scenario <- function(model_function,
+scenario <- function(name = NA_character_,
+                     model_function,
                      parameters,
                      extra_info = list(),
                      replicates = 1L) {
   # check input
+  checkmate::assert_string(name, na.ok = TRUE)
   checkmate::assert_string(model_function)
   checkmate::assert_list(
     parameters,
@@ -93,6 +99,7 @@ scenario <- function(model_function,
 
   # call scenario constructor
   scenario <- new_scenario(
+    name = name,
     model_function = model_function,
     parameters = parameters,
     extra_info = extra_info,
@@ -119,10 +126,13 @@ validate_scenario <- function(object, data_ok = FALSE) {
   stopifnot(
     "Object should be of class scenario" =
       (is_scenario(object)),
-    "scenario object does not contain the correct attributes" =
+    "`scenario` does not contain the correct attributes" =
       (c(
-        "model_function", "parameters", "extra_info", "replicates", "data"
+        "name", "model_function", "parameters",
+        "extra_info", "replicates", "data"
       ) %in% attributes(object)$names),
+    "Scenario name must be a single string" =
+      (checkmate::test_string(object$name, na.ok = TRUE)),
     "Model function must be a single function name" =
       (is.character(object$model_function)),
     "Model parameter list must be a named, non-empty list with no NULLs" =
@@ -135,7 +145,7 @@ validate_scenario <- function(object, data_ok = FALSE) {
     "Extra information must be a list" =
       (is.list(object$extra_info)),
     "Model replicates must be at least 1" =
-      (checkmate::check_integerish(object$replicates) &&
+      (checkmate::test_integerish(object$replicates) &&
         object$replicates >= 1),
     "Scenario data must be the same length as the number of replicates" =
       (nrow(object$data) == object$replicates),
@@ -152,16 +162,23 @@ validate_scenario <- function(object, data_ok = FALSE) {
 print.scenario <- function(x, ...) {
 
   # collect information
+  name <- ifelse(
+    is.na(x$name),
+    "No name specified (NA)",
+    glue::double_quote(x$name)
+  )
+  name <- glue::glue(" Scenario name: {name}")
   extra_info <- glue::glue_collapse(
-    glue::glue("'{names(x$extra_info)}'"),
+    glue::double_quote(glue::glue("{names(x$extra_info)}")),
     sep = ", "
   )
-  extra_info <- cli::col_cyan(extra_info)
+  extra_info <- cli::col_green(extra_info)
 
   # print to screen
   writeLines(
     c(
       cli::style_bold("Epidemic scenario object"),
+      name,
       glue::glue(" Model function: {cli::col_cyan(x$model_function)}"),
       glue::glue(" Extra information on: {extra_info}"),
       glue::glue(" Scenario replicates: {x$replicates}"),

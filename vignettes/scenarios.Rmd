@@ -1,5 +1,5 @@
 ---
-title: "Defining epidemic scenarios and comparison"
+title: "Defining epidemic scenarios and comparisons"
 output:
   bookdown::html_vignette2:
     fig_caption: yes
@@ -9,7 +9,7 @@ pkgdown:
 bibliography: references.bib
 link-citations: true
 vignette: >
-  %\VignetteIndexEntry{Defining epidemic scenarios and comparison}
+  %\VignetteIndexEntry{Defining epidemic scenarios and comparisons}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -82,6 +82,7 @@ age_groups <- rownames(parameters_finalsize_low_r0$contact_matrix)
 
 # define a low R0 scenario comparable to pandemic influenza
 low_r0 <- scenario(
+  name = "pandemic_flu",
   model_function = "finalsize::final_size",
   parameters = parameters_finalsize_low_r0,
   extra_info = list(
@@ -93,6 +94,7 @@ low_r0 <- scenario(
 # define a higher R0 scenario comparable to Covid-19
 # note no age group information is added yet
 high_r0 <- scenario(
+  name = "covid19",
   model_function = "finalsize::final_size",
   parameters = make_parameters_finalsize_UK(r0 = 5.0),
   replicates = 1L
@@ -180,24 +182,15 @@ sce_are_comparable(
   baseline = low_r0_data,
   compare = high_r0_data,
   match_variables = "r0",
-  comparison_variables = "p_infected",
-  expect_identical_match = c(
-    r0 = TRUE
-  )
+  comparison_variables = "p_infected"
 )
 
-# setting some identical matching to FALSE can help compare scenarios where
-# key parameters are *expected* to be different, but where some parameters
-# must be *identical*
+# match variables must be *identical*
 sce_are_comparable(
   baseline = low_r0_data,
   compare = high_r0_data,
-  match_variables = c("age_groups", "r0"),
-  comparison_variables = "p_infected",
-  expect_identical_match = c(
-    r0 = FALSE,
-    age_groups = TRUE # age group limits must be identical for valid comparison
-  )
+  match_variables = "age_groups",
+  comparison_variables = "p_infected"
 )
 ```
 
@@ -208,7 +201,7 @@ Scenarios can be wrapped into a `comparison` object. This is a convenient and st
 ```{r}
 # create object, passing prepared scenarios with some names
 outbreak_comparison <- comparison(
-  pandemic_flu = low_r0_data, covid19 = high_r0_data,
+  low_r0_data, high_r0_data,
   baseline = "pandemic_flu"
 )
 

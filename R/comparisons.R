@@ -14,9 +14,7 @@
 #' @return A `comparison` object
 #' @keywords internal
 new_comparison <- function(data,
-                           baseline,
-                           match_variables,
-                           comparison_variables) {
+                           baseline) {
   # Input checking in `comparison()`
 
   # create and return comparison class
@@ -24,8 +22,8 @@ new_comparison <- function(data,
     list(
       "data" = data,
       "baseline" = baseline,
-      "match_variables" = match_variables,
-      "comparison_variables" = comparison_variables
+      "match_variables" = NA_character_,
+      "comparison_variables" = NA_character_
     ),
     class = "comparison"
   )
@@ -44,10 +42,6 @@ new_comparison <- function(data,
 #' @param baseline A string for the element of the list of `scenario`
 #' objects which indicates which should be considered the 'baseline' outcome,
 #' against which other outcomes are compared.
-#' @param match_variables The variables in the `scenario` outputs on which to
-#' match the scenarios and check whether they are comparable.
-#' @param comparison_variables The variables in the `scenario` outputs to
-#' compare against the 'baseline' scenario.
 #'
 #' @return A `comparison` object
 #' @export
@@ -55,12 +49,14 @@ new_comparison <- function(data,
 #' @examples
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   replicates = 1L
@@ -68,31 +64,23 @@ new_comparison <- function(data,
 #'
 #' # create a comparison object
 #' comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'
 #' # pass scenario objects as a list
 #' # create a comparison object
 #' comparison(
-#'   list(pandemic_flu = pandemic_flu, covid19 = covid19),
+#'   list(pandemic_flu, covid19),
 #'   baseline = "pandemic_flu"
 #' )
 comparison <- function(...,
-                       baseline,
-                       match_variables,
-                       comparison_variables) {
+                       baseline) {
   # check input
   data <- list(...)
   if ((length(data) == 1L) && (is.list(data[[1]])) &&
     (!is_scenario(data[[1]]))) {
     data <- data[[1]]
-  }
-  if (missing(match_variables)) {
-    match_variables <- NA_character_
-  }
-  if (missing(comparison_variables)) {
-    comparison_variables <- NA_character_
   }
 
   stopifnot(
@@ -104,16 +92,12 @@ comparison <- function(...,
         )
       ),
     "Baseline must be among scenario names" =
-      (is.character(baseline) && baseline %in% names(data)),
-    "Matching variables must be a string" =
-      (is.character(match_variables)),
-    "Comparison variables must be a string" =
-      (is.character(comparison_variables))
+      (is.character(baseline) && baseline %in% vapply(data, `[[`, "ch", "name"))
   )
 
   # call comparison constructor
   object <- new_comparison(
-    data, baseline, match_variables, comparison_variables
+    data = data, baseline = baseline
   )
 
   # call comparison validator
@@ -151,7 +135,11 @@ validate_comparison <- function(object) {
       )),
     "Baseline must be among scenario names" =
       (is.character(object$baseline) &&
-        object$baseline %in% names(object$data))
+        object$baseline %in% sce_get_scenario_names(object)),
+    "Matching variables must be a string" =
+      (is.character(object$match_variables)),
+    "Comparison variables must be a string" =
+      (is.character(object$comparison_variables))
   )
   invisible(object)
 }
@@ -170,21 +158,39 @@ print.comparison <- function(x, ...) {
     ),
     " All scenario data are prepared, use `sce_get_outcomes()` to get data"
   )
-  baseline <- glue::glue(" Baseline scenario: {cli::col_blue(x$baseline)}")
+  baseline <- glue::glue(
+    " Baseline scenario: {cli::col_blue(glue::double_quote(x$baseline))}"
+  )
   # the scenario matching variables
   matching_variables <- c(
     " Scenario matching variables:",
-    ifelse(is.na(x$match_variables),
-      cli::col_magenta("  No matching variables specified!"),
-      cli::col_green(glue::glue("  {x$match_variables}"))
+    ifelse(
+      all(is.na(x$match_variables)),
+      cli::col_magenta("  No matching variables specified yet."),
+      cli::col_green(
+        glue::glue(
+          "
+            {glue::glue_collapse(glue::double_quote(x$match_variables), \\
+          sep = ', ')}
+          "
+        )
+      )
     )
   )
   # the output comparison variables
   comparison_variables <- c(
     " Scenario comparison variables:",
-    ifelse(is.na(x$comparison_variables),
-      cli::col_magenta("  No comparison variables specified!"),
-      cli::col_green(glue::glue("  {x$comparison_variables}"))
+    ifelse(
+      all(is.na(x$match_variables)),
+      cli::col_magenta("  No comparison variables specified yet."),
+      cli::col_green(
+        glue::glue(
+          "
+            {glue::glue_collapse(glue::double_quote(x$comparison_variables), \\
+          sep = ', ')}
+          "
+        )
+      )
     )
   )
   # the model function(s)
@@ -201,7 +207,6 @@ print.comparison <- function(x, ...) {
       matching_variables, comparison_variables, model_fun
     )
   )
-  invisible(x)
 }
 
 #' Check whether an object is a `comparison`
@@ -216,12 +221,14 @@ print.comparison <- function(x, ...) {
 #' @examples
 #' # prepare two scenarios of the final size of an epidemic
 #' pandemic_flu <- scenario(
+#'   name = "pandemic_flu",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 1.5),
 #'   replicates = 1L
 #' )
 #'
 #' covid19 <- scenario(
+#'   name = "covid19",
 #'   model_function = "finalsize::final_size",
 #'   parameters = make_parameters_finalsize_UK(r0 = 5.0),
 #'   replicates = 1L
@@ -229,7 +236,7 @@ print.comparison <- function(x, ...) {
 #'
 #' # create a comparison object
 #' x <- comparison(
-#'   pandemic_flu = pandemic_flu, covid19 = covid19,
+#'   pandemic_flu, covid19,
 #'   baseline = "pandemic_flu"
 #' )
 #'

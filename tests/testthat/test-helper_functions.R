@@ -138,3 +138,22 @@ test_that("Adding extra information to a scenario", {
     regexp = "(Some input list elements)*(are already present in this scenario)"
   )
 })
+
+#### Tests to drop scenario data ####
+test_that("Dropping scenario data from scenarios", {
+  # first generate data
+  scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
+  expect_false(
+    sce_has_data(sce_drop_data(scenario_pandemic_flu))
+  )
+})
+
+test_that("Dropping scenario data from comparisons", {
+  # first generate data
+  scenario_pandemic_flu <- run_scenario(scenario_pandemic_flu)
+  scenario_pandemic_flu$name <- "pandemic_flu"
+  comparison_flu <- comparison(scenario_pandemic_flu, baseline = "pandemic_flu")
+  expect_false(
+    sce_has_data(sce_drop_data(comparison_flu))
+  )
+})

@@ -1,5 +1,5 @@
 
-# *scenarios*: Compare epidemic scenarios
+# *scenarios*: Compare epidemic scenarios <img src="man/figures/logo.png" align="right" width="130"/>
 
 <!-- badges: start -->
 
