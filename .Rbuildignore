@@ -4,6 +4,7 @@
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^docs$
+^tmp$
 ^pkgdown$
 ^\.lintr$
 ^.*\.Rproj$
