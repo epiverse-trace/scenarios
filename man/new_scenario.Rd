@@ -2,33 +2,32 @@
 % Please edit documentation in R/scenario.R
 \name{new_scenario}
 \alias{new_scenario}
-\title{Constructor for the \code{scenario} class}
+\title{Construct a \code{scenario} object}
 \usage{
 new_scenario(
-  name,
-  model_function,
-  parameters,
-  extra_info = list(),
-  replicates = integer(1)
+  data,
+  name = NA_character_,
+  model = NA_character_,
+  parameters = list(),
+  extra_info = list()
 )
 }
 \arguments{
-\item{name}{The scenario name as a string. Defaults to \code{NA} if not provided.}
+\item{data}{Any object that can be sensibly coerced to a \code{data.table}, representing
+the epidemiological model data.}
 
-\item{model_function}{Function that is expected to run an epidemic scenario
-model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a string e.g.
-"finalsize::final_size". Explicit namespacing is preferred.}
+\item{name}{String of the senario name. Defaults to \code{NA} if not provided.}
 
-\item{parameters}{Parameters to the \code{model_function}.}
+\item{model}{String of the model name. Defaults to \code{NA} if not provided.}
+
+\item{parameters}{Named list of the model parameters. Only atomic list
+elements are allowed.}
 
 \item{extra_info}{Extra model information that may be useful for matching
-models.}
-
-\item{replicates}{The number of scenario replicates. This is the number of
-times the model_function is run.}
+models. Only atomic list elements are supported.}
 }
 \value{
-A \code{scenario} object
+A \code{scenario} object.
 }
 \description{
 Create a scenario object with input checks.

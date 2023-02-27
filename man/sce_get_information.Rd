@@ -4,35 +4,18 @@
 \alias{sce_get_information}
 \title{Get scenario information}
 \usage{
-sce_get_information(x, which)
+sce_get_information(x, which_info)
 }
 \arguments{
 \item{x}{A \code{scenario} object.}
 
-\item{which}{Which parameters to print.}
+\item{which_info}{Which parameters or extra information to return.}
 }
 \value{
-A named list with two elements, 'parameters' and 'extra_info', which
-are themselves lists. Each of these lists has named elements corresponding to
-the names passed in \code{which}. These are separated into two lists to make it
-easier to identify whether they are model function arguments or extra
-information for the scenario.
+A named list with named elements corresponding to the names passed in
+\code{which_info}.
 }
 \description{
 Gets the value of one or more object in the \code{parameters} or the
 extra information list \code{extra_info}.
-}
-\examples{
-# create a scenario
-scenario_pandemic_flu <- scenario(
-  model_function = "finalsize::final_size",
-  parameters = make_parameters_finalsize_UK(),
-  replicates = 1
-)
-
-# get all parameters
-sce_get_information(scenario_pandemic_flu)
-
-# get only some parameters
-sce_get_information(scenario_pandemic_flu, which = c("r0", "solver"))
 }

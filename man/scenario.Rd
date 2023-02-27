@@ -5,36 +5,33 @@
 \title{Create a \code{scenario} object}
 \usage{
 scenario(
+  data = data.table::data.table(),
   name = NA_character_,
-  model_function,
-  parameters,
-  extra_info = list(),
-  replicates = 1L
+  model = NA_character_,
+  parameters = list(),
+  extra_info = list()
 )
 }
 \arguments{
-\item{name}{The scenario name as a string. Defaults to \code{NA} if not provided.}
+\item{data}{Any object that can be sensibly coerced to a \code{data.table}, representing
+the epidemiological model data.}
 
-\item{model_function}{Function that is expected to run an epidemic scenario
-model, such as \code{\link[finalsize:final_size]{finalsize::final_size()}}, as a string e.g.
-"finalsize::final_size". Explicit namespacing is preferred.}
+\item{name}{String of the senario name. Defaults to \code{NA} if not provided.}
 
-\item{parameters}{Parameters to the \code{model_function}.}
+\item{model}{String of the model name. Defaults to \code{NA} if not provided.}
 
-\item{extra_info}{Extra information that is useful when comparing scenarios,
-such as details of the population structure or infection characteristics.}
+\item{parameters}{Named list of the model parameters. Only atomic list
+elements are allowed.}
 
-\item{replicates}{The number of scenario replicates. This is the number of
-times the \code{model_function} is run.}
+\item{extra_info}{Extra model information that may be useful for matching
+models. Only atomic list elements are supported.}
 }
 \value{
 A \code{scenario} object
 }
 \description{
-The \code{scenario} class is intended to store the outcomes of a
-number of runs of an epidemic simulation. This is a work in progress, and is
-initially targeted for compatibility with outputs from
-\code{\link[finalsize:final_size]{finalsize::final_size()}}.
+The \code{scenario} class is intended to store the outcomes of an
+epidemic simulation.
 }
 \examples{
 # prepare arguments to `finalsize::final_size()`
@@ -44,12 +41,20 @@ pandemic_flu_args <- make_parameters_finalsize_UK(r0 = 1.5)
 # prepare extra information on age group limits
 age_groups <- rownames(pandemic_flu_args$contact_matrix)
 
+data <- do.call(
+  finalsize::final_size,
+  pandemic_flu_args
+)
+
 scenario(
-  model_function = "finalsize::final_size",
-  parameters = pandemic_flu_args,
+  data = data,
+name = "final_size_UK",
+  model = "final_size",
+  parameters = list(
+ R0 = 1.5
+),
   extra_info = list(
-    age_groups = age_groups
-  ),
-  replicates = 1L
+    n_age_groups = 3
+  )
 )
 }
