@@ -4,52 +4,15 @@
 \alias{comparison}
 \title{Create a \code{comparison} object}
 \usage{
-comparison(..., baseline)
+comparison(...)
 }
 \arguments{
-\item{...}{Multiple \code{scenario}s or a list of \code{scenario} objects. At least one
-of these scenarios, the 'baseline' scenario, must be named for the comparison
-to be correctly constructed. The baseline scenario name must be the same as
-passed to \code{baseline}.}
-
-\item{baseline}{A string for the element of the list of \code{scenario}
-objects which indicates which should be considered the 'baseline' outcome,
-against which other outcomes are compared.}
+\item{...}{Multiple \code{scenario}s or a list of \code{scenario} objects.}
 }
 \value{
-A \code{comparison} object
+A \code{comparison} object.
 }
 \description{
-The \code{comparison} class is intended to store \code{scenario}s and to
-compare among them. One \code{scenario} must be set as the 'baseline' for such
-comparisons.
-}
-\examples{
-# prepare two scenarios of the final size of an epidemic
-pandemic_flu <- scenario(
-  name = "pandemic_flu",
-  model_function = "finalsize::final_size",
-  parameters = make_parameters_finalsize_UK(r0 = 1.5),
-  replicates = 1L
-)
-
-covid19 <- scenario(
-  name = "covid19",
-  model_function = "finalsize::final_size",
-  parameters = make_parameters_finalsize_UK(r0 = 5.0),
-  replicates = 1L
-)
-
-# create a comparison object
-comparison(
-  pandemic_flu, covid19,
-  baseline = "pandemic_flu"
-)
-
-# pass scenario objects as a list
-# create a comparison object
-comparison(
-  list(pandemic_flu, covid19),
-  baseline = "pandemic_flu"
-)
+The \code{comparison} class is intended to store \code{scenario} data and
+to quickly run comparisons against a user-specified baseline.
 }

@@ -2,20 +2,16 @@
 % Please edit documentation in R/scenario.R
 \name{validate_scenario}
 \alias{validate_scenario}
-\title{Validator for the \code{scenario} class}
+\title{Validate a \code{scenario} class object}
 \usage{
-validate_scenario(object, data_ok = FALSE)
+validate_scenario(object)
 }
 \arguments{
 \item{object}{A \code{scenario} object}
-
-\item{data_ok}{A boolean of whether the scenario can have data. This is
-useful when creating scenarios manually from existing objects, or when
-reading in a \code{scenario} with data from a file.}
 }
 \value{
-None. Errors when an invalid \code{scenario} object is provided.
+None. Checks the validity of the provided \code{scenario} object.
 }
 \description{
-Validator for the \code{scenario} class
+Validate a \code{scenario} class object
 }

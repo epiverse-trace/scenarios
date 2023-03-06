@@ -38,7 +38,9 @@ Imports:
     data.table,
     finalsize,
     glue,
-    jsonlite
+    jsonlite,
+    pillar,
+    tibble
 Suggests: 
     covr,
     epidemics (>= 0.1.0),

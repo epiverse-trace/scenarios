@@ -1,56 +1,49 @@
-#' Constructor for the `scenario` class
+#' Construct a `scenario` object
 #'
 #' @description Create a scenario object with input checks.
 #'
-#' @param name The scenario name as a string. Defaults to `NA` if not provided.
-#' @param model_function Function that is expected to run an epidemic scenario
-#' model, such as [finalsize::final_size()], as a string e.g.
-#' "finalsize::final_size". Explicit namespacing is preferred.
-#' @param parameters Parameters to the `model_function`.
+#' @param data Any object that can be sensibly coerced to a `data.table`,
+#' representing the epidemiological model data.
+#' @param name String of the senario name. Defaults to `NA` if not provided.
+#' @param model String of the model name. Defaults to `NA` if not provided.
+#' @param parameters Named list of the model parameters. Only atomic list
+#' elements are allowed.
 #' @param extra_info Extra model information that may be useful for matching
-#' models.
-#' @param replicates The number of scenario replicates. This is the number of
-#' times the model_function is run.
+#' models. Only atomic list elements are supported.
 #'
-#' @return A `scenario` object
+#' @return A `scenario` object.
 #' @keywords internal
-new_scenario <- function(name,
-                         model_function,
-                         parameters,
-                         extra_info = list(),
-                         replicates = integer(1)) {
+new_scenario <- function(data,
+                         name = NA_character_,
+                         model = NA_character_,
+                         parameters = list(),
+                         extra_info = list()) {
   # Input checking in `scenario()`
 
   # create and return scenario class
   structure(
-    list(
-      name = name,
-      model_function = model_function,
-      parameters = parameters,
-      extra_info = extra_info,
-      replicates = replicates,
-      data = vector("list", length = replicates)
-    ),
-    class = "scenario"
+    data.table::as.data.table(data),
+    class = c("scenario", "data.table", "data.frame"),
+    name = name,
+    model = model,
+    parameters = parameters,
+    extra_info = extra_info
   )
 }
 
 #' Create a `scenario` object
 #'
-#' @description The `scenario` class is intended to store the outcomes of a
-#' number of runs of an epidemic simulation. This is a work in progress, and is
-#' initially targeted for compatibility with outputs from
-#' [finalsize::final_size()].
+#' @description The `scenario` class is intended to store the outcomes of an
+#' epidemic simulation.
 #'
-#' @param name The scenario name as a string. Defaults to `NA` if not provided.
-#' @param model_function Function that is expected to run an epidemic scenario
-#' model, such as [finalsize::final_size()], as a string e.g.
-#' "finalsize::final_size". Explicit namespacing is preferred.
-#' @param parameters Parameters to the `model_function`.
-#' @param extra_info Extra information that is useful when comparing scenarios,
-#' such as details of the population structure or infection characteristics.
-#' @param replicates The number of scenario replicates. This is the number of
-#' times the `model_function` is run.
+#' @param data Any object that can be sensibly coerced to a `data.table`,
+#' representing the epidemiological model data.
+#' @param name String of the senario name. Defaults to `NA` if not provided.
+#' @param model String of the model name. Defaults to `NA` if not provided.
+#' @param parameters Named list of the model parameters. Only atomic list
+#' elements are allowed.
+#' @param extra_info Extra model information that may be useful for matching
+#' models. Only atomic list elements are supported.
 #'
 #' @return A `scenario` object
 #' @export
@@ -63,47 +56,44 @@ new_scenario <- function(name,
 #' # prepare extra information on age group limits
 #' age_groups <- rownames(pandemic_flu_args$contact_matrix)
 #'
-#' scenario(
-#'   model_function = "finalsize::final_size",
-#'   parameters = pandemic_flu_args,
-#'   extra_info = list(
-#'     age_groups = age_groups
-#'   ),
-#'   replicates = 1L
+#' data <- do.call(
+#'   finalsize::final_size,
+#'   pandemic_flu_args
 #' )
-scenario <- function(name = NA_character_,
-                     model_function,
-                     parameters,
-                     extra_info = list(),
-                     replicates = 1L) {
+#'
+#' scenario(
+#'   data = data,
+#'   name = "final_size_UK",
+#'   model = "final_size",
+#'   parameters = list(
+#'     R0 = 1.5
+#'   ),
+#'   extra_info = list(
+#'     n_age_groups = 3
+#'   )
+#' )
+scenario <- function(data = data.table::data.table(),
+                     name = NA_character_,
+                     model = NA_character_,
+                     parameters = list(),
+                     extra_info = list()) {
   # check input
   checkmate::assert_string(name, na.ok = TRUE)
-  checkmate::assert_string(model_function)
+  checkmate::assert_string(model)
   checkmate::assert_list(
     parameters,
     all.missing = FALSE, any.missing = FALSE,
     min.len = 1, names = "unique", null.ok = FALSE
   )
   checkmate::assert_list(extra_info, any.missing = FALSE, names = "unique")
-  checkmate::assert_integerish(replicates, lower = 1, null.ok = FALSE)
-
-  if (!grepl(pattern = "::", x = model_function, fixed = TRUE)) {
-    warning(
-      glue::glue(
-        "'model_function' may not be explicitly namespaced.
-        Explicit namespacing is preferred to avoid confusion.
-        E.g. 'finalsize::final_size' rather than 'final_size'."
-      )
-    )
-  }
 
   # call scenario constructor
   scenario <- new_scenario(
+    data = data.table::as.data.table(data),
     name = name,
-    model_function = model_function,
+    model = model,
     parameters = parameters,
-    extra_info = extra_info,
-    replicates = replicates
+    extra_info = extra_info
   )
 
   # call scenario validator
@@ -113,81 +103,130 @@ scenario <- function(name = NA_character_,
   scenario
 }
 
-#' Validator for the `scenario` class
+#' Validate a `scenario` class object
 #'
 #' @param object A `scenario` object
-#' @param data_ok A boolean of whether the scenario can have data. This is
-#' useful when creating scenarios manually from existing objects, or when
-#' reading in a `scenario` with data from a file.
 #'
-#' @return None. Errors when an invalid `scenario` object is provided.
-validate_scenario <- function(object, data_ok = FALSE) {
+#' @return None. Checks the validity of the provided `scenario` object.
+validate_scenario <- function(object) {
   # check for class and class invariants
   stopifnot(
     "Object should be of class scenario" =
       (is_scenario(object)),
     "`scenario` does not contain the correct attributes" =
       (c(
-        "name", "model_function", "parameters",
-        "extra_info", "replicates", "data"
-      ) %in% attributes(object)$names),
+        "name", "model", "parameters",
+        "extra_info"
+      ) %in% names(attributes(object))),
     "Scenario name must be a single string" =
-      (checkmate::test_string(object$name, na.ok = TRUE)),
-    "Model function must be a single function name" =
-      (is.character(object$model_function)),
+      (checkmate::test_string(attributes(object)$name, na.ok = TRUE)),
+    "Model name must be a single function name" =
+      (is.character(attributes(object)$model)),
     "Model parameter list must be a named, non-empty list with no NULLs" =
       (checkmate::test_list(
-        object$parameters,
+        attributes(object)$parameters,
         all.missing = FALSE, any.missing = FALSE,
-        min.len = 1, names = "unique", null.ok = FALSE
+        min.len = 0, names = "unique", null.ok = FALSE
       )
       ),
     "Extra information must be a list" =
-      (is.list(object$extra_info)),
-    "Model replicates must be at least 1" =
-      (checkmate::test_integerish(object$replicates) &&
-        object$replicates >= 1),
-    "Scenario data must be the same length as the number of replicates" =
-      (nrow(object$data) == object$replicates),
-    "Scenario data list should not be initialised" =
-      (data_ok || all(
-        vapply(object$data, is.null, FUN.VALUE = TRUE)
-      )
-      )
+      (is.list(attributes(object)$extra_info))
   )
   invisible(object)
 }
 
+#' Print a `scenario` object
+#'
+#' @param x A `scenario` object.
+#' @param ... Other parameters passed to [print()].
+#' @noRd
 #' @export
 print.scenario <- function(x, ...) {
+  format(x, ...)
+}
 
-  # collect information
+#' Format a `scenario` object
+#'
+#' @param x A `scenario` object.
+#' @param ... Other arguments passed to [format()].
+#'
+#' @return None. Formats the `scenario` for printing.
+#' @keywords internal
+#' @noRd
+format.scenario <- function(x, ...) {
+
+  # header
+  header <- cli::style_bold("Epidemic scenario object")
+
+  # collect information on name
   name <- ifelse(
-    is.na(x$name),
+    is.na(attr(x, "sce_name")),
     "No name specified (NA)",
-    glue::double_quote(x$name)
+    glue::double_quote(attr(x, "sce_name"))
   )
-  name <- glue::glue(" Scenario name: {name}")
-  extra_info <- glue::glue_collapse(
-    glue::double_quote(glue::glue("{names(x$extra_info)}")),
-    sep = ", "
-  )
-  extra_info <- cli::col_green(extra_info)
+  name <- glue::glue("Scenario name: {cli::col_cyan(name)}")
 
-  # print to screen
+  # information on model
+  model <- ifelse(
+    is.na(attr(x, "model")),
+    cli::col_grey("No model specified (NA)"),
+    glue::glue(
+      "Model: {cli::col_cyan(glue::double_quote(attr(x, 'model')))}"
+    )
+  )
+
+  parameters <- names(attr(x, "parameters"))
+  if (is.null(parameters)) {
+    parameters <- "None specified"
+  } else {
+    parameters <- glue::glue_collapse(
+      cli::col_green(
+        glue::double_quote(parameters)
+      ),
+      sep = ", "
+    )
+    parameters <- glue::glue("{parameters}")
+  }
+  parameters <- glue::glue("Parameters: {parameters}")
+
+  # extra information
+  extra_info <- names(attr(x, "extra_info"))
+  if (is.null(extra_info)) {
+    extra_info <- cli::col_grey("None")
+  } else {
+    extra_info <- glue::glue_collapse(
+      cli::col_green(
+        glue::double_quote(extra_info)
+      ),
+      sep = ", "
+    )
+  }
+  extra_info <- glue::glue("Extra information: {extra_info}")
+
+  # print header to screen
   writeLines(
     c(
-      cli::style_bold("Epidemic scenario object"),
+      header,
       name,
-      glue::glue(" Model function: {cli::col_cyan(x$model_function)}"),
-      glue::glue(" Extra information on: {extra_info}"),
-      glue::glue(" Scenario replicates: {x$replicates}"),
+      model,
+      parameters,
+      extra_info,
       glue::glue(
         "
-         Scenario outcomes are \\
-        {ifelse(sce_has_data(x), 'prepared', 'not prepared')}
+
+        <Head of scenario data>
         "
       )
+    )
+  )
+  # print head of data
+  print(utils::head(data.table::as.data.table(x)))
+
+  # calculate remaining rows and cols and
+  remaining_rows <- max(0, nrow(x) - 5)
+  writeLines(
+    glue::glue(
+      "<{remaining_rows} more rows in data>"
     )
   )
 
