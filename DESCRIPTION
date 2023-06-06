@@ -40,7 +40,6 @@ Imports:
     glue,
     jsonlite
 Suggests: 
-    covr,
     epidemics (>= 0.1.0),
     knitr,
     bookdown,
