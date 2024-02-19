@@ -6,6 +6,7 @@
       Epidemic scenario object
        Scenario name: "pandemic_flu"
        Model function: finalsize::final_size
+       Extra information on: 
        Scenario replicates: 1
        Scenario outcomes are prepared
 
