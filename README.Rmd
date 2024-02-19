@@ -18,11 +18,14 @@ knitr::opts_chunk$set(
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![R-CMD-check](https://github.com/{{ gh_repo }}/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/{{ gh_repo }}/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/{{ gh_repo }}/branch/main/graph/badge.svg)](https://app.codecov.io/gh/{{ gh_repo }}?branch=main)
-[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Suspended – Initial development has started, but there has not yet been a stable, usable release; work has been stopped for the time being but the author(s) intend on resuming work.](https://www.repostatus.org/badges/latest/suspended.svg)](https://www.repostatus.org/#suspended)
 [![CRAN status](https://www.r-pkg.org/badges/version/{{ packagename }})](https://CRAN.R-project.org/package={{ packagename }})
 <!-- badges: end -->
 
-_{{ packagename }}_ is intended to provide functions to compare the outcomes of epidemic modelling simulations. This package is still a work in progress.
+_{{ packagename }}_ was intended to provide functions to compare the outcomes of epidemic modelling simulations.
+
+The development of _{{ packagename }}_ has been suspended in favour of increased scenario modelling and comparison functionality coming to the [_epidemics_](https://github.com/epiverse-trace/epidemics) package.
+Development may resume once a use case for a separate comparison package is clearer.
 
 ## Installation
 
@@ -34,6 +37,8 @@ remotes::install_github("{{ gh_repo }}")
 ```
 
 ## Quick start
+
+The examples below show the existing functionality; this is not currently planned to be developed further.
 
 ### An example with _finalsize_
 
@@ -129,11 +134,15 @@ tail(
 
 ## Help 
 
-To report a bug please open an [issue](https://github.com/{{ gh_repo }}/issues/new/choose).
+To report a bug please open an [issue](https://github.com/{{ gh_repo }}/issues/new/choose); please note that development on _{{ packagename }}_ has been suspended.
 
 ## Contribute
 
-Contributions to _{{ packagename }}_ are welcomed. Please follow the [package contributing guide](https://github.com/{{ gh_repo }}/blob/main/.github/CONTRIBUTING.md).
+Development on _{{ packagename }}_ has been suspended.
+
+However, use cases or requirements for a package that helps compare outcomes of epidemic scenario models are very welcome as issues, or on the main [Epiverse Discussion board](https://github.com/orgs/epiverse-trace/discussions).
+
+Please follow the [package contributing guide](https://github.com/{{ gh_repo }}/blob/main/.github/CONTRIBUTING.md).
 
 ## Code of conduct
 
