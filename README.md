@@ -8,16 +8,22 @@ MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/
 [![R-CMD-check](https://github.com/epiverse-trace/scenarios/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/epiverse-trace/scenarios/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/epiverse-trace/scenarios/branch/main/graph/badge.svg)](https://app.codecov.io/gh/epiverse-trace/scenarios?branch=main)
-[![Project Status: WIP – Initial development is in progress, but there
-has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Suspended – Initial development has started, but
+there has not yet been a stable, usable release; work has been stopped
+for the time being but the author(s) intend on resuming
+work.](https://www.repostatus.org/badges/latest/suspended.svg)](https://www.repostatus.org/#suspended)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/scenarios)](https://CRAN.R-project.org/package=scenarios)
 <!-- badges: end -->
 
-*scenarios* is intended to provide functions to compare the outcomes of
-epidemic modelling simulations. This package is still a work in
-progress.
+*scenarios* was intended to provide functions to compare the outcomes of
+epidemic modelling simulations.
+
+The development of *scenarios* has been suspended in favour of increased
+scenario modelling and comparison functionality coming to the
+[*epidemics*](https://github.com/epiverse-trace/epidemics) package.
+Development may resume once a use case for a separate comparison package
+is clearer.
 
 ## Installation
 
@@ -30,6 +36,9 @@ remotes::install_github("epiverse-trace/scenarios")
 ```
 
 ## Quick start
+
+The examples below show the existing functionality; this is not
+currently planned to be developed further.
 
 ### An example with *finalsize*
 
@@ -55,7 +64,9 @@ View a summary of the `scenario`.
 ``` r
 scenario_pandemic_flu
 #> Epidemic scenario object
+#>  Scenario name: No name specified (NA)
 #>  Model function: finalsize::final_size
+#>  Extra information on: 
 #>  Scenario replicates: 3
 #>  Scenario outcomes are not prepared
 ```
@@ -94,6 +105,7 @@ variable.
 # get all output
 head(sce_get_outcomes(scenario_pandemic_flu))
 #>    demo_grp   susc_grp susceptibility p_infected replicate
+#>      <char>     <char>          <num>      <num>     <int>
 #> 1:   [0,20) susc_grp_1              1  0.6544866         1
 #> 2:  [20,40) susc_grp_1              1  0.5750030         1
 #> 3:      40+ susc_grp_1              1  0.4588871         1
@@ -109,7 +121,9 @@ sce_aggregate_outcomes(
   measure_variables = c("p_infected"),
   summary_functions = c("mean", "min", "max")
 )
+#> Key: <demo_grp>
 #>    demo_grp p_infected_mean p_infected_min p_infected_max
+#>      <char>           <num>          <num>          <num>
 #> 1:      40+       0.4588871      0.4588871      0.4588871
 #> 2:   [0,20)       0.6544866      0.6544866      0.6544866
 #> 3:  [20,40)       0.5750030      0.5750030      0.5750030
@@ -157,24 +171,33 @@ tail(
     summary_functions = "mean"
   )
 )
-#>    time state proportion_mean
-#> 1:   99     S    4.501519e-05
-#> 2:   99     I    8.643038e-05
-#> 3:   99     R    9.998686e-01
-#> 4:  100     S    4.501149e-05
-#> 5:  100     I    7.820928e-05
-#> 6:  100     R    9.998768e-01
+#> Key: <time, state>
+#>     time  state proportion_mean
+#>    <num> <fctr>           <num>
+#> 1:    99      S    4.501519e-05
+#> 2:    99      I    8.643038e-05
+#> 3:    99      R    9.998686e-01
+#> 4:   100      S    4.501149e-05
+#> 5:   100      I    7.820928e-05
+#> 6:   100      R    9.998768e-01
 ```
 
 ## Help
 
 To report a bug please open an
-[issue](https://github.com/epiverse-trace/scenarios/issues/new/choose).
+[issue](https://github.com/epiverse-trace/scenarios/issues/new/choose);
+please note that development on *scenarios* has been suspended.
 
 ## Contribute
 
-Contributions to *scenarios* are welcomed. Please follow the [package
-contributing
+Development on *scenarios* has been suspended.
+
+However, use cases or requirements for a package that helps compare
+outcomes of epidemic scenario models are very welcome as issues, or on
+the main [Epiverse Discussion
+board](https://github.com/orgs/epiverse-trace/discussions).
+
+Please follow the [package contributing
 guide](https://github.com/epiverse-trace/scenarios/blob/main/.github/CONTRIBUTING.md).
 
 ## Code of conduct
