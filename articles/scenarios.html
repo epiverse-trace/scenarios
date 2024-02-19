@@ -179,6 +179,7 @@ These are conveniently provided in the <em>finalsize</em> package, and can be ob
 <span><span class="co">#&gt; <span style="font-weight: bold;">Epidemic scenario object</span></span></span>
 <span><span class="co">#&gt;  Scenario name: "covid19"</span></span>
 <span><span class="co">#&gt;  Model function: <span style="color: #00BBBB;">finalsize::final_size</span></span></span>
+<span><span class="co">#&gt;  Extra information on: </span></span>
 <span><span class="co">#&gt;  Scenario replicates: 1</span></span>
 <span><span class="co">#&gt;  Scenario outcomes are not prepared</span></span></code></pre></div>
 </details>
@@ -269,6 +270,7 @@ These are conveniently provided in the <em>finalsize</em> package, and can be ob
 <span><span class="co"># get full outcome data as data.table</span></span>
 <span><span class="fu"><a href="../reference/sce_get_outcomes.html">sce_get_outcomes</a></span><span class="op">(</span><span class="va">low_r0_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    demo_grp   susc_grp susceptibility p_infected replicate</span></span>
+<span><span class="co">#&gt;      &lt;char&gt;     &lt;char&gt;          &lt;num&gt;      &lt;num&gt;     &lt;int&gt;</span></span>
 <span><span class="co">#&gt; 1:   [0,20) susc_grp_1              1  0.6544866         1</span></span>
 <span><span class="co">#&gt; 2:  [20,40) susc_grp_1              1  0.5750030         1</span></span>
 <span><span class="co">#&gt; 3:      40+ susc_grp_1              1  0.4588871         1</span></span></code></pre></div>
@@ -334,6 +336,7 @@ These are conveniently provided in the <em>finalsize</em> package, and can be ob
 <span><span class="co"># using multiple dispatch on the sce_get_outcomes function</span></span>
 <span><span class="fu"><a href="../reference/sce_get_outcomes.html">sce_get_outcomes</a></span><span class="op">(</span><span class="va">outbreak_comparison</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    demo_grp   susc_grp susceptibility p_infected replicate scenario_name</span></span>
+<span><span class="co">#&gt;      &lt;char&gt;     &lt;char&gt;          &lt;num&gt;      &lt;num&gt;     &lt;int&gt;        &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:   [0,20) susc_grp_1              1  0.6544866         1  pandemic_flu</span></span>
 <span><span class="co">#&gt; 2:  [20,40) susc_grp_1              1  0.5750030         1  pandemic_flu</span></span>
 <span><span class="co">#&gt; 3:      40+ susc_grp_1              1  0.4588871         1  pandemic_flu</span></span>
